@@ -5,29 +5,101 @@ import './reset.css'
 import './icon/iconfont.css'
 import VueRouter from 'vue-router'
 import routes from './router/router.js'
+import store from './store/index'//引入store
 import Vuex from 'vuex'
 import axios from 'axios'
+import VueAxios from 'vue-axios'
 
 Vue.config.productionutTip = false
 
+const host = process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:3000' : 'http:127.0.0.1:8888'
+const instance = axios.create({
+  baseURL: host
+})
+
+// 添加请求拦截器
+axios.interceptors.request.use(
+  config => {
+    console.log('请求拦截', store.state)
+    if (store.state.token) {
+      config.headers.common['Authentication-Token'] = store.state.token
+    }
+
+    return config
+  }, err => {
+    return Promise.reject(err);
+  })
+
+// 添加应答拦截器
+axios.interceptors.response.use(
+  response => {
+    console.log('应答拦截', response)
+    return response
+  },
+  // 默认除了2xx之外都是错误的，就会走到这
+  error => {
+    console.log(error)
+    if (error.response) {
+      console.log(error.response)
+      switch (error.response.status) {
+        case 401:
+          store.dispatch('UserLogout')  // 可能是token过期，清除它
+          router.replace({
+            path: '/login',
+            query: { redirect: router.currentRoute.fullPath }//登录成功后跳入浏览的当前页面
+          })
+      }
+    }
+    return Promise.reject(error.response.data)
+  }
+)
+
+
+
+Vue.use(VueAxios, axios)
+
 const router = new VueRouter({
-	routes
+  routes
 });
 
 router.beforeEach((to, from, next) => {
-	/* 路由发生变化修改页面meta */
-	if(to.meta.content){
-	  let head = document.getElementsByTagName('head');
-	  let meta = document.createElement('meta');
-	  meta.content = to.meta.content;
-	  head[0].appendChild(meta)
-	}
-	/* 路由发生变化修改页面title */
-	if (to.meta.title) {
-	  document.title = to.meta.title;
-	}
-	next()
+  //获取store里面的token
+  console.log('跳转前', to)
+  let token = store.state.token;
+  //判断要去的路由有没有requiresAuth
+  if (to.meta.requiresAuth) {
+
+    if (token) {
+      console.log('有token');
+      next();
+    } else {
+      console.log('没有token');
+      next({
+        path: '/login',
+        query: { redirect: to.fullPath }  // 将刚刚要去的路由path（却无权限）作为参数，方便登录成功后直接跳转到该路由
+      });
+    }
+
+  } else {
+    next();
+  }
 })
+
+// router.beforeEach((to, from, next) => {
+/* 路由发生变化修改页面meta */
+// if(to.meta.content){
+//   let head = document.getElementsByTagName('head');
+//   let meta = document.createElement('meta');
+//   meta.content = to.meta.content;
+//   head[0].appendChild(meta)
+// }
+// /* 路由发生变化修改页面title */
+// if (to.meta.title) {
+//   document.title = to.meta.title;
+// }
+// next()
+
+// })
 
 Vue.use(VueRouter)
 
@@ -64,5 +136,6 @@ new Vue({
     }
   },
   router,
+  store,
   render: h => h(App)
 }).$mount("#app");

@@ -1,10 +1,10 @@
 <template>
   <div class="sousuo">
     <div class="toubu">
-      <span class="sousuokuang">
+      <form class="sousuokuang" action="javascript:return true;">
         <i class="iconfont icon-sousuo icon"></i>
-        <input type="text" class="guanjianci" placeholder="输入关键词即可搜索">
-      </span>
+        <input @keyup.13="show()" type="search" ref="input" class="guanjianci" placeholder="输入关键词即可搜索">
+      </form>
       
       <span class="quxiao">取消</span>
     </div>
@@ -23,50 +23,53 @@
 
 <script>
 export default {
-  name: 'sousuo',
-  data () {
-    return {
-    	
+  name: "sousuo",
+  data() {
+    return {};
+  },
+  methods: {
+    show() {
+      this.$refs.input.blur();
     }
   }
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-.sousuo{
+.sousuo {
   font-size: 0.25rem;
   .toubu {
     margin: 0 0.2rem;
     height: 0.52rem;
     line-height: 0.54rem;
     padding: 0.1rem 0 0.1rem 0;
-    .sousuokuang{
+    .sousuokuang {
       display: inline-block;
       width: 70%;
       height: 100%;
       position: relative;
-      .icon{
+      .icon {
         position: absolute;
         left: 0.2rem;
       }
-      .guanjianci{
+      .guanjianci {
         display: inline-block;
         width: 100%;
         height: 100%;
         border: none;
         background: #f0f0f0;
-        outline:none;
+        outline: none;
         padding-left: 0.6rem;
         border-radius: 0.25rem;
         font-size: 0.2rem;
       }
     }
-    .quxiao{
+    .quxiao {
       float: right;
     }
   }
-  .lishi{
+  .lishi {
     color: #c0c0c0;
     height: 0.75rem;
     line-height: 0.75rem;
@@ -74,15 +77,14 @@ export default {
     background: #f1f1f1;
     font-size: 0.2rem;
   }
-  .sousuoliebiao{
+  .sousuoliebiao {
     margin-left: 0.2rem;
-    li{
+    li {
       height: 0.8rem;
       line-height: 0.8rem;
-      border-bottom: 1px solid #f6f6f6;      
+      border-bottom: 1px solid #f6f6f6;
       overflow: hidden;
     }
   }
 }
-	
 </style>

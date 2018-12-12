@@ -8,7 +8,16 @@
 
 export default {
   name: 'App',
+  methods: {
+    mounted: function () {
+      axios.post('/api/first')
+        .then(function (res) {
+          console.log(res)
+        })
+    }
+  },
   components: {
+
   }
 }
 </script>

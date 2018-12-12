@@ -2,15 +2,18 @@
   <div class="kecheng">
     <div class="toubu">
       <span class="iconfont icon-houtui icon"></span>
-      <p class="biaoti">课程</p>      
+      <p class="biaoti">课程</p>
     </div>
 
     <ul class="liebiao">
-      <li class="liebiao-xiang">
-        <img src="../../assets/kecheng.png" alt="" class="zuo">
+      <!-- <li class="liebiao-xiang">
+        <img src="../../assets/kecheng.png" alt class="zuo">
         <div class="zhong">
           <div class="kecheng-biaoti">我是很长很长很长很长很长很长的课程标题</div>
-          <div class="shangci">上次学习:<span class="riqi">2018-06-04</span>15:05</div>
+          <div class="shangci">
+            上次学习:
+            <span class="riqi">2018-06-04</span>15:05
+          </div>
         </div>
         <div class="you">
           <div class="jindu">26%</div>
@@ -18,13 +21,31 @@
         </div>
       </li>
       <li class="liebiao-xiang">
-        <img src="../../assets/kecheng.png" alt="" class="zuo">
+        <img src="../../assets/kecheng.png" alt class="zuo">
         <div class="zhong">
           <div class="kecheng-biaoti">我是很长很长很长很长很长很长的课程标题</div>
-          <div class="shangci">上次学习:<span class="riqi">2018-06-04</span>15:05</div>
+          <div class="shangci">
+            上次学习:
+            <span class="riqi">2018-06-04</span>15:05
+          </div>
         </div>
         <div class="you">
           <div class="jindu">26%</div>
+          <div class="zhuangtai">已通过</div>
+        </div>
+      </li> -->
+      <li class="liebiao-xiang" v-for="curriculum in curriculum">
+        <img src="../../assets/kecheng.png" alt class="zuo">
+        <div class="zhong">
+          <div class="kecheng-biaoti">{{curriculum.title}}</div>
+          <div class="shangci">
+            上次学习:
+            <!-- <span class="riqi">{{curriculum.lastLearn.split(' ')[0]}}</span>{{curriculum.lastLearn.split(' ')[1]}} -->
+            <span class="riqi">{{curriculum.lastLearn}}</span>
+          </div>
+        </div>
+        <div class="you">
+          <div class="jindu">{{curriculum.progress}}%</div>
           <div class="zhuangtai">已通过</div>
         </div>
       </li>
@@ -34,18 +55,41 @@
 
 <script>
 export default {
-  name: 'kecheng',
-  data () {
+  name: "kecheng",
+  data() {
     return {
-    	
+      curriculum: [
+        {
+          learnedTime: ''
+        }
+      ]
+    };
+  },
+  mounted() {
+    this.getUserCurriculum();
+  },
+  methods: {
+    getUserCurriculum() {
+      this.axios.get("/api/getUserCurriculum").then(res => {
+
+        if (res.data.err_code == 500) {
+          return alert(res.data.message);
+        }
+
+        this.curriculum = res.data.curriculum.curriculums
+        this.curriculum.learnedTime = res.data.curriculum.curriculums.learnedTime
+        console.log(res.data.curriculum.curriculums[0].lastLearn);
+        
+        console.log(this.curriculum)
+      });
     }
   }
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-.kecheng{
+.kecheng {
   position: fixed;
   width: 100%;
   height: 100%;
@@ -64,50 +108,50 @@ export default {
       margin: 0 1rem;
     }
   }
-  .liebiao{
+  .liebiao {
     padding: 0 0 0.15rem 0.2rem;
     background: #fff;
-    .liebiao-xiang{
+    .liebiao-xiang {
       display: flex;
       padding: 0.23rem 0rem 0.23rem 0;
       border-bottom: 1px solid #ccc;
-      .zuo{
+      .zuo {
         // margin-left: 0.2rem;
         width: 1.6rem;
         height: 1.2rem;
       }
-      .zhong{
+      .zhong {
         position: relative;
         // margin: 0 0.3rem 0 0.2rem;
         margin-left: 0.2rem;
         flex: 1;
         overflow: hidden;
-        .kecheng-biaoti{
+        .kecheng-biaoti {
           font-size: 0.2rem;
           height: 0.74rem;
           line-height: 0.37rem;
           overflow: hidden;
           text-overflow: ellipsis;
         }
-        .shangci{
+        .shangci {
           position: absolute;
           bottom: 0;
           font-size: 0.04rem;
           color: #ccc;
-          .riqi{
+          .riqi {
             margin: 0 0.1rem;
           }
         }
       }
-      .you{
+      .you {
         position: relative;
         width: 1rem;
         height: 1.2rem;
         text-align: center;
-        .jindu{
+        .jindu {
           font-size: 8px;
         }
-        .zhuangtai{
+        .zhuangtai {
           position: absolute;
           bottom: 0;
           color: #76efb3;
@@ -115,9 +159,7 @@ export default {
           width: 100%;
         }
       }
-    }  
+    }
   }
-  
 }
-	
 </style>
