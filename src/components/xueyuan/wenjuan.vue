@@ -87,7 +87,11 @@ export default {
         if (res.data.err_code === 500) {
           return alert(res.data.message);
         }
-        return alert(res.data.message);
+        let query = {
+          message: res.data.message,
+          getMedicalBeans: res.data.getMedicalBeans
+        }
+        return this.$router.push({'path':'/signInSucc', query: query})
       });
       
     }

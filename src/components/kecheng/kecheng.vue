@@ -5,43 +5,15 @@
       <p class="biaoti">课程</p>
     </div>
 
-    <ul class="liebiao">
-      <!-- <li class="liebiao-xiang">
-        <img src="../../assets/kecheng.png" alt class="zuo">
-        <div class="zhong">
-          <div class="kecheng-biaoti">我是很长很长很长很长很长很长的课程标题</div>
-          <div class="shangci">
-            上次学习:
-            <span class="riqi">2018-06-04</span>15:05
-          </div>
-        </div>
-        <div class="you">
-          <div class="jindu">26%</div>
-          <div class="zhuangtai">已学习</div>
-        </div>
-      </li>
-      <li class="liebiao-xiang">
-        <img src="../../assets/kecheng.png" alt class="zuo">
-        <div class="zhong">
-          <div class="kecheng-biaoti">我是很长很长很长很长很长很长的课程标题</div>
-          <div class="shangci">
-            上次学习:
-            <span class="riqi">2018-06-04</span>15:05
-          </div>
-        </div>
-        <div class="you">
-          <div class="jindu">26%</div>
-          <div class="zhuangtai">已通过</div>
-        </div>
-      </li> -->
+    <ul class="liebiao" v-if="curriculum !== undefined">
       <li class="liebiao-xiang" v-for="curriculum in curriculum">
         <img src="../../assets/kecheng.png" alt class="zuo">
         <div class="zhong">
           <div class="kecheng-biaoti">{{curriculum.title}}</div>
-          <div class="shangci">
-            上次学习:
-            <!-- <span class="riqi">{{curriculum.lastLearn.split(' ')[0]}}</span>{{curriculum.lastLearn.split(' ')[1]}} -->
-            <span class="riqi">{{curriculum.lastLearn}}</span>
+          <div class="shangci" v-if="curriculum.lastLearn !== undefined">>
+            <span>上次学习:</span>
+            <span class="riqi">{{curriculum.lastLearn.split(' ')[0]}}</span>
+            <span class="riqi"{{curriculum.lastLearn.split(' ')[1]}}</span>
           </div>
         </div>
         <div class="you">
@@ -82,6 +54,11 @@ export default {
         
         console.log(this.curriculum)
       });
+    }
+  },
+  couputed: {
+    date: function () {
+      
     }
   }
 };

@@ -2,19 +2,12 @@
   <div class="jiangyi">
     <div class="toubu">
       <span class="iconfont icon-houtui icon"></span>
-      <p class="biaoti">课程</p>      
+      <p class="biaoti">关于我们</p>      
     </div>
 
     <div class="neirong">
       <img class="tu" src="../../assets/kecheng.png" alt="">
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
+      <p class="xiangqing" v-for="content in content">{{ content }}</p>
     </div>
   </div>
 </template>
@@ -23,7 +16,22 @@
 export default {
   name: "jiangyi",
   data() {
-    return {};
+    return {
+      content: []
+    };
+  },
+  mounted(){
+    this.getAboutUs()
+  },
+  methods:{
+    getAboutUs(){
+      this.axios.get('/api/getAboutUs').then(res=>{
+        if (res.data.err_code == 200) {
+          this.content = res.data.aboutUs.content
+          console.log(this.about)
+        }
+      })
+    }
   }
 };
 </script>
@@ -50,6 +58,8 @@ export default {
     position: fixed;
     top: 0.82rem;
     bottom: 0rem;
+    left: 0;
+    right: 0;
     padding: 0.2rem;
     overflow: scroll;
     .tu {
