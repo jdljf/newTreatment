@@ -43,7 +43,7 @@ export default {
   methods: {
     getSubject() {
       this.axios.get("/api/getSubject").then(res => {
-        this.subject = res.data.personSubject.subject;
+        this.subject = res.data.personSubject.detail;
       });
     }
   }
