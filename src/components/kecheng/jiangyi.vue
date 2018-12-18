@@ -2,19 +2,20 @@
   <div class="jiangyi">
     <div class="toubu">
       <span class="iconfont icon-houtui icon"></span>
-      <p class="biaoti">课程</p>      
+      <p class="biaoti">课件讲义</p>
     </div>
 
     <div class="neirong">
-      <img class="tu" src="../../assets/kecheng.png" alt="">
+      <img class="tu" src="../../assets/kecheng.png" alt>
+      <p class="xiangqing" v-for="content in handout">{{content}}</p>
+      <!-- <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
       <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
       <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
       <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
       <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
       <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
       <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
+      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>-->
     </div>
 
     <div class="xiazai">
@@ -27,7 +28,29 @@
 export default {
   name: "jiangyi",
   data() {
-    return {};
+    return {
+      handout: []
+    };
+  },
+  mounted() {
+    console.log(this.$route.query);
+    this.getHandout();
+    // this.getSubject();
+  },
+  methods: {
+    getHandout() {
+      this.axios
+        .get("/api/getHandout", {
+          params: {
+            id: this.$route.query.id,
+            index: this.$route.query.index
+          }
+        })
+        .then(res => {
+          this.handout = res.data.handout.content;
+          console.log(this.handout);
+        });
+    }
   }
 };
 </script>
@@ -56,15 +79,17 @@ export default {
     bottom: 1.85rem;
     padding: 0.2rem;
     overflow: scroll;
+    width: 100%;
+    box-sizing: border-box;
     .tu {
       width: 100%;
       height: 3.5rem;
       margin-bottom: 0.1rem;
     }
     .xiangqing {
-      font-size: 0.2rem;
+      font-size: 0.24rem;
       line-height: 0.4rem;
-          text-indent: 0.5rem;
+      text-indent: 0.5rem;
     }
   }
   .xiazai {

@@ -13,6 +13,7 @@ import qiandaoCG from '../components/saoyisao/qiandao_chenggong'
 import kecheng from '../components/kecheng/kecheng'
 import jiangyi from '../components/kecheng/jiangyi'
 import kemu from '../components/kemu/kemu'
+import kemu_liebiao from '../components/common/kemu_liebiao'
 import kemu_xiangqing from '../components/kemu/kemu_xiangqing'
 import toutiao from '../components/toutiao/toutiao'
 import xiangguan from '../components/toutiao/xiangguan'
@@ -44,7 +45,18 @@ var routes = [
 	{path: '/signInSucc', component: qiandaoCG},
 	{path: '/curriculum', component: kecheng},
 	{path: '/handout', component: jiangyi},
-	{path: '/subject', component: kemu},
+	{
+		path: '/subject', 
+		component: kemu,
+		children: [
+			{
+			  // 当 /user/:id/profile 匹配成功，
+			  // UserProfile 会被渲染在 User 的 <router-view> 中
+			  path: '/subject/list',
+			  component: kemu_liebiao
+			}
+		]	
+	},
 	{path: '/subjectDetail', component: kemu_xiangqing},
 	{path: '/headline', component: toutiao},
 	{path: '/relevant', component: xiangguan},

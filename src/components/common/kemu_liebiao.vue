@@ -1,16 +1,7 @@
 <template>
-  <div class="kemu">
-    <div class="toubu">
-      <span class="iconfont icon-houtui icon"></span>
-      <span class="kemu_zhonglei" v-for="classify in classify" @click="changeClassify(classify._id)">{{classify.name}}</span>
-      <!-- <span class="kemu_zhonglei">内科</span>
-      <span class="kemu_zhonglei">外科</span>
-      <span class="kemu_zhonglei">骨科</span> -->
-    </div>
-    <router-view></router-view>
-    <!-- <fenlei></fenlei> -->
-    <!-- <ul class="liebiao">
-      <li class="liebiao-xiang" v-for="subject in subject">
+  <div class="kemu_liebiao">
+    <ul class="liebiao">
+      <li class="liebiao-xiang" v-for="(subject, index) in subject" @click="gotoSubjectDetail(index)">
         <div class="shipin">
           <img src="../../assets/kecheng.png" alt>
           <div class="jindu">
@@ -29,15 +20,34 @@
           <i class="iconfont icon-wenjianjia"></i>
         </div>
       </li>
-    </ul> -->
+      <!-- <li class="liebiao-xiang" >
+        <div class="shipin">
+          <img src="../../assets/kecheng.png" alt>
+          <div class="jindu">
+            <div class="baifenbi">50%</div>
+            <div class="yixuexi">已学习</div>
+          </div>
+        </div>
+
+        <div class="miaoshu">dsadsad</div>
+
+        <div class="caozuo">
+          <i class="iconfont icon-guankan01"></i>
+          <span>432</span>
+          <i class="iconfont icon-buoumaotubiao48"></i>
+          <span>424</span>
+          <i class="iconfont icon-wenjianjia"></i>
+        </div>
+      </li> -->
+    </ul>
   </div>
 </template>
 
 <script>
-import fenlei from '../common/fenlei'
+import fenlei from "../common/fenlei";
 
 export default {
-  name: "kemu",
+  name: "kemu_liebiao",
   data() {
     return {
       subject: [],
@@ -45,45 +55,45 @@ export default {
     };
   },
   mounted() {
-    this.getClassify()
-    // this.getSubject();
+    // this.getClassify()
+    this.getSubject();
   },
   methods: {
-    getClassify() {
-      this.axios.get("/api/getClassify").then(res => {
-        // this.subject = res.data.personSubject.detail;
-        this.classify = res.data.classify
-      });
+    getSubject() {
+      let id = this.$route.query.id;
+      console.log(this.$route.query);
+      this.axios
+        .get("/api/getSubject", {
+          params: {
+            id: id
+          }
+        })
+        .then(res => {
+            console.log(res.data);
+            
+          this.subject = res.data.personSubject.detail;
+        //   this.classify = res.data.classify;
+        });
     },
-    changeClassify(id){
-      console.log(id)
-      this.$router.push({'path':'/subject/list', query: {id: id}})
+    gotoSubjectDetail(index) {
+      console.log(this.$route.query.id);
+      
+      this.$router.push({path: '/subjectDetail', query: {index: index,id: this.$route.query.id}})
     }
   },
   components: {
     fenlei: fenlei
+  },
+  watch: {
+    // 如果路由有变化，会再次执行该方法
+    $route: "getSubject"
   }
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-.kemu {
-  .toubu {
-    height: 0.72rem;
-    line-height: 0.72rem;
-    padding: 0 0.2rem;
-    background: #fff;
-    border-bottom: 1px solid #f1f1f1;
-    overflow: auto;
-    font-size: 0.26rem;
-    .icon {
-      margin-right: 0.2rem;
-    }
-    .kemu_zhonglei {
-      margin-right: 0.4rem;
-    }
-  }
+.kemu_liebiao {
   .liebiao {
     .liebiao-xiang {
       border-bottom: 1px solid #ccc;

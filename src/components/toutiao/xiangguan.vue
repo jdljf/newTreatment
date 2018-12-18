@@ -2,22 +2,17 @@
   <div class="xiangguan">
     <div class="toubu">
       <span class="iconfont icon-houtui icon"></span>
-      <p class="biaoti">相关视频</p>      
+      <p class="biaoti">相关视频</p>
     </div>
 
     <ul class="liebiao">
-      <li class="liebiao-xiang">
-        <img src="../../assets/kecheng.png" alt="" class="zuo">
+      <li class="liebiao-xiang" v-for="aboutList in aboutList">
+        <img src="../../assets/kecheng.png" alt class="zuo">
         <div class="zhong">
-          <div class="kecheng-biaoti">我是很长很长很长很长很长很长的课程标题</div>
-          <div class="shangci">时长:<span class="riqi">12分钟</span></div>
-        </div>
-      </li>
-      <li class="liebiao-xiang">
-        <img src="../../assets/kecheng.png" alt="" class="zuo">
-        <div class="zhong">
-          <div class="kecheng-biaoti">我是很长很长很长很长很长很长的课程标题</div>
-          <div class="shangci">时长:<span class="riqi">12分钟</span></div>
+          <div class="kecheng-biaoti">{{aboutList.title}}</div>
+          <div class="shangci">时长:
+            <span class="riqi">{{aboutList.durationTime}}</span>
+          </div>
         </div>
       </li>
     </ul>
@@ -26,18 +21,29 @@
 
 <script>
 export default {
-  name: 'xiangguan',
-  data () {
+  name: "xiangguan",
+  data() {
     return {
-    	
-    }
+      aboutList: []
+    };
+  },
+  mounted() {
+    this.axios
+      .get("/api/getAboutVideo", {
+        params: {
+          id: this.$route.query.id
+        }
+      })
+      .then(res => {
+        this.aboutList = res.data.list
+      });
   }
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-.xiangguan{
+.xiangguan {
   position: fixed;
   width: 100%;
   height: 100%;
@@ -56,44 +62,42 @@ export default {
       margin: 0 1rem;
     }
   }
-  .liebiao{
+  .liebiao {
     padding: 0 0 0.15rem 0.2rem;
     background: #fff;
-    .liebiao-xiang{
+    .liebiao-xiang {
       display: flex;
       padding: 0.23rem 0.3rem 0.23rem 0;
       border-bottom: 1px solid #f1f1f1;
-      .zuo{
+      .zuo {
         // margin-left: 0.2rem;
         width: 1.6rem;
         height: 1.2rem;
       }
-      .zhong{
+      .zhong {
         position: relative;
         // margin: 0 0.3rem 0 0.2rem;
         margin-left: 0.2rem;
         flex: 1;
         overflow: hidden;
-        .kecheng-biaoti{
-          font-size: 0.2rem;
+        .kecheng-biaoti {
+          font-size: 0.25rem;
           height: 0.74rem;
           line-height: 0.37rem;
           overflow: hidden;
           text-overflow: ellipsis;
         }
-        .shangci{
+        .shangci {
           position: absolute;
           bottom: 0;
-          font-size: 0.04rem;
+          font-size: 0.2rem;
           color: #ccc;
-          .riqi{
+          .riqi {
             margin: 0 0.1rem;
           }
         }
       }
-    }  
+    }
   }
-  
 }
-	
 </style>

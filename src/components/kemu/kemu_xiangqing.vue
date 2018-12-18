@@ -5,29 +5,29 @@
       <span class="iconfont icon-houtui icon"></span>
     </div>
 
-    <div class="miaoshu">从慢性疾病的病理解析分子构造的稳定性，结果近段时间将公布于世。</div>
+    <div class="miaoshu">{{detail.describe}}</div>
 
     <div class="caozuo">
       <div class="caozuo-xiangqing">
         <div class="iconfont icon-guankan01 tubiao"></div>
-        <div class="shuliang">2332</div>
+        <div class="shuliang">{{detail.watched}}</div>
       </div>
       <div class="caozuo-xiangqing">
         <div class="iconfont icon-buoumaotubiao48 tubiao"></div>
-        <div class="shuliang">722</div>
+        <div class="shuliang">{{detail.comment}}</div>
       </div>
       <div class="caozuo-xiangqing">
         <div class="iconfont icon-wenjianjia tubiao"></div>
-        <div class="shuliang">4242</div>
+        <div class="shuliang">{{detail.share}}</div>
       </div>
       <div class="caozuo-xiangqing">
         <div class="iconfont icon-fenxiang tubiao"></div>
-        <div class="shuliang">1002</div>
+        <div class="shuliang">{{detail.collection}}</div>
       </div>
     </div>
 
     <div class="anniuBox">
-      <div class="anniu">课件讲义</div>
+      <div class="anniu" @click="gotoHandout">课件讲义</div>
       <div class="anniu">立即测验</div>
     </div>
 
@@ -36,7 +36,7 @@
         <span class="zuo">相关视频</span>
         
         <i class="iconfont icon-qianjin"></i>
-        <span class="you">全部</span>
+        <span class="you" @click="gotoAboutVideo">全部</span>
       </div>
 
       <div class="xiangguan-shipin">
@@ -104,7 +104,38 @@
 export default {
   name: "kemu_xiangqing",
   data() {
-    return {};
+    return {
+      detail: {}
+    };
+  },
+  mounted() {
+    console.log(this.$route.query.id);
+    console.log(this.$route.query.index);
+    this.axios
+      .get("/api/getSubjectDetail", {
+        params: {
+          index: this.$route.query.index,
+          id: this.$route.query.id
+        }
+      })
+      .then(res => {
+        this.detail = res.data.detail;
+        console.log(res.data);
+      });
+  },
+  methods: {
+    gotoHandout() {
+      this.$router.push({
+        path: "/handout",
+        query: { id: this.$route.query.id, index: this.$route.query.index }
+      });
+    },
+    gotoAboutVideo() {
+      this.$router.push({
+        path: "/relevant",
+        query: { id: this.$route.query.id}
+      });
+    }
   }
 };
 </script>
