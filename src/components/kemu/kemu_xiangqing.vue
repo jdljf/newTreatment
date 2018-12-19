@@ -7,95 +7,145 @@
 
     <div class="miaoshu">{{detail.describe}}</div>
 
-    <div class="caozuo">
-      <div class="caozuo-xiangqing">
-        <div class="iconfont icon-guankan01 tubiao"></div>
-        <div class="shuliang">{{detail.watched}}</div>
-      </div>
-      <div class="caozuo-xiangqing">
-        <div class="iconfont icon-buoumaotubiao48 tubiao"></div>
-        <div class="shuliang">{{detail.comment}}</div>
-      </div>
-      <div class="caozuo-xiangqing">
-        <div class="iconfont icon-wenjianjia tubiao"></div>
-        <div class="shuliang">{{detail.share}}</div>
-      </div>
-      <div class="caozuo-xiangqing">
-        <div class="iconfont icon-fenxiang tubiao"></div>
-        <div class="shuliang">{{detail.collection}}</div>
-      </div>
-    </div>
-
-    <div class="anniuBox">
-      <div class="anniu" @click="gotoHandout">课件讲义</div>
-      <div class="anniu">立即测验</div>
-    </div>
-
-    <div class="xiangguan">
-      <div class="toubu">
-        <span class="zuo">相关视频</span>
-        
-        <i class="iconfont icon-qianjin"></i>
-        <span class="you" @click="gotoAboutVideo">全部</span>
-      </div>
-
-      <div class="xiangguan-shipin">
-        <div class="xiangguan-xiang">
-          <img src="../../assets/kecheng.png" alt>
-          <div class="jieshao">如何应对突然倒下的心脏骤停的危害</div>
-          <div class="bofangliang">2333次播放</div>
+    <div v-if="!istest">
+      <div class="caozuo">
+        <div class="caozuo-xiangqing">
+          <div class="iconfont icon-guankan01 tubiao"></div>
+          <div class="shuliang">{{detail.watched}}</div>
         </div>
-        <div class="xiangguan-xiang">
-          <img src="../../assets/kecheng.png" alt>
-          <div class="jieshao">如何应对突然倒下的心脏骤停的危害</div>
-          <div class="bofangliang">2333次播放</div>
+        <div class="caozuo-xiangqing" @click="gotoComment">
+          <div class="iconfont icon-buoumaotubiao48 tubiao"></div>
+          <div class="shuliang">{{detail.comment}}</div>
         </div>
-        <div class="xiangguan-xiang">
-          <img src="../../assets/kecheng.png" alt>
-          <div class="jieshao">如何应对突然倒下的心脏骤停的危害</div>
-          <div class="bofangliang">2333次播放</div>
+        <div class="caozuo-xiangqing" @click="collect">
+          <div class="iconfont icon-wenjianjia tubiao"></div>
+          <div class="shuliang">{{detail.collection}}</div>
+        </div>
+        <div class="caozuo-xiangqing" @click="share">
+          <div class="iconfont icon-fenxiang tubiao"></div>
+          <div class="shuliang">{{detail.share}}</div>
         </div>
       </div>
-    </div>
 
-    <div class="pinglunqu">评论区</div>
-    <div class="pinglunqu-xijie">
-      <div class="pinglun-xijie">
-        <div class="xijie">
-          <img src="../../assets/logo.png" alt>
-          <div class="yonghu">
-            <div class="mingzi">妮可基德曼</div>
-            <div class="shijian">5小时前</div>
-            <div class="pinglun">广州白云天心制药股份有限公司真的真的真的很棒！</div>
+      <div class="anniuBox">
+        <div class="anniu" @click="gotoHandout">课件讲义</div>
+        <div class="anniu" @click="gotoTest">立即测验</div>
+      </div>
+
+      <div class="xiangguan">
+        <div class="toubu">
+          <span class="zuo">相关视频</span>
+          
+          <i class="iconfont icon-qianjin"></i>
+          <span class="you" @click="gotoAboutVideo">全部</span>
+        </div>
+
+        <div class="xiangguan-shipin">
+          <div class="xiangguan-xiang" v-for="aboutList in aboutList">
+            <img src="../../assets/kecheng.png" alt>
+            <div class="jieshao">{{aboutList.title}}</div>
+            <div class="bofangliang">{{aboutList.watched}}次播放</div>
           </div>
         </div>
       </div>
-      <div class="pinglun-xijie">
-        <div class="xijie">
-          <img src="../../assets/logo.png" alt>
-          <div class="yonghu">
-            <div class="mingzi">妮可基德曼</div>
-            <div class="shijian">5小时前</div>
-            <div class="pinglun">广州白云天心制药股份有限公司真的真的真的很棒！</div>
 
-            <div class="erjixijie">
+      <div class="pinglunqu">评论区</div>
+      <div class="pinglunqu-xijie">
+        <div class="pinglun-xijie">
+          <div class="xijie" v-for="comment in comment">
+            <div class="pl" v-if="!comment.replyPerson">
               <img src="../../assets/logo.png" alt>
-              <div class="yonghu">
-                <div class="mingzi">妮可基德曼</div>
+              <div class="yonghu" style="flex: 1;">
+                <div class="mingzi">{{comment.commentName}}</div>
                 <div class="shijian">5小时前</div>
-                <div class="pinglun">广州白云天心制药股份有限公司真的真的真的很棒！</div>
+                <div class="pinglun">{{comment.content}}</div>
+              </div>
+            </div>
+
+            <div class="pl" v-if="comment.replyPerson">
+              <img src="../../assets/logo.png" alt>
+              <div class="yonghu" style="flex: 1;">
+                <div class="mingzi">{{comment.commentName}}</div>
+                <div class="shijian">5小时前</div>
+                <div class="pinglun">{{comment.content}}</div>
+              </div>
+            </div>
+
+            <div class="erjixijie" v-if="comment.replyPerson">
+              <div class="erji" v-for="replyPerson in comment.replyPerson">
+                <img src="../../assets/logo.png" alt>
+                <div class="yonghu">
+                  <div class="mingzi">{{replyPerson.replyName}}</div>
+                  <div class="shijian">5小时前</div>
+                  <div class="pinglun">{{replyPerson.content}}</div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      <div class="qupinlun">
+        <input class="xiedian" type="text" placeholder="写点什么吧！">
+        <i class="iconfont icon-buoumaotubiao48 icon">
+          <span class="pinglunshu">124</span>
+        </i>
+      </div>
     </div>
 
-    <div class="qupinlun">
-      <input class="xiedian" type="text" placeholder="写点什么吧！">
-      <i class="iconfont icon-buoumaotubiao48 icon">
-        <span class="pinglunshu">124</span>
-      </i>
+    <div v-if="istest" class="ceyan">
+      <form style="background: #eee;">
+        <ul>
+          <li class="timu">
+            <ul>
+              <li class="wenti">我是可爱额提莫吗</li>
+              <li class="xuanze">
+                <input type="radio">
+                <span>是额是额是额是额是额是额是额是额是额是额是额是额是额是额是额是额是额是额</span>
+                <div class="daan">
+                  <span>正确答案</span>
+                  <span class="iconfont icon-icon-test1"></span>
+                </div>
+              </li>
+              <li class="xuanze">
+                <input type="radio">
+                <span>不是</span>
+                <div class="daan">
+                  <span>正确答案</span>
+                  <span class="iconfont icon-cha1"></span>
+                </div>
+              </li>
+              <li class="xuanze">
+                <input type="radio">
+                <span>不知道</span>
+              </li>
+            </ul>
+          </li>
+          <li class="timu">
+            <ul>
+              <li class="wenti">shaungxuna</li>
+              <li class="xuanze">
+                <input type="checkbox">
+                <span>s de</span>
+                <div class="daan">
+                  <span>正确答案</span>
+                  <span class="iconfont icon-icon-test1"></span>
+                </div>
+              </li>
+              <li class="xuanze">
+                <input type="checkbox">
+                <span>bushi</span>
+              </li>
+              <li class="xuanze">
+                <input type="checkbox">
+                <span>s buhzidao</span>
+              </li>
+            </ul>
+          </li>
+        </ul>
+
+        <button type="submit" class="jiaojuan">交卷</button>
+      </form>
     </div>
   </div>
 </template>
@@ -105,7 +155,10 @@ export default {
   name: "kemu_xiangqing",
   data() {
     return {
-      detail: {}
+      detail: {},
+      comment: [],
+      aboutList: [],
+      istest: false
     };
   },
   mounted() {
@@ -122,6 +175,8 @@ export default {
         this.detail = res.data.detail;
         console.log(res.data);
       });
+    this.getSubjectComment();
+    this.getSubAboutVideo();
   },
   methods: {
     gotoHandout() {
@@ -130,12 +185,41 @@ export default {
         query: { id: this.$route.query.id, index: this.$route.query.index }
       });
     },
+    gotoTest() {
+      this.istest = true;
+    },
     gotoAboutVideo() {
       this.$router.push({
         path: "/relevant",
-        query: { id: this.$route.query.id}
+        query: { id: this.$route.query.id }
       });
-    }
+    },
+    getSubAboutVideo() {
+      this.axios
+        .get("/api/getSubAboutVideo", {
+          params: {
+            id: this.$route.query.id
+          }
+        })
+        .then(res => {
+          this.aboutList = res.data.list;
+        });
+    },
+    getSubjectComment() {
+      this.axios
+        .get("/api/getSubjectComment", {
+          params: {
+            id: this.$route.query.id
+          }
+        })
+        .then(res => {
+          this.comment = res.data.comment.comment;
+          console.log(this.comment);
+        });
+    },
+    gotoComment() {},
+    collect() {},
+    share() {}
   }
 };
 </script>
@@ -158,10 +242,11 @@ export default {
   .miaoshu {
     padding: 0rem 0.2rem;
     font-size: 0.28rem;
+    margin-bottom: 0.2rem;
   }
   .caozuo {
     display: flex;
-    margin: 0.2rem 0;
+    margin: 0rem 0 0.2rem 0;
     .caozuo-xiangqing {
       flex: 1;
       text-align: center;
@@ -255,96 +340,15 @@ export default {
     margin-bottom: 1rem;
     .pinglun-xijie {
       .xijie {
-        display: flex;
+        // display: flex;
         margin-left: 0.2rem;
         border-bottom: 1px solid #ccc;
         font-size: 0;
         padding: 0.2rem 0.2rem 0.2rem 0;
-        img {
-          width: 0.55rem;
-          height: 0.55rem;
-          border-radius: 50%;
-          margin-right: 0.2rem;
-        }
-        .yonghu {
-          flex: 1;
-          .mingzi {
-            font-size: 0.25rem;
-            color: #aaa;
-          }
-          .shijian {
-            font-size: 0.2rem;
-            color: #aaa;
-          }
-          .pinglun {
-            margin-top: 0.1rem;
-            font-size: 0.3rem;
-          }
-          .erjixijie {
-            display: flex;
-            font-size: 0;
-            margin-right: -0.2rem;
-            padding: 0.2rem 0.2rem 0.2rem 0.2rem;
-            background: #eee;
-            img {
-              width: 0.55rem;
-              height: 0.55rem;
-              border-radius: 50%;
-              margin-right: 0.2rem;
-            }
-            .yonghu {
-              flex: 1;
-              .mingzi {
-                font-size: 0.25rem;
-                color: #aaa;
-              }
-              .shijian {
-                font-size: 0.2rem;
-                color: #aaa;
-              }
-              .pinglun {
-                margin-top: 0.1rem;
-                font-size: 0.3rem;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  .pinglun-xijie {
-    .xijie {
-      display: flex;
-      margin-left: 0.2rem;
-      border-bottom: 1px solid #ccc;
-      font-size: 0;
-      padding: 0.2rem 0.2rem 0.2rem 0;
-      img {
-        width: 0.55rem;
-        height: 0.55rem;
-        border-radius: 50%;
-        margin-right: 0.2rem;
-      }
-      .yonghu {
-        flex: 1;
-        .mingzi {
-          font-size: 0.25rem;
-          color: #aaa;
-        }
-        .shijian {
-          font-size: 0.2rem;
-          color: #aaa;
-        }
-        .pinglun {
-          margin-top: 0.1rem;
-          font-size: 0.3rem;
-        }
-        .erjixijie {
+        .pl {
           display: flex;
-          font-size: 0;
-          margin-right: -0.2rem;
-          padding: 0.2rem 0.2rem 0.2rem 0.2rem;
-          background: #eee;
+
+          // padding: 0.2rem 0;
           img {
             width: 0.55rem;
             height: 0.55rem;
@@ -367,6 +371,44 @@ export default {
             }
           }
         }
+        .erjixijie {
+          font-size: 0;
+          margin-top: 0.2rem;
+          margin-left: 0.75rem;
+          margin-right: -0.2rem;
+          background: #eee;
+          .erji {
+            display: flex;
+            padding: 0.2rem 0.2rem 0.2rem 0;
+            margin-left: 0.2rem;
+            border-bottom: 1px solid #aaa;
+            img {
+              width: 0.55rem;
+              height: 0.55rem;
+              border-radius: 50%;
+              margin-right: 0.2rem;
+              // border: 1px solid #ccc;
+            }
+            .yonghu {
+              flex: 1;
+              .mingzi {
+                font-size: 0.25rem;
+                color: #aaa;
+              }
+              .shijian {
+                font-size: 0.2rem;
+                color: #aaa;
+              }
+              .pinglun {
+                margin-top: 0.1rem;
+                font-size: 0.3rem;
+              }
+            }
+          }
+          .erji:last-child {
+            border: 0 none;
+          }
+        }
       }
     }
   }
@@ -387,6 +429,7 @@ export default {
       background: #eee;
       color: #aaa;
       padding: 0.1rem 0.2rem;
+      outline: none;
     }
     .icon {
       position: relative;
@@ -399,6 +442,47 @@ export default {
         z-index: 100;
         font-size: 0.2rem;
         color: #f00;
+      }
+    }
+  }
+  .ceyan {
+    form {
+      overflow: hidden;
+      ul {
+        overflow: hidden;
+        .timu {
+          margin-top: 0.3rem;
+          background: #fff;
+          ul {
+            .wenti {
+              border-bottom: 1px solid #ccc;
+              overflow: hidden;
+              padding: 0.15rem 0.2rem 0.15rem 0.2rem;
+            }
+            .xuanze {
+              border-bottom: 1px solid #ccc;
+              overflow: hidden;
+              padding: 0.15rem 0.2rem 0.15rem 0.2rem;
+              .daan {
+                float: right;
+              }
+            }
+          }
+        }
+      }
+      .jiaojuan {
+        display: block;
+        width: 40%;
+        height: 0.8rem;
+        line-height: 0.8rem;
+        background: #19e889;
+        text-align: center;
+        color: #fff;
+        font-size: 0.28rem;
+        margin: 0.6rem auto;
+        border: none;
+        outline: none;
+        border-radius: 4px;
       }
     }
   }
