@@ -94,34 +94,42 @@
     </div>
 
     <div v-if="istest" class="ceyan">
-      <form style="background: #eee;">
+      <div class="form">
         <ul>
-          <li class="timu">
-            <ul>
-              <li class="wenti">我是可爱额提莫吗</li>
-              <li class="xuanze">
-                <input type="radio">
-                <span>是额是额是额是额是额是额是额是额是额是额是额是额是额是额是额是额是额是额</span>
-                <div class="daan">
-                  <span>正确答案</span>
-                  <span class="iconfont icon-icon-test1"></span>
+          <li class="timu" v-for="(test, index) in test">
+            <ul v-if="test.selectType == 0">
+              <li class="wenti">{{test.question}}</li>
+              <li class="xuanze" v-for="(answer, answerIndex) in test.answer">
+                <input
+                  type="radio"
+                  v-bind:value="answerIndex"
+                  v-model="checkedNames[`ans${index}`]"
+                >
+                <span>{{answer}}</span>
+                <div class="daan" v-for="(trueAnswer, tIndex) in test.trueAnswer">
+                  <span v-show="answerIndex == trueAnswer">正确答案</span>
+                  <span v-show="answerIndex == trueAnswer" class="iconfont icon-icon-test1"></span>
                 </div>
               </li>
-              <li class="xuanze">
-                <input type="radio">
-                <span>不是</span>
-                <div class="daan">
-                  <span>正确答案</span>
-                  <span class="iconfont icon-cha1"></span>
+            </ul>
+
+            <ul v-if="test.selectType == 1">
+              <li class="wenti">{{test.question}}</li>
+              <li class="xuanze" v-for="(answer, answerIndex) in test.answer">
+                <input
+                  type="checkbox"
+                  v-bind:value="answerIndex"
+                  v-model="checkedNames[`ans${index}`]"
+                >
+                <span>{{answer}}</span>
+                <div class="daan" v-for="(trueAnswer, tIndex) in test.trueAnswer">
+                  <span v-show="answerIndex == trueAnswer">正确答案</span>
+                  <span v-show="answerIndex == trueAnswer" class="iconfont icon-icon-test1"></span>
                 </div>
-              </li>
-              <li class="xuanze">
-                <input type="radio">
-                <span>不知道</span>
               </li>
             </ul>
           </li>
-          <li class="timu">
+          <!-- <li class="timu">
             <ul>
               <li class="wenti">shaungxuna</li>
               <li class="xuanze">
@@ -141,16 +149,19 @@
                 <span>s buhzidao</span>
               </li>
             </ul>
-          </li>
+          </li>-->
         </ul>
 
-        <button type="submit" class="jiaojuan">交卷</button>
-      </form>
+        <!-- <button type="submit" class="jiaojuan" @click="seeResult">查看结果</button> -->
+        <button @click.prevent="submitAnswers" type="submit" class="jiaojuan">提交</button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import Vue from "vue";
+
 export default {
   name: "kemu_xiangqing",
   data() {
@@ -158,23 +169,17 @@ export default {
       detail: {},
       comment: [],
       aboutList: [],
-      istest: false
+      istest: false,
+      test: [],
+      checkedNames: {},
+      formAnswer: [],
+      canSubmit: false
     };
   },
   mounted() {
     console.log(this.$route.query.id);
     console.log(this.$route.query.index);
-    this.axios
-      .get("/api/getSubjectDetail", {
-        params: {
-          index: this.$route.query.index,
-          id: this.$route.query.id
-        }
-      })
-      .then(res => {
-        this.detail = res.data.detail;
-        console.log(res.data);
-      });
+    this.getSubjectDetail();
     this.getSubjectComment();
     this.getSubAboutVideo();
   },
@@ -187,12 +192,102 @@ export default {
     },
     gotoTest() {
       this.istest = true;
+      this.axios
+        .get("/api/getTest", {
+          params: {
+            id: this.$route.query.id
+          }
+        })
+        .then(res => {
+          // this.comment = res.data.comment.comment;
+          let test = res.data.test.test;
+
+          for (let i = 0; i < test.length; i++) {
+            // Vue.set(this.test, test[i])
+            this.test = test;
+            console.log(this.test);
+
+            if (test[i].selectType == 0) {
+              Vue.set(this.checkedNames, `ans${i}`, "");
+            } else if (test[i].selectType == 1) {
+              Vue.set(this.checkedNames, `ans${i}`, []);
+            }
+            console.log(this.checkedNames);
+          }
+        });
+    },
+    seeResult() {
+      console.log(this.checkedNames);
+      Object.keys(this.checkedNames).forEach((item, index) => {
+        if (this.checkedNames[item].length <= 0) {
+          return (this.canSubmit = false);
+        } else {
+          this.formAnswer.push(this.checkedNames[item]);
+          return (this.canSubmit = true);
+        }
+      });
+
+      if (!this.canSubmit) {
+        return alert("还有问题没有回答，请回答完毕再查看");
+      }
+
+      console.log(this.formAnswer);
+
+      this.formAnswer.forEach((item, index) => {});
+    },
+    submitAnswers() {
+      this.formAnswer = [];
+      // Object.keys(this.checkedNames).forEach((item, index) => {
+      //   if (this.checkedNames[item].length <= 0) {
+      //     return (this.canSubmit = false);
+      //   } else {
+      //     this.formAnswer.push(this.checkedNames[item]);
+      //     this.canSubmit = true;
+      //   }
+      // });
+
+      // if (!this.canSubmit) {
+      //   return alert("还有问题没有回答，请回答完毕再提交");
+      // }
+
+      let query = {
+        formData: {
+          ans1: ["0"],
+          ans2: ["0", "2"]
+        }
+      };
+      this.$router.push({ path: "/signInSucc", query: query });
+      // this.axios.post("/api/submitTestAnswers", this.formAnswer).then(res => {
+      //   if (res.data.err_code === 500) {
+      //     return alert(res.data.message);
+      //   }
+      //   console.log(res.data);
+
+      //   let query = {
+      //     message: res.data.message,
+      //     getMedicalBeans: res.data.getMedicalBeans
+      //   }
+      //   return this.$router.push({'path':'/signInSucc', query: query})
+      // });
     },
     gotoAboutVideo() {
       this.$router.push({
         path: "/relevant",
         query: { id: this.$route.query.id }
       });
+    },
+    getSubjectDetail() {
+      this.axios
+        .get("/api/getSubjectDetail", {
+          params: {
+            index: this.$route.query.index,
+            id: this.$route.query.id
+          }
+        })
+        .then(res => {
+          this.detail = res.data.detail;
+          console.log(res.data);
+        });
     },
     getSubAboutVideo() {
       this.axios
@@ -220,6 +315,57 @@ export default {
     gotoComment() {},
     collect() {},
     share() {}
+  },
+  watch: {
+    checkedNames: {
+      deep: true,
+      handler: function(newVal, oldVal) {
+        console.log(newVal);
+        // console.log(this.test[0].trueAnswe[0]);
+
+        // for (let i = 0; i < this.test.length; i++) {
+          
+        //   console.log(newVal.ans1);
+        //   console.log(this.test[1].trueAnswer);
+
+        //   console.log(this.test[1].trueAnswer.indexOf("0"));
+        //   console.log(this.test[1].trueAnswer.indexOf(newVal.ans0));
+        //   // if (typeof newVal.ans0 === "number") {
+        //   //   var kk = parseInt(newVal[`ans0`]);
+        //   //   console.log(this.test[1].trueAnswer.indexOf(kk));
+        //   // }
+
+        //   // console.log(this.test[0].trueAnswer.indexOf(parseInt(newVal[`ans${0}`])));
+        // }
+        for (let i = 0; i < this.test.length; i++) {
+          for (let j = 0; j < this.test[i].trueAnswer.length; j++) {
+            // console.log(this.test[i].trueAnswer[j]);
+
+            if (typeof newVal[`ans${i}`] === "number") {
+              // console.log(newVal[`ans${i}`]);
+              // console.log(this.test[i].trueAnswer);
+
+              if (this.test[i].trueAnswer.indexOf(newVal[`ans${i}`]) >= 0) {
+                console.log("答案正确");
+              } else {
+                console.log(newVal[`ans${i}`]);
+              }
+            }
+
+            if (newVal[`ans${i}`] instanceof Array) {
+              for (let k = 0; k < newVal[`ans${i}`].length; k++) {
+                if (newVal[`ans${i}`].length >= 2 && this.test[i].trueAnswer.indexOf(newVal[`ans${i}`][k]) >= 0) {
+                  console.log("答案正确");
+                }
+                else {
+
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
 };
 </script>
@@ -446,8 +592,9 @@ export default {
     }
   }
   .ceyan {
-    form {
+    .form {
       overflow: hidden;
+      background: #eee;
       ul {
         overflow: hidden;
         .timu {

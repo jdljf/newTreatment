@@ -15,6 +15,7 @@ import jiangyi from '../components/kecheng/jiangyi'
 import kemu from '../components/kemu/kemu'
 import kemu_liebiao from '../components/common/kemu_liebiao'
 import kemu_xiangqing from '../components/kemu/kemu_xiangqing'
+import ceyan_jieguo from '../components/kemu/ceyan_jieguo'
 import toutiao from '../components/toutiao/toutiao'
 import xiangguan from '../components/toutiao/xiangguan'
 import shenling from '../components/wode/shenling'
@@ -58,6 +59,7 @@ var routes = [
 		]	
 	},
 	{path: '/subjectDetail', component: kemu_xiangqing},
+	{path: '/testResult', component: ceyan_jieguo},
 	{path: '/headline', component: toutiao},
 	{path: '/relevant', component: xiangguan},
 	{path: '/apply', component: shenling},
