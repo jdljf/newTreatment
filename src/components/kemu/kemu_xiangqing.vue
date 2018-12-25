@@ -2,7 +2,7 @@
   <div class="kemu-xiangqing">
     <div class="shipin">
       <img src="../../assets/kecheng.png" alt>
-      <span class="iconfont icon-houtui icon"></span>
+      <span class="iconfont icon-houtui icon" @click="huitui"></span>
     </div>
 
     <div class="miaoshu">{{detail.describe}}</div>
@@ -97,63 +97,30 @@
       <div class="form">
         <ul>
           <li class="timu" v-for="(test, index) in test">
-            <ul v-if="test.selectType == 0">
+            <ul>
               <li class="wenti">{{test.question}}</li>
               <li class="xuanze" v-for="(answer, answerIndex) in test.answer">
                 <input
-                  type="radio"
-                  v-bind:value="answerIndex"
+                  v-bind:type="test.trueAnswer.length > 1 ? 'checkbox' : 'radio'"
+                  v-bind:value="letter(answerIndex)"
                   v-model="checkedNames[`ans${index}`]"
+                  @change="selectAns(answerIndex, index)"
                 >
-                <span>{{answer}}</span>
-                <div class="daan" v-for="(trueAnswer, tIndex) in test.trueAnswer">
-                  <span v-show="answerIndex == trueAnswer">正确答案</span>
-                  <span v-show="answerIndex == trueAnswer" class="iconfont icon-icon-test1"></span>
-                </div>
-              </li>
-            </ul>
-
-            <ul v-if="test.selectType == 1">
-              <li class="wenti">{{test.question}}</li>
-              <li class="xuanze" v-for="(answer, answerIndex) in test.answer">
-                <input
-                  type="checkbox"
-                  v-bind:value="answerIndex"
-                  v-model="checkedNames[`ans${index}`]"
-                >
-                <span>{{answer}}</span>
-                <div class="daan" v-for="(trueAnswer, tIndex) in test.trueAnswer">
-                  <span v-show="answerIndex == trueAnswer">正确答案</span>
-                  <span v-show="answerIndex == trueAnswer" class="iconfont icon-icon-test1"></span>
+                <span>{{letter(answerIndex)}}.{{answer}}</span>
+                <div class="daan">
+                  <span
+                    v-show="selectWord[`ans${index}`][answerIndex]"
+                  >{{'正确答案' | errorMes(answerIndex, test.trueAnswer)}}</span>
+                  <span
+                    class="iconfont"
+                    v-show="selectIcon[`ans${index}`][answerIndex]"
+                  >{{'&#xe620;' | errorIcon('&#xe61a;', answerIndex, test.trueAnswer)}}</span>
                 </div>
               </li>
             </ul>
           </li>
-          <!-- <li class="timu">
-            <ul>
-              <li class="wenti">shaungxuna</li>
-              <li class="xuanze">
-                <input type="checkbox">
-                <span>s de</span>
-                <div class="daan">
-                  <span>正确答案</span>
-                  <span class="iconfont icon-icon-test1"></span>
-                </div>
-              </li>
-              <li class="xuanze">
-                <input type="checkbox">
-                <span>bushi</span>
-              </li>
-              <li class="xuanze">
-                <input type="checkbox">
-                <span>s buhzidao</span>
-              </li>
-            </ul>
-          </li>-->
         </ul>
-
-        <!-- <button type="submit" class="jiaojuan" @click="seeResult">查看结果</button> -->
-        <button @click.prevent="submitAnswers" type="submit" class="jiaojuan">提交</button>
+        <span class="jiaojuan" @click="submitAnswers">交卷</span>
       </div>
     </div>
   </div>
@@ -172,9 +139,21 @@ export default {
       istest: false,
       test: [],
       checkedNames: {},
-      formAnswer: [],
-      canSubmit: false
+      formAnswer: {},
+      canSubmit: false,
+      selectWord: [],
+      selectIcon: [],
+      formData: [],
+      trueCount: 0,
+      answerRes: [],
+      totalScore: 0,
+      input: []
     };
+  },
+  activated(){
+    this.$setgoindex()
+    console.log('判断');
+    
   },
   mounted() {
     console.log(this.$route.query.id);
@@ -184,6 +163,14 @@ export default {
     this.getSubAboutVideo();
   },
   methods: {
+    huitui(){
+      if (this.$route.query.goindex === 'true') {
+        this.$router.push('/')
+      }
+      else {
+        this.$router.back(-1)
+      }
+    },
     gotoHandout() {
       this.$router.push({
         path: "/handout",
@@ -200,20 +187,36 @@ export default {
         })
         .then(res => {
           // this.comment = res.data.comment.comment;
-          let test = res.data.test.test;
+          let testData = res.data.test.test;
 
-          for (let i = 0; i < test.length; i++) {
-            // Vue.set(this.test, test[i])
-            this.test = test;
-            console.log(this.test);
-
-            if (test[i].selectType == 0) {
-              Vue.set(this.checkedNames, `ans${i}`, "");
-            } else if (test[i].selectType == 1) {
-              Vue.set(this.checkedNames, `ans${i}`, []);
+          for (let i = 0; i < testData.length; i++) {
+            if (typeof testData.trueAnswer === "string") {
+              testData[i].trueAnswer = testData[i].trueAnswer.split(",");
             }
+            testData[i].trueAnswer = testData[i].trueAnswer
+              .map(function(opt, index) {
+                return opt;
+              })
+              .sort();
+
+            Vue.set(this.checkedNames, `ans${i}`, []);
+            Vue.set(this.formAnswer, `ans${i}`, []);
             console.log(this.checkedNames);
+
+            if (testData[i].trueAnswer) {
+              let arr = [];
+              let arr1 = [];
+              for (let j = 0; j < testData[i].answer.length; j++) {
+                arr.push(false);
+                arr1.push(false);
+              }
+              Vue.set(this.selectWord, `ans${i}`, arr);
+              Vue.set(this.selectIcon, `ans${i}`, arr1);
+            }
           }
+
+          this.test = testData;
+          console.log(this.test);
         });
     },
     seeResult() {
@@ -235,40 +238,137 @@ export default {
 
       this.formAnswer.forEach((item, index) => {});
     },
-    submitAnswers() {
-      this.formAnswer = [];
-      // Object.keys(this.checkedNames).forEach((item, index) => {
-      //   if (this.checkedNames[item].length <= 0) {
-      //     return (this.canSubmit = false);
-      //   } else {
-      //     this.formAnswer.push(this.checkedNames[item]);
-      //     this.canSubmit = true;
-      //   }
-      // });
+    selectAns(ansIndex, queIndex) {
+      let i = parseInt(ansIndex);
+      //       console.log(this.checkedNames);
+      // console.log(typeof this.checkedNames);
+      if (!(this.checkedNames[`ans${queIndex}`] instanceof Array)) {
+        // console.log(this.checkedNames[`ans${queIndex}`]);
+        // console.log(typeof this.checkedNames[`ans${queIndex}`]);
 
-      // if (!this.canSubmit) {
-      //   return alert("还有问题没有回答，请回答完毕再提交");
-      // }
+        if (
+          this.checkedNames[`ans${queIndex}`].length ==
+          this.test[queIndex].trueAnswer.length
+        ) {
+          // console.log(this.checkedNames[`ans${queIndex}`]);
+
+          if (
+            this.checkedNames[`ans${queIndex}`]
+              .split(",")
+              .sort()
+              .join(",") == this.test[queIndex].trueAnswer.sort().join(",")
+          ) {
+            console.log("全正确");
+            console.log(this.checkedNames[`ans${queIndex}`]);
+            this.formAnswer[`ans${queIndex}`].push(
+              this.checkedNames[`ans${queIndex}`]
+            );
+            console.log(this.formAnswer);
+            this.selectIcon[`ans${queIndex}`][ansIndex] = true;
+            this.totalScore =
+              this.totalScore + parseInt(this.test[queIndex].fraction);
+            this.trueCount += 1;
+          } else {
+            this.selectWord[`ans${queIndex}`][ansIndex] = true;
+            this.selectIcon[`ans${queIndex}`][ansIndex] = true;
+          }
+        }
+      } else if (this.checkedNames[`ans${queIndex}`] instanceof Array) {
+        if (
+          this.checkedNames[`ans${queIndex}`].length ===
+          this.test[queIndex].trueAnswer.length
+        ) {
+          if (
+            this.checkedNames[`ans${queIndex}`].sort().join(",") ==
+            this.test[queIndex].trueAnswer.sort().join(",")
+          ) {
+            console.log(`quandui`);
+
+            for (let k = 0; k < this.test[queIndex].trueAnswer.length; k++) {
+              let z = this.checkedNames[`ans${queIndex}`][k].charCodeAt() - 65;
+
+              // console.log(z.charCodeAt() - 65)
+              // 如果选的答案和正确答案有相同
+
+              // 各种操作
+              this.selectWord[`ans${queIndex}`][z] = false;
+              this.selectIcon[`ans${queIndex}`][z] = true;
+              console.log(this.selectIcon);
+              this.formAnswer[`ans${queIndex}`] = this.checkedNames[
+                `ans${queIndex}`
+              ];
+            }
+            this.totalScore =
+              this.totalScore + parseInt(this.test[queIndex].fraction);
+            this.trueCount += 1;
+          } else {
+            for (let k = 0; k < this.test[queIndex].trueAnswer.length; k++) {
+              let z = this.checkedNames[`ans${queIndex}`][k].charCodeAt() - 65;
+
+              // console.log(z.charCodeAt() - 65)
+              // 如果选的答案和正确答案有相同
+
+              // 各种操作
+              this.selectWord[`ans${queIndex}`][z] = true;
+              this.selectIcon[`ans${queIndex}`][z] = true;
+              console.log(this.selectIcon);
+              this.formAnswer[`ans${queIndex}`] = this.checkedNames[
+                `ans${queIndex}`
+              ];
+            }
+          }
+        }
+      }
+      console.log(this.formAnswer);
+      console.log(this.trueCount);
+      console.log(this.totalScore);
+    },
+    submitAnswers() {
+      Object.keys(this.formAnswer).forEach((item, index) => {
+        console.log(this.formAnswer[item]);
+
+        if (this.formAnswer[item].length <= 0) {
+          return (this.canSubmit = false);
+        } else {
+          this.canSubmit = true;
+        }
+      });
+
+      if (!this.canSubmit) {
+        return alert("还有问题没有回答，请回答完毕再提交");
+      }
 
       let query = {
-        formData: {
-          ans1: ["0"],
-          ans2: ["0", "2"]
-        }
+        formAnswer: this.formAnswer,
+        trueCount: this.trueCount,
+        answerRes: this.answerRes,
+        totalScore: this.totalScore
       };
-      this.$router.push({ path: "/signInSucc", query: query });
-      // this.axios.post("/api/submitTestAnswers", this.formAnswer).then(res => {
-      //   if (res.data.err_code === 500) {
-      //     return alert(res.data.message);
-      //   }
-      //   console.log(res.data);
+      console.log(query);
+console.log(this.formAnswer);
 
-      //   let query = {
-      //     message: res.data.message,
-      //     getMedicalBeans: res.data.getMedicalBeans
-      //   }
-      //   return this.$router.push({'path':'/signInSucc', query: query})
-      // });
+      // this.$router.push({ path: "/testResult", query: query });
+      this.axios
+        .post("/api/submitTestAnswers", {
+          videoId: this.$route.query.id,
+          formAnswer: this.formAnswer,
+          trueCount: this.trueCount,
+          answerRes: this.answerRes,
+          totalScore: this.totalScore
+        })
+        .then(res => {
+          if (res.data.err_code === 500) {
+            return alert(res.data.message);
+          }
+          console.log(res.data);
+
+          let query = {
+            totalScore: this.totalScore,
+            trueCount: this.trueCount,
+            message: res.data.message
+          };
+          return this.$router.push({ path: "/testResult", query: query });
+        });
     },
     gotoAboutVideo() {
       this.$router.push({
@@ -316,56 +416,77 @@ export default {
     collect() {},
     share() {}
   },
-  watch: {
-    checkedNames: {
-      deep: true,
-      handler: function(newVal, oldVal) {
-        console.log(newVal);
-        // console.log(this.test[0].trueAnswe[0]);
+  filters: {
+    errorMes: function(str, index, trueAnswer) {
+      let i = String.fromCharCode(65 + index);
 
-        // for (let i = 0; i < this.test.length; i++) {
-          
-        //   console.log(newVal.ans1);
-        //   console.log(this.test[1].trueAnswer);
+      if (trueAnswer.indexOf(i) < 0) {
+        return "错误答案";
+      } else {
+        return str;
+      }
+    },
+    errorIcon: function(str, erric, index, trueAnswer) {
+      let i = String.fromCharCode(65 + index);
 
-        //   console.log(this.test[1].trueAnswer.indexOf("0"));
-        //   console.log(this.test[1].trueAnswer.indexOf(newVal.ans0));
-        //   // if (typeof newVal.ans0 === "number") {
-        //   //   var kk = parseInt(newVal[`ans0`]);
-        //   //   console.log(this.test[1].trueAnswer.indexOf(kk));
-        //   // }
-
-        //   // console.log(this.test[0].trueAnswer.indexOf(parseInt(newVal[`ans${0}`])));
-        // }
-        for (let i = 0; i < this.test.length; i++) {
-          for (let j = 0; j < this.test[i].trueAnswer.length; j++) {
-            // console.log(this.test[i].trueAnswer[j]);
-
-            if (typeof newVal[`ans${i}`] === "number") {
-              // console.log(newVal[`ans${i}`]);
-              // console.log(this.test[i].trueAnswer);
-
-              if (this.test[i].trueAnswer.indexOf(newVal[`ans${i}`]) >= 0) {
-                console.log("答案正确");
-              } else {
-                console.log(newVal[`ans${i}`]);
-              }
-            }
-
-            if (newVal[`ans${i}`] instanceof Array) {
-              for (let k = 0; k < newVal[`ans${i}`].length; k++) {
-                if (newVal[`ans${i}`].length >= 2 && this.test[i].trueAnswer.indexOf(newVal[`ans${i}`][k]) >= 0) {
-                  console.log("答案正确");
-                }
-                else {
-
-                }
-              }
-            }
-          }
-        }
+      if (trueAnswer.indexOf(i) < 0) {
+        return erric;
+      } else {
+        return str;
       }
     }
+  },
+  computed: {
+    letter: function() {
+      return function(index) {
+        return String.fromCharCode(65 + index);
+      };
+    }
+  },
+  watch: {
+    // checkedNames: {
+    //   deep: true,
+    //   handler: function(newVal, oldVal) {
+    //     console.log(newVal);
+    //     // console.log(this.test[0].trueAnswe[0]);
+    //     // for (let i = 0; i < this.test.length; i++) {
+    //     //   console.log(newVal.ans1);
+    //     //   console.log(this.test[1].trueAnswer);
+    //     //   console.log(this.test[1].trueAnswer.indexOf("0"));
+    //     //   console.log(this.test[1].trueAnswer.indexOf(newVal.ans0));
+    //     //   // if (typeof newVal.ans0 === "number") {
+    //     //   //   var kk = parseInt(newVal[`ans0`]);
+    //     //   //   console.log(this.test[1].trueAnswer.indexOf(kk));
+    //     //   // }
+    //     //   // console.log(this.test[0].trueAnswer.indexOf(parseInt(newVal[`ans${0}`])));
+    //     // }
+    //     for (let i = 0; i < this.test.length; i++) {
+    //       for (let j = 0; j < this.test[i].trueAnswer.length; j++) {
+    //         // console.log(this.test[i].trueAnswer[j]);
+    //         if (typeof newVal[`ans${i}`] === "number") {
+    //           // console.log(newVal[`ans${i}`]);
+    //           // console.log(this.test[i].trueAnswer);
+    //           if (this.test[i].trueAnswer.indexOf(newVal[`ans${i}`]) >= 0) {
+    //             console.log("答案正确");
+    //           } else {
+    //             console.log(newVal[`ans${i}`]);
+    //           }
+    //         }
+    //         if (newVal[`ans${i}`] instanceof Array) {
+    //           for (let k = 0; k < newVal[`ans${i}`].length; k++) {
+    //             if (
+    //               newVal[`ans${i}`].length >= 2 &&
+    //               this.test[i].trueAnswer.indexOf(newVal[`ans${i}`][k]) >= 0
+    //             ) {
+    //               console.log("答案正确");
+    //             } else {
+    //             }
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
   }
 };
 </script>

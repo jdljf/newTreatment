@@ -1,7 +1,7 @@
 <template>
   <div class="kecheng">
     <div class="toubu">
-      <span class="iconfont icon-houtui icon"></span>
+      <span class="iconfont icon-houtui icon" @click="huitui"></span>
       <p class="biaoti">课程</p>
     </div>
 
@@ -54,6 +54,14 @@ export default {
         
         console.log(this.curriculum)
       });
+    },
+    huitui(){
+      if (this.$route.query.goindex === 'true') {
+        this.$router.push('/')
+      }
+      else {
+        this.$router.back(-1)
+      }
     }
   },
   couputed: {

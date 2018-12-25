@@ -10,14 +10,26 @@
       <div class="swiper-pagination"></div>
       <!-- 如果需要导航按钮 -->
       <!-- <div class="swiper-button-prev"></div>
-      <div class="swiper-button-next"></div> -->
+      <div class="swiper-button-next"></div>-->
     </div>
 
     <div class="gongneng">
-      <div class="gongneng-xiang">课程</div>
-      <div class="gongneng-xiang">我的课堂</div>
-      <div class="gongneng-xiang">头条视讯</div>
-      <div class="gongneng-xiang">调差问卷</div>
+      <router-link to="/curriculum" class="gongneng-xiang">
+        <img src="../../assets/kecheng_logo.png" alt>
+        <div>课程</div>
+      </router-link>
+      <div class="gongneng-xiang">
+        <img src="../../assets/ketang_logo.png" alt>
+        <div>我的课堂</div>
+      </div>
+      <router-link to="/headline" class="gongneng-xiang">
+        <img src="../../assets/toutiao_logo.png" alt>
+        <div>头条视讯</div>
+      </router-link>
+      <router-link to="/questionNaire" class="gongneng-xiang">
+        <img src="../../assets/wenjuan_logo.png" alt>
+        <div>调查问卷</div>
+      </router-link>
     </div>
 
     <div class="tonggao">
@@ -28,15 +40,123 @@
     <div class="kemufenlei">
       <div class="biaoti">科目分类</div>
       <div class="fenlei">
-        <div class="fenlei-xiang">医学人文</div>
-        <div class="fenlei-xiang">医学计算机</div>
-        <div class="fenlei-xiang">西医</div>
+        <div class="fenlei-xiang">
+          <img src="../../assets/renwen_logo.png" alt>
+          <div>医学人文</div>
+        </div>
+        <div class="fenlei-xiang">
+          <img src="../../assets/jisuanji_logo.png" alt>
+          <div>医学计算机</div>
+        </div>
+        <div class="fenlei-xiang">
+          <img src="../../assets/xiyi_logo.png" alt>
+          <div>西医</div>
+        </div>
       </div>
       <div class="fenlei">
-        <div class="fenlei-xiang">中医</div>
-        <div class="fenlei-xiang">公共卫生</div>
-        <div class="fenlei-xiang">临床实践</div>
+        <div class="fenlei-xiang">
+          <img src="../../assets/zhongyi_logo.png" alt>
+          <div>中医</div>
+        </div>
+        <div class="fenlei-xiang">
+          <img src="../../assets/gonggong_logo.png" alt>
+          <div>公共卫生</div>
+        </div>
+        <div class="fenlei-xiang">
+          <img src="../../assets/linchuang_logo.png" alt>
+          <div>临床实践</div>
+        </div>
       </div>
+    </div>
+
+    <div class="xinxiliu">
+      <div class="toubu">
+        <span class="kemu_zhonglei">推荐</span>
+        <span class="kemu_zhonglei">临床案例</span>
+        <span class="kemu_zhonglei">精品课程</span>
+      </div>
+
+      <ul class="liebiao">
+        <li class="liebiao-xiang">
+          <div class="shipin">
+            <img src="../../assets/kecheng.png" alt>
+          </div>
+
+          <div class="miaoshu">dsadsad</div>
+
+          <div class="caozuo">
+            <span class="left">25分钟前</span>
+            <span class="right">
+              <i class="iconfont icon-guankan01"></i>
+              <span>432</span>
+              <i class="iconfont icon-buoumaotubiao48"></i>
+              <span>424</span>
+            </span>
+          </div>
+        </li>
+        <li class="liebiao-xiang">
+          <div class="neirong">
+            <img src="../../assets/kecheng.png" alt class="youtu">
+            <div class="wenzi">长生生物回复深交所问询函：未收到疫苗事件的调查结论和处理措施</div>
+          </div>
+          <div class="caozuo">
+            <span class="left">25分钟前</span>
+            <span class="right">
+              <i class="iconfont icon-guankan01"></i>
+              <span>432</span>
+              <i class="iconfont icon-buoumaotubiao48"></i>
+              <span>424</span>
+            </span>
+          </div>
+        </li>
+        <li class="liebiao-xiang">
+          <div class="neirong">
+            <img src="../../assets/kecheng.png" alt class="youtu">
+            <div class="wenzi">长生生物回复深交所问询函：未收到疫苗事件的调查结论和处理措施</div>
+          </div>
+          <div class="caozuo">
+            <span class="left">25分钟前</span>
+            <span class="right">
+              <i class="iconfont icon-guankan01"></i>
+              <span>432</span>
+              <i class="iconfont icon-buoumaotubiao48"></i>
+              <span>424</span>
+            </span>
+          </div>
+        </li>
+        <li class="liebiao-xiang">
+          <div class="neirong">
+            <img src="../../assets/kecheng.png" alt class="youtu">
+            <div class="wenzi">长生生物回复深交所问询函：未收到疫苗事件的调查结论和处理措施</div>
+          </div>
+          <div class="caozuo">
+            <span class="left">25分钟前</span>
+            <span class="right">
+              <i class="iconfont icon-guankan01"></i>
+              <span>432</span>
+              <i class="iconfont icon-buoumaotubiao48"></i>
+              <span>424</span>
+            </span>
+          </div>
+        </li>
+        <li class="liebiao-xiang">
+          <div class="shipin">
+            <img src="../../assets/kecheng.png" alt>
+          </div>
+
+          <div class="miaoshu">dsadsad</div>
+
+          <div class="caozuo">
+            <span class="left">25分钟前</span>
+            <span class="right">
+              <i class="iconfont icon-guankan01"></i>
+              <span>432</span>
+              <i class="iconfont icon-buoumaotubiao48"></i>
+              <span>424</span>
+            </span>
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -88,15 +208,19 @@ export default {
     height: 2.4rem;
   }
   .gongneng {
-    padding: 1rem 0;
+    padding: 1rem 0.2rem 0.4rem;
     display: flex;
     .gongneng-xiang {
       flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 1.32rem;
-      font-size: 0.1rem;
+      margin: 0.2rem;
+      font-size: 0.22rem;
+      text-align: center;
+      img {
+        display: block;
+        margin: 0 auto 0.15rem auto;
+        width: 0.75rem;
+        height: 0.75rem;
+      }
     }
   }
   .tonggao {
@@ -107,12 +231,12 @@ export default {
     .tonggao-xiang {
       margin: 0 1.4rem 0 0.4rem;
       color: #9cf9cf;
-      font-size: 0.1rem;
+      font-size: 0.2rem;
     }
   }
   .kemufenlei {
     padding: 0.3rem 0 0 0;
-    border-bottom: 3px solid #f1f1f1;
+    border-bottom: 4px solid #f1f1f1;
     .biaoti {
       margin: 0 0 0 0.2rem;
       font-size: 0.3rem;
@@ -120,15 +244,101 @@ export default {
       padding-left: 0.08rem;
       border-left: 3px solid #7ea090;
     }
-    .fenlei{
+    .fenlei {
       display: flex;
-      .fenlei-xiang{
+      .fenlei-xiang {
         flex: 1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 0.2rem;
-        height: 1.8rem;
+        margin: 0.3rem 0.3rem 0.2rem 0.3rem;
+        font-size: 0.22rem;
+        text-align: center;
+        img {
+          display: block;
+          margin: 0 auto 0rem auto;
+          width: 0.9rem;
+          height: 0.9rem;
+        }
+      }
+    }
+  }
+  .xinxiliu {
+    .toubu {
+      height: 0.72rem;
+      line-height: 0.72rem;
+      padding: 0 0.2rem 0 0.4rem;
+      background: #fff;
+      border-bottom: 1px solid #f1f1f1;
+      overflow: auto;
+      font-size: 0.26rem;
+      .kemu_zhonglei {
+        margin-right: 0.4rem;
+      }
+    }
+    .liebiao {
+      .liebiao-xiang {
+        border-bottom: 1px solid #ccc;
+        margin-left: 0.2rem;
+        padding: 0.2rem 0.2rem 0.2rem 0;
+        .shipin {
+          position: relative;
+          margin: 0rem 0rem 0.1rem 0rem;
+          box-sizing: border-box;
+          img {
+            width: 100%;
+          }
+        }
+        .miaoshu {
+          margin-bottom: 0.2rem;
+          font-size: 0.3rem;
+        }
+        .neirong {
+          overflow: hidden;
+          *zoom: 1;
+          .youtu {
+            float: right;
+            width: 2.1rem;
+            height: 1.4rem;
+          }
+          .wenzi {
+            margin-right: 2.2rem;
+            font-size: 0.3rem;
+            height: 1.4rem;
+            line-height: 0.45rem;
+            overflow: hidden;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 3;
+          }
+        }
+        .caozuo {
+          display: flex;
+          align-items: center;
+          height: 0.3rem;
+          padding: 0.2rem 0rem 0rem;
+          color: #333;
+          .left {
+            font-size: 0.23rem;
+            margin-right: 0.2rem;
+            color: #aaa;
+          }
+          .right {
+            flex: 1;
+            text-align: right;
+            i {
+              font-size: 0.3rem;
+              margin-right: 0.09rem;
+              color: #aaa;
+            }
+            span {
+              font-size: 0.23rem;
+              margin-right: 0.2rem;
+            }
+          }
+        }
+      }
+      .liebiao-xiang:last-child {
+        border: 0 none;
       }
     }
   }

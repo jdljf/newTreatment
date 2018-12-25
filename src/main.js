@@ -53,8 +53,16 @@ axios.interceptors.response.use(
     return Promise.reject(error.response.data)
   }
 )
-
-
+// 判断是否有上一页可以回退
+Vue.prototype.$setgoindex = function () {
+  if (window.history.length <= 1) {
+    if (location.href.indexOf('?') === -1) {
+      window.location.href = location.href + '?goindex=true'
+    } else if (location.href.indexOf('?') !== -1 && location.href.indexOf('goindex') === -1) {
+      window.location.href = location.href + '&goindex=true'
+    }
+  }
+}
 
 Vue.use(VueAxios, axios)
 

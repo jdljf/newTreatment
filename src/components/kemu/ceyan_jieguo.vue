@@ -10,12 +10,12 @@
       <div class="touming2"></div>
       <div class="bai">
         <img class="touxiang" src="../../assets/logo.png" alt>
-        <p class="mingzi">恭喜你李存华，通过考核</p>
+        <p class="mingzi">恭喜你{{message}}，通过考核!</p>
         <p class="daqiandao">
-          <span class="fenshu">92</span>
+          <span class="fenshu">{{totalScore}}</span>
           <span class="fen">分</span>
         </p>
-        <p class="tishi">本次考核答错2道题，继续努力</p>
+        <p class="tishi">本次考核答错{{trueCount}}道题，继续努力</p>
         <p class="huode">
           获得
           <span class="yidou">20</span>医豆
@@ -34,7 +34,18 @@
 export default {
   name: "ceyan_chenggong",
   data() {
-    return {};
+    return {
+      totalScore: 0,
+      trueCount: 0,
+      message: ''
+    };
+  },
+  mounted() {
+    console.log(this.$route.query.totalScore);
+    console.log(this.$route.query.trueCount);
+    this.totalScore = this.$route.query.totalScore
+    this.trueCount = this.$route.query.trueCount
+    this.message = this.$route.query.message
   }
 };
 </script>
