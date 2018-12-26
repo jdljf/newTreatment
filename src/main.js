@@ -93,6 +93,10 @@ router.beforeEach((to, from, next) => {
   }
 })
 
+router.afterEach((to, from, next) => {
+  window.scrollTo(0, 0);
+});
+
 // router.beforeEach((to, from, next) => {
 /* 路由发生变化修改页面meta */
 // if(to.meta.content){

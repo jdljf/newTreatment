@@ -71,90 +71,43 @@
 
     <div class="xinxiliu">
       <div class="toubu">
-        <span class="kemu_zhonglei">推荐</span>
-        <span class="kemu_zhonglei">临床案例</span>
-        <span class="kemu_zhonglei">精品课程</span>
+        <span v-for="flowClassify in flowClassify" class="kemu_zhonglei">{{flowClassify.title}}</span>
       </div>
 
       <ul class="liebiao">
-        <li class="liebiao-xiang">
-          <div class="shipin">
-            <img src="../../assets/kecheng.png" alt>
-          </div>
+        <li class="liebiao-xiang" v-for="videos in videos">
+          <div v-if="videos.isVideo">
+            <div class="shipin">
+              <img src="../../assets/kecheng.png" alt>
+            </div>
 
-          <div class="miaoshu">dsadsad</div>
+            <div class="miaoshu">{{videos.title}}</div>
 
-          <div class="caozuo">
-            <span class="left">25分钟前</span>
-            <span class="right">
-              <i class="iconfont icon-guankan01"></i>
-              <span>432</span>
-              <i class="iconfont icon-buoumaotubiao48"></i>
-              <span>424</span>
-            </span>
+            <div class="caozuo">
+              <span class="left">{{videos.durationTime}}分钟前</span>
+              <span class="right">
+                <i class="iconfont icon-guankan01"></i>
+                <span>{{videos.watched}}</span>
+                <i class="iconfont icon-buoumaotubiao48"></i>
+                <span>{{videos.common}}</span>
+              </span>
+            </div>  
           </div>
-        </li>
-        <li class="liebiao-xiang">
-          <div class="neirong">
-            <img src="../../assets/kecheng.png" alt class="youtu">
-            <div class="wenzi">长生生物回复深交所问询函：未收到疫苗事件的调查结论和处理措施</div>
-          </div>
-          <div class="caozuo">
-            <span class="left">25分钟前</span>
-            <span class="right">
-              <i class="iconfont icon-guankan01"></i>
-              <span>432</span>
-              <i class="iconfont icon-buoumaotubiao48"></i>
-              <span>424</span>
-            </span>
-          </div>
-        </li>
-        <li class="liebiao-xiang">
-          <div class="neirong">
-            <img src="../../assets/kecheng.png" alt class="youtu">
-            <div class="wenzi">长生生物回复深交所问询函：未收到疫苗事件的调查结论和处理措施</div>
-          </div>
-          <div class="caozuo">
-            <span class="left">25分钟前</span>
-            <span class="right">
-              <i class="iconfont icon-guankan01"></i>
-              <span>432</span>
-              <i class="iconfont icon-buoumaotubiao48"></i>
-              <span>424</span>
-            </span>
-          </div>
-        </li>
-        <li class="liebiao-xiang">
-          <div class="neirong">
-            <img src="../../assets/kecheng.png" alt class="youtu">
-            <div class="wenzi">长生生物回复深交所问询函：未收到疫苗事件的调查结论和处理措施</div>
-          </div>
-          <div class="caozuo">
-            <span class="left">25分钟前</span>
-            <span class="right">
-              <i class="iconfont icon-guankan01"></i>
-              <span>432</span>
-              <i class="iconfont icon-buoumaotubiao48"></i>
-              <span>424</span>
-            </span>
-          </div>
-        </li>
-        <li class="liebiao-xiang">
-          <div class="shipin">
-            <img src="../../assets/kecheng.png" alt>
-          </div>
-
-          <div class="miaoshu">dsadsad</div>
-
-          <div class="caozuo">
-            <span class="left">25分钟前</span>
-            <span class="right">
-              <i class="iconfont icon-guankan01"></i>
-              <span>432</span>
-              <i class="iconfont icon-buoumaotubiao48"></i>
-              <span>424</span>
-            </span>
-          </div>
+          <router-link to="/consultation" v-if="!videos.isVideo">
+            <div class="neirong">
+              <img src="../../assets/kecheng.png" alt class="youtu">
+              <div class="wenzi">{{videos.title}}</div>
+            </div>
+            <div class="caozuo">
+              <span class="left">{{videos.durationTime}}分钟前</span>
+              <span class="right">
+                <i class="iconfont icon-guankan01"></i>
+                <span>{{videos.watched}}</span>
+                <i class="iconfont icon-buoumaotubiao48"></i>
+                <span>{{videos.common}}</span>
+              </span>
+            </div>  
+          </router-link>
         </li>
       </ul>
     </div>
@@ -167,6 +120,13 @@ import "swiper/dist/css/swiper.min.css";
 
 export default {
   name: "shouye",
+  data(){
+    return{
+      flowClassify: [],
+      subClassify: [],
+      videos: []
+    }
+  },
   mounted() {
     var swiper = new Swiper(".swiper-container", {
       speed: 500,
@@ -189,9 +149,42 @@ export default {
     // swiper.pagination.destroy();
     // swiper.pagination.init()
     // swiper.pagination.bullets.eq(0).addClass('swiper-pagination-bullet-active');
+
+
+    this.getFlowClassify()
+    this.getmessage()
   },
-  data() {
-    return {};
+  methods:{
+    getmessage(){
+      this.axios.get('/api/informationFlow', {
+
+      }).then(res=>{
+        console.log(res.data);
+        this.videos = res.data.videos
+      })
+    },
+    getFlowClassify(id){
+      console.log(id)
+      this.axios.get("/api/getFlowClassify", {
+        params: {
+          id: id
+        }
+      }).then(res => {
+        this.flowClassify = res.data.flowClassify
+      })
+    },
+    getMainSubjectClassify(id){
+      console.log(id)
+      this.axios.get("/api/getMainSubjectClassify", {
+        params: {
+          id: id
+        }
+      }).then(res => {
+        this.subClassify = res.data.subClassify        
+        console.log(this.flowClassify);
+        
+      })
+    },
   }
 };
 </script>

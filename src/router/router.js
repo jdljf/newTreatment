@@ -1,6 +1,7 @@
 import shouye from '../components/xueyuan/shouye.vue'
 import wenjuan from '../components/xueyuan/wenjuan.vue'
 import sousuo from '../components/xueyuan/sousuo.vue'
+import zixun from '../components/xueyuan/zixun.vue'
 import denglu from '../components/denglu/denglu.vue'
 import denglu_tuichu from '../components/denglu/denglu_tuichu.vue'
 import zhuce from '../components/denglu/zhuce.vue'
@@ -42,6 +43,7 @@ var routes = [
 	{path: '/fail', component: shibai},	
 	{path: '/noData', component: wushuju},
 	{path: '/search', component: sousuo},
+	{path: '/consultation', component: zixun},
 	{path: '/signIn', component: qiandao},
 	{path: '/signInSucc', component: qiandaoCG},
 	{path: '/curriculum', component: kecheng},
