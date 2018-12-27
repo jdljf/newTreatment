@@ -68,7 +68,12 @@ export default {
     date: function () {
       
     }
-  }
+  },
+  activated: function(){
+    this.$setgoindex()
+    console.log('判断');
+    
+  },
 };
 </script>
 

@@ -2,29 +2,28 @@
   <div class="xiaoxi">
     <div class="toubu">
       <span class="iconfont icon-houtui icon"></span>
-      <p class="biaoti">我的消息</p>      
+      <p class="biaoti">我的消息</p>
     </div>
-    
+
     <ul class="liebiao">
-      <li class="liebiao-xiang">
+      <li @click="gotoMessageDetail(index)" v-for="(message, index) in message.message" class="liebiao-xiang">
         <i class="tu iconfont icon-ling ling zuo"></i>
         <div class="zhong">
-          <div class="biaoti">系统消息</div>
-          <div class="xiangxi">我是很长很长很长很长很长很长的课程标题</div>
+          <div class="biaoti">{{message_type(message.messageType)}}</div>
+          <div class="xiangxi">{{message.summary}}</div>
         </div>
         <div class="you">
-          <span class="dian"></span>
+          <span class="dian" v-if="!message.watched"></span>
           <i class="iconfont iconfont icon-qianjin qianjin"></i>
         </div>
       </li>
-      <li class="liebiao-xiang">
+      <!-- <li class="liebiao-xiang">
         <i class="tu iconfont icon-ling ling zuo"></i>
         <div class="zhong">
           <div class="biaoti">课程消息</div>
           <div class="xiangxi">我是很长很长很长很长很长很长的课程标题</div>
         </div>
         <div class="you">
-          <!-- <span class="dian"></span> -->
           <i class="iconfont iconfont icon-qianjin qianjin"></i>
         </div>
       </li>
@@ -38,7 +37,7 @@
           <span class="dian"></span>
           <i class="iconfont iconfont icon-qianjin qianjin"></i>
         </div>
-      </li>      
+      </li> -->
     </ul>
   </div>
 </template>
@@ -47,7 +46,36 @@
 export default {
   name: "xiaoxi",
   data() {
-    return {};
+    return {
+      message: {}
+    };
+  },
+  computed:{
+    message_type(){
+      return function (opt) {
+        if (parseInt(opt) === 0) {
+          return '系统消息'
+        }
+        else if (parseInt(opt) === 1) {
+          return '课程消息'
+        }
+      }
+    }
+  },
+  mounted() {
+    this.getMyMessage()
+  },
+  methods: {
+    getMyMessage() {
+      this.axios.get("/api/getMyMessage").then(res => {
+        this.message = res.data.message
+        console.log(res.data);
+        
+      });
+    },
+    gotoMessageDetail(index) {
+      this.$router.push({ path: "/messageDetail", query: { id: this.message._id, index: index} });
+    }
   }
 };
 </script>
@@ -95,8 +123,8 @@ export default {
         margin: 0 0rem 0 0.2rem;
         flex: 1;
         overflow: hidden;
-        .biaoti{
-          height: 0.45rem;     
+        .biaoti {
+          height: 0.45rem;
           font-size: 0.28rem;
           font-weight: 600;
         }

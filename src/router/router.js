@@ -32,50 +32,54 @@ import xindizhi2 from '../components/wode/xindizhi2'
 import dizhi_guanli from '../components/wode/dizhi_guanli'
 
 var routes = [
-	{path: '/', redirect: '/main', name: '新E疗'},
-	{path: '/main', component: shouye, name: '新E疗'},
-	{path: '/questionNaire', component: wenjuan, name: '问卷'},
-	{path: '/login', component: denglu, name: '登录'},
-	{path: '/loginOut', component: denglu_tuichu, name: '退出登录'},
-	{path: '/register', component: zhuce, name: '注册'},
-	{path: '/error', component: chucuo},
-	{path: '/short', component: duankai},
-	{path: '/fail', component: shibai},	
-	{path: '/noData', component: wushuju},
-	{path: '/search', component: sousuo},
-	{path: '/consultation', component: zixun},
-	{path: '/signIn', component: qiandao},
-	{path: '/signInSucc', component: qiandaoCG},
-	{path: '/curriculum', component: kecheng},
-	{path: '/handout', component: jiangyi},
+	{ path: '/', redirect: '/main', name: '新E疗' },
+	{ path: '/main', component: shouye, name: '新E疗' },
+	{ path: '/questionNaire', component: wenjuan, name: '问卷' },
+	{ path: '/login', component: denglu, name: '登录' },
+	{ path: '/loginOut', component: denglu_tuichu, name: '退出登录' },
+	{ path: '/register', component: zhuce, name: '注册' },
+	{ path: '/error', component: chucuo },
+	{ path: '/short', component: duankai },
+	{ path: '/fail', component: shibai },
+	{ path: '/noData', component: wushuju },
+	{ path: '/search', component: sousuo },
+	{ path: '/consultation', component: zixun },
+	{ path: '/signIn', component: qiandao },
+	{ path: '/signInSucc', component: qiandaoCG },
+	{ path: '/curriculum', component: kecheng },
+	{ path: '/handout', component: jiangyi },
 	{
-		path: '/subject', 
+		path: '/subject',
 		component: kemu,
 		children: [
 			{
-			  // 当 /user/:id/profile 匹配成功，
-			  // UserProfile 会被渲染在 User 的 <router-view> 中
-			  path: '/subject/list',
-			  component: kemu_liebiao
+				// 当 /user/:id/profile 匹配成功，
+				// UserProfile 会被渲染在 User 的 <router-view> 中
+				path: '/subject/list',
+				component: kemu_liebiao
 			}
-		]	
+		]
 	},
-	{path: '/subjectDetail', component: kemu_xiangqing},
-	{path: '/testResult', component: ceyan_jieguo},
-	{path: '/headline', component: toutiao},
-	{path: '/relevant', component: xiangguan},
-	{path: '/apply', component: shenling},
-	{path: '/activity', component: huodong},
-	{path: '/message', component: xiaoxi},
-	{path: '/messageDetail', component: xiaoxi_xiangqing},
-	{path: '/about', component: guanyu},
-	{path: '/personalCenter', component: wode},
-	{path: '/systemSetup', component: xitongshezhi},
-	{path: '/changePassword', component: xiugaimima},
-	{path: '/newReceiveAddress', component: xindizhi},
-	{path: '/newReceiveAddress2', component: xindizhi2},
-	{path: '/adminAddress', component: dizhi_guanli},
-	{path: "*", redirect: "/chucuo"}
+	{ path: '/subjectDetail', component: kemu_xiangqing },
+	{ path: '/testResult', component: ceyan_jieguo },
+	{ path: '/headline', component: toutiao },
+	{ path: '/relevant', component: xiangguan },
+	{ path: '/apply', component: shenling },
+	{ path: '/activity', component: huodong },
+	{ path: '/message', component: xiaoxi },
+	{
+		path: '/messageDetail', component: xiaoxi_xiangqing, meta: {
+			keepAlive: false // 不需要被缓存
+		}
+	},
+	{ path: '/about', component: guanyu },
+	{ path: '/personalCenter', component: wode },
+	{ path: '/systemSetup', component: xitongshezhi },
+	{ path: '/changePassword', component: xiugaimima },
+	{ path: '/newReceiveAddress', component: xindizhi },
+	{ path: '/newReceiveAddress2', component: xindizhi2 },
+	{ path: '/adminAddress', component: dizhi_guanli },
+	{ path: "*", redirect: "/chucuo" }
 ];
 
 export default routes;

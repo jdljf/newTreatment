@@ -1,28 +1,31 @@
 <template>
   <div class="jiangyi">
     <div class="toubu">
-      <img src="../../assets/logo.png" alt="" class="zuo">
+      <img src="../../assets/logo.png" alt class="zuo">
       <div class="zhong">
-          <div class="biaoti">{{person.name}}<span class="dianhua">({{person.phoneNumber}})</span></div>
-          <div class="xiangxi">ID:{{person.idNumber}}</div>
+        <div class="biaoti">
+          {{person.name}}
+          <span class="dianhua">({{person.phoneNumber}})</span>
         </div>
-        <div class="you">
-          <i class="iconfont icon-qianjin qianjin"></i>
-        </div>
+        <div class="xiangxi">ID:{{person.idNumber}}</div>
+      </div>
+      <div class="you">
+        <i class="iconfont icon-qianjin qianjin"></i>
+      </div>
     </div>
 
     <div class="gundong">
       <div class="tongji">
         <div class="tongji-xiang">
-          <div class="shuliang">{{person.curriculum}}</div>
+          <div class="shuliang">{{person.curriculum || 0}}</div>
           <div class="mingcheng">我的课程</div>
         </div>
         <div class="tongji-xiang">
-          <div class="shuliang">{{person.learnedTime}}</div>
+          <div class="shuliang">{{person.learnedTime || 0}}</div>
           <div class="mingcheng">我的学时</div>
         </div>
         <div class="tongji-xiang">
-          <div class="shuliang">{{person.medicalBeans}}</div>
+          <div class="shuliang">{{person.medicalBeans || 0}}</div>
           <div class="mingcheng">我的医豆</div>
         </div>
       </div>
@@ -45,8 +48,8 @@
           <router-link to="/message">我的消息</router-link>
         </div>
         <div class="neirong-xiang">
-          <router-link to='/adminAddress'>我的地址</router-link>
-        </div>        
+          <router-link to="/adminAddress">我的地址</router-link>
+        </div>
       </div>
       <div class="neirong">
         <div class="neirong-xiang">
@@ -58,11 +61,11 @@
         <div class="neirong-xiang">
           <router-link to="/loginOut">我的任务</router-link>
         </div>
-      </div>  
-    </div>    
+      </div>
+    </div>
 
     <div class="dibu">
-      <div class="dibu-xiang">
+      <div class="dibu-xiang" @click="gotoMain">
         <div class="iconfont icon-shuben icon"></div>
         <div class="xuanze">学院</div>
       </div>
@@ -89,17 +92,20 @@ export default {
     };
   },
   mounted() {
-    console.log('sdadaw')
-    this.getPersonMessage()
+    console.log("sdadaw");
+    this.getPersonMessage();
   },
   methods: {
     getPersonMessage() {
-      this.axios
-      .get('/api/getPersonMessage')
-      .then((res) => {
-        this.person = res.data
-        console.log(this.person)
-      })
+      this.axios.get("/api/getPersonMessage").then(res => {
+        this.person = res.data;
+        console.log(this.person);
+      });
+    },
+    gotoMain() {
+      this.$router.push({
+        path: "/main"
+      });
     }
   }
 };

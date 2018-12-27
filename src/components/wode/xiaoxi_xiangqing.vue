@@ -2,21 +2,21 @@
   <div class="xiaoxi">
     <div class="toubu">
       <span class="iconfont icon-houtui icon"></span>
-      <p class="biaoti">系统消息详情</p>      
+      <p class="biaoti">系统消息详情</p>
     </div>
-    
+
     <ul class="liebiao">
       <li class="liebiao-xiang">
-        <p class="biaoti">我是标题</p>
-        <p class="xiangxi">大家好，我是消息内容！大家好，我是消息内容！大家好，我是消息内容！大家好，我是消息内容！大家好，我是消息内容！大家好，我是消息内容！大家好，我是消息内容！</p>
-        <p class="shijian">2018.5.12</p> 
+        <p class="biaoti">{{messageDetail.title}}</p>
+        <p class="xiangxi">{{messageDetail.detail}}</p>
+        <p class="shijian">{{messageDetail.createTime}}</p>
       </li>
-      <li class="liebiao-xiang">
+      <li class="liebiao-xiang" v-for="perReply in messageDetail.messageDetail">
         <p class="biaoti wodehuifu">我的回复</p>
-        <p class="xiangxi">大家好，我是消息内容！大家好，我是消息内容！大家好，我是消息内容！大家好，我是消息内容！大家好，我是消息内容！大家好，我是消息内容！大家好，我是消息内容！</p>
-        <p class="shijian">2018.5.12</p> 
+        <p class="xiangxi">{{perReply.detail}}</p>
+        <p class="shijian">{{perReply.createTime}}</p>
       </li>
-    </ul>  
+    </ul>
 
     <div class="huifu">
       <input type="text" class="huifukuang" placeholder="写点什么吧！">
@@ -26,9 +26,33 @@
 
 <script>
 export default {
-  name: "xiaoxi",
+  name: "",
   data() {
-    return {};
+    return {
+      messageDetail: {}
+    };
+  },
+  mounted() {
+    console.log("dasdasdd");
+
+    console.log(this.$route.query);
+
+    this.getMyMessageDetail();
+  },
+  methods: {
+    getMyMessageDetail() {
+      this.axios
+        .get("/api/getMyMessageDetail", {
+          params: {
+            id: this.$route.query.id,
+            index: this.$route.query.index
+          }
+        })
+        .then(res => {
+          this.messageDetail = res.data.message;
+          console.log(this.message);
+        });
+    }
   }
 };
 </script>
