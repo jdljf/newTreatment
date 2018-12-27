@@ -7,127 +7,67 @@
 
     <div class="neirong">
       <img class="tu" src="../../assets/kecheng.png" alt>
-      <!-- <p class="xiangqing" v-for="content in handout">{{content}}</p> -->
+      <p class="xiangqing" v-for="content in handout.content">{{content}}</p>
+      <!-- <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
       <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
       <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
       <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
       <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
       <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
       <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
+      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p> -->
     </div>
 
     <div class="caozuo">
       <span class="left">
         <span class="fabuzhe">发布者:</span>
-        <span class="zuozhe">同心圆</span>
+        <span class="zuozhe">{{detail.publisher}}</span>
       </span>
       <span class="right">
         <i class="iconfont icon-guankan01"></i>
-        <span>342</span>
+        <span>{{detail.watched}}</span>
         <i class="iconfont icon-buoumaotubiao48"></i>
-        <span>313</span>
+        <span>{{detail.comment}}</span>
         <i class="iconfont icon-fenxiang"></i>
-        <span>313</span>
+        <span>{{detail.share}}</span>
       </span>
     </div>
 
     <div class="pinglunqu">评论区</div>
     <div class="pinglunqu-xijie">
-      <div class="pinglun-xijie">
-        <div class="xijie">
-          <div class="pl">
-            <img src="../../assets/logo.png" alt>
-            <div class="yonghu" style="flex: 1;">
-              <div class="mingzi">同心锁</div>
-              <div class="shijian">5小时前</div>
-              <div class="pinglun">大大</div>
-            </div>
-          </div>
-
-          <div class="pl">
-            <img src="../../assets/logo.png" alt>
-            <div class="yonghu" style="flex: 1;">
-              <div class="mingzi">的撒打算</div>
-              <div class="shijian">5小时前</div>
-              <div class="pinglun">大萨达</div>
-            </div>
-          </div>
-
-          <div class="erjixijie">
-            <div class="erji">
+        <div class="pinglun-xijie">
+          <div class="xijie" v-for="comment in comment">
+            <div class="pl" v-if="!comment.replyPerson">
               <img src="../../assets/logo.png" alt>
-              <div class="yonghu">
-                <div class="mingzi">大萨达</div>
+              <div class="yonghu" style="flex: 1;">
+                <div class="mingzi">{{comment.commentName}}</div>
                 <div class="shijian">5小时前</div>
-                <div class="pinglun">的撒打算打算</div>
+                <div class="pinglun">{{comment.content}}</div>
               </div>
             </div>
-          </div>
-        </div>
-        <div class="xijie">
-          <div class="pl">
-            <img src="../../assets/logo.png" alt>
-            <div class="yonghu" style="flex: 1;">
-              <div class="mingzi">同心锁</div>
-              <div class="shijian">5小时前</div>
-              <div class="pinglun">大大</div>
-            </div>
-          </div>
 
-          <div class="pl">
-            <img src="../../assets/logo.png" alt>
-            <div class="yonghu" style="flex: 1;">
-              <div class="mingzi">的撒打算</div>
-              <div class="shijian">5小时前</div>
-              <div class="pinglun">大萨达</div>
-            </div>
-          </div>
-
-          <div class="erjixijie">
-            <div class="erji">
+            <div class="pl" v-if="comment.replyPerson">
               <img src="../../assets/logo.png" alt>
-              <div class="yonghu">
-                <div class="mingzi">大萨达</div>
+              <div class="yonghu" style="flex: 1;">
+                <div class="mingzi">{{comment.commentName}}</div>
                 <div class="shijian">5小时前</div>
-                <div class="pinglun">的撒打算打算</div>
+                <div class="pinglun">{{comment.content}}</div>
               </div>
             </div>
-          </div>
-        </div>
-        <div class="xijie">
-          <div class="pl">
-            <img src="../../assets/logo.png" alt>
-            <div class="yonghu" style="flex: 1;">
-              <div class="mingzi">同心锁</div>
-              <div class="shijian">5小时前</div>
-              <div class="pinglun">大大</div>
-            </div>
-          </div>
 
-          <div class="pl">
-            <img src="../../assets/logo.png" alt>
-            <div class="yonghu" style="flex: 1;">
-              <div class="mingzi">的撒打算</div>
-              <div class="shijian">5小时前</div>
-              <div class="pinglun">大萨达</div>
-            </div>
-          </div>
-
-          <div class="erjixijie">
-            <div class="erji">
-              <img src="../../assets/logo.png" alt>
-              <div class="yonghu">
-                <div class="mingzi">大萨达</div>
-                <div class="shijian">5小时前</div>
-                <div class="pinglun">的撒打算打算</div>
+            <div class="erjixijie" v-if="comment.replyPerson">
+              <div class="erji" v-for="replyPerson in comment.replyPerson">
+                <img src="../../assets/logo.png" alt>
+                <div class="yonghu">
+                  <div class="mingzi">{{replyPerson.replyName}}</div>
+                  <div class="shijian">5小时前</div>
+                  <div class="pinglun">{{replyPerson.content}}</div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
     <div class="qupinlun">
       <input class="xiedian" type="text" placeholder="写点什么吧！">
@@ -142,11 +82,57 @@
 export default {
   name: "zixun",
   data() {
-    return {};
+    return {
+      handout: {},
+      detail: {},
+      comment: []
+    };
+  },
+  mounted(){
+    this.getHandout()
+    this.getSubjectDetail()
+    this.getSubjectComment()
   },
   methods: {
-    show() {
-      this.$refs.input.blur();
+    getHandout() {
+      this.axios
+        .get("/api/getHandout", {
+          params: {
+            id: this.$route.query.id,
+            index: this.$route.query.index
+          }
+        })
+        .then(res => {
+          this.handout = res.data.handout;
+          // console.log(this.handout);
+        });
+    },
+    getSubjectDetail() {
+      console.log(this.$route.query);
+      
+      this.axios
+        .get("/api/getSubjectDetail", {
+          params: {
+            index: this.$route.query.index,
+            id: this.$route.query.id
+          }
+        })
+        .then(res => {
+          this.detail = res.data.detail;
+          console.log(this.detail);
+        });
+    },
+    getSubjectComment() {
+      this.axios
+        .get("/api/getSubjectComment", {
+          params: {
+            id: this.$route.query.id
+          }
+        })
+        .then(res => {
+          this.comment = res.data.comment.comment;
+          console.log(this.comment);
+        });
     }
   }
 };
@@ -239,7 +225,7 @@ export default {
         padding: 0.2rem 0.2rem 0.2rem 0;
         .pl {
           display: flex;
-
+          margin: 0 0 0.2rem 0;
           // padding: 0.2rem 0;
           img {
             width: 0.55rem;
@@ -265,7 +251,7 @@ export default {
         }
         .erjixijie {
           font-size: 0;
-          margin-top: 0.2rem;
+          // margin-top: 0.2rem;
           margin-left: 0.75rem;
           margin-right: -0.2rem;
           background: #eee;

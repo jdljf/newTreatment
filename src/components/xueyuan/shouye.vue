@@ -75,8 +75,8 @@
       </div>
 
       <ul class="liebiao">
-        <li class="liebiao-xiang" v-for="videos in videos">
-          <div v-if="videos.isVideo">
+        <li class="liebiao-xiang" v-for="(videos, index) in videos">
+          <div @click="gotoDetail(index)" v-if="videos.isVideo">
             <div class="shipin">
               <img src="../../assets/kecheng.png" alt>
             </div>
@@ -91,9 +91,9 @@
                 <i class="iconfont icon-buoumaotubiao48"></i>
                 <span>{{videos.common}}</span>
               </span>
-            </div>  
+            </div>
           </div>
-          <router-link to="/consultation" v-if="!videos.isVideo">
+          <div @click="gotoConsultation(index)" v-if="!videos.isVideo">
             <div class="neirong">
               <img src="../../assets/kecheng.png" alt class="youtu">
               <div class="wenzi">{{videos.title}}</div>
@@ -106,10 +106,27 @@
                 <i class="iconfont icon-buoumaotubiao48"></i>
                 <span>{{videos.common}}</span>
               </span>
-            </div>  
-          </router-link>
+            </div>
+          </div>
         </li>
       </ul>
+    </div>
+
+    <div class="dibu">
+      <div class="dibu-xiang yixuan" @click="gotoMain">
+        <div class="iconfont icon-shuben icon"></div>
+        <div class="xuanze">学院</div>
+      </div>
+      <div class="dibu-xiang">
+        <div class="baiyuan">
+          <div class="cha">X</div>
+        </div>
+        <div class="xuanze">挑战</div>
+      </div>
+      <div class="dibu-xiang" @click="gotoPersonCenter">
+        <div class="iconfont icon-home icon"></div>
+        <div class="xuanze">我的</div>
+      </div>
     </div>
   </div>
 </template>
@@ -120,12 +137,12 @@ import "swiper/dist/css/swiper.min.css";
 
 export default {
   name: "shouye",
-  data(){
-    return{
+  data() {
+    return {
       flowClassify: [],
       subClassify: [],
       videos: []
-    }
+    };
   },
   mounted() {
     var swiper = new Swiper(".swiper-container", {
@@ -150,41 +167,72 @@ export default {
     // swiper.pagination.init()
     // swiper.pagination.bullets.eq(0).addClass('swiper-pagination-bullet-active');
 
-
-    this.getFlowClassify()
-    this.getmessage()
+    this.getFlowClassify();
+    this.getmessage();
   },
-  methods:{
-    getmessage(){
-      this.axios.get('/api/informationFlow', {
-
-      }).then(res=>{
+  methods: {
+    getmessage() {
+      this.axios.get("/api/informationFlow", {}).then(res => {
         console.log(res.data);
-        this.videos = res.data.videos
-      })
+        this.videos = res.data.videos;
+      });
     },
-    getFlowClassify(id){
-      console.log(id)
-      this.axios.get("/api/getFlowClassify", {
-        params: {
-          id: id
+    getFlowClassify(id) {
+      console.log(id);
+      this.axios
+        .get("/api/getFlowClassify", {
+          params: {
+            id: id
+          }
+        })
+        .then(res => {
+          this.flowClassify = res.data.flowClassify;
+        });
+    },
+    getMainSubjectClassify(id) {
+      console.log(id);
+      this.axios
+        .get("/api/getMainSubjectClassify", {
+          params: {
+            id: id
+          }
+        })
+        .then(res => {
+          this.subClassify = res.data.subClassify;
+          console.log(this.flowClassify);
+        });
+    },
+    gotoDetail(index) {
+      console.log(this.videos[index]._id);
+
+      this.$router.push({
+        path: "/subjectDetail",
+        query: {
+          // index: index,
+          id: this.videos[index]._id
         }
-      }).then(res => {
-        this.flowClassify = res.data.flowClassify
-      })
+      });
     },
-    getMainSubjectClassify(id){
-      console.log(id)
-      this.axios.get("/api/getMainSubjectClassify", {
-        params: {
-          id: id
+    gotoConsultation(index) {
+      this.$router.push({
+        path: "/consultation",
+        query: {
+          id: this.videos[index]._id
         }
-      }).then(res => {
-        this.subClassify = res.data.subClassify        
-        console.log(this.flowClassify);
-        
+      });
+    },
+    gotoMain(){
+      this.$router.push({
+        path: '/main'
       })
     },
+    gotoPersonCenter(){
+      console.log('个人');
+      
+      this.$router.push({
+        path: '/personalCenter'
+      })
+    }
   }
 };
 </script>
@@ -332,6 +380,65 @@ export default {
       }
       .liebiao-xiang:last-child {
         border: 0 none;
+      }
+    }
+  }
+  .dibu {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 0 0.2rem;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    height: 0.88rem;
+    background: #fff;
+    .dibu-xiang {
+      flex: 1;
+      position: relative;
+      text-align: center;
+      color: #737373;
+      height: 100%;
+      .baiyuan {
+        position: absolute;
+        top: 0.05rem;
+        left: 50%;
+        width: 1rem;
+        height: 1rem;
+        border-radius: 50%;
+        background: #fff;
+        transform: translate(-50%, -50%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .cha {
+          height: 0.8rem;
+          width: 0.8rem;
+          border-radius: 50%;
+          border: 1px solid #737373;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: 0.7rem;
+          color: #737373;
+        }
+      }
+      .icon {
+        font-size: 0.5rem;
+      }
+      .xuanze {
+        font-size: 0.1rem;
+      }
+    }
+    .dibu-xiang.yixuan {
+      color: #19e889;
+    }
+    .dibu-xiang:nth-child(2) {
+      .xuanze {
+        position: absolute;
+        bottom: 0px;
+        width: 100%;
+        text-align: center;
       }
     }
   }

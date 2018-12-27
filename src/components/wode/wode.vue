@@ -38,23 +38,31 @@
       </div>
 
       <div class="neirong">
-        <div class="neirong-xiang">领取</div>
         <div class="neirong-xiang">
-          <router-link to="/loginOut">我的消息</router-link>
+          <router-link to="/apply">领取</router-link>
+        </div>
+        <div class="neirong-xiang">
+          <router-link to="/message">我的消息</router-link>
         </div>
         <div class="neirong-xiang">
           <router-link to='/adminAddress'>我的地址</router-link>
         </div>        
       </div>
       <div class="neirong">
-        <div class="neirong-xiang">关于我们</div>
-        <div class="neirong-xiang">系统设置</div>
-        <div class="neirong-xiang">我的任务</div>
+        <div class="neirong-xiang">
+          <router-link to="/about">关于我们</router-link>
+        </div>
+        <div class="neirong-xiang">
+          <router-link to="/systemSetup">系统设置</router-link>
+        </div>
+        <div class="neirong-xiang">
+          <router-link to="/loginOut">我的任务</router-link>
+        </div>
       </div>  
     </div>    
 
     <div class="dibu">
-      <div class="dibu-xiang yixuan">
+      <div class="dibu-xiang">
         <div class="iconfont icon-shuben icon"></div>
         <div class="xuanze">学院</div>
       </div>
@@ -64,7 +72,7 @@
         </div>
         <div class="xuanze">挑战</div>
       </div>
-      <div class="dibu-xiang">
+      <div class="dibu-xiang yixuan">
         <div class="iconfont icon-home icon"></div>
         <div class="xuanze">我的</div>
       </div>

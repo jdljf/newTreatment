@@ -5,7 +5,7 @@
       <span class="iconfont icon-houtui icon" @click="huitui"></span>
     </div>
 
-    <div class="miaoshu">{{detail.describe}}</div>
+    <div class="miaoshu">{{detail.title}}</div>
 
     <div v-if="!istest">
       <div class="caozuo">
@@ -19,7 +19,7 @@
         </div>
         <div class="caozuo-xiangqing" @click="collect">
           <div class="iconfont icon-wenjianjia tubiao"></div>
-          <div class="shuliang">{{detail.collection}}</div>
+          <div class="shuliang">{{detail.collect}}</div>
         </div>
         <div class="caozuo-xiangqing" @click="share">
           <div class="iconfont icon-fenxiang tubiao"></div>
@@ -377,6 +377,8 @@ console.log(this.formAnswer);
       });
     },
     getSubjectDetail() {
+      console.log(this.$route.query);
+      
       this.axios
         .get("/api/getSubjectDetail", {
           params: {
