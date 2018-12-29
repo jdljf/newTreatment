@@ -74,7 +74,7 @@ export default {
       });
     },
     gotoMessageDetail(index) {
-      this.$router.push({ path: "/messageDetail", query: { id: this.message._id, index: index} });
+      this.$router.push({ path: "/messageDetail", query: { id: this.message._id, index: index, message_type: this.message.message[index].messageType} });
     }
   }
 };

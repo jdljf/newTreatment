@@ -2,7 +2,7 @@
   <div class="xiaoxi">
     <div class="toubu">
       <span class="iconfont icon-houtui icon"></span>
-      <p class="biaoti">系统消息详情</p>
+      <p class="biaoti">{{header}}</p>
     </div>
 
     <ul class="liebiao">
@@ -18,7 +18,7 @@
       </li>
     </ul>
 
-    <div class="huifu">
+    <div class="huifu" v-if="comment">
       <input type="text" class="huifukuang" placeholder="写点什么吧！">
     </div>
   </div>
@@ -29,7 +29,9 @@ export default {
   name: "",
   data() {
     return {
-      messageDetail: {}
+      messageDetail: {},
+      header: "",
+      comment: true
     };
   },
   mounted() {
@@ -38,6 +40,13 @@ export default {
     console.log(this.$route.query);
 
     this.getMyMessageDetail();
+    if (this.$route.query.message_type == 1) {
+      this.header = "课程消息详情";
+      this.comment = false;
+    } else if (this.$route.query.message_type == 0) {
+      this.header = "系统消息详情";
+      this.comment = true;
+    }
   },
   methods: {
     getMyMessageDetail() {

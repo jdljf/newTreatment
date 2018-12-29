@@ -12,7 +12,7 @@
       <!-- <div class="swiper-button-prev"></div>
       <div class="swiper-button-next"></div>-->
     </div>
-
+    
     <div class="gongneng">
       <router-link to="/curriculum" class="gongneng-xiang">
         <img src="../../assets/kecheng_logo.png" alt>
@@ -128,6 +128,8 @@
         <div class="xuanze">我的</div>
       </div>
     </div>
+
+    
   </div>
 </template>
 

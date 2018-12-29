@@ -25,6 +25,9 @@ import xiaoxi from '../components/wode/xiaoxi'
 import xiaoxi_xiangqing from '../components/wode/xiaoxi_xiangqing'
 import guanyu from '../components/wode/guanyu'
 import wode from '../components/wode/wode'
+import geren_xinxi from '../components/wode/geren_xinxi'
+import yanzheng_shenfen from '../components/wode/yanzheng_shenfen'
+import genghuan_shouji from '../components/wode/genghuan_shouji'
 import xitongshezhi from '../components/wode/xitongshezhi'
 import xiugaimima from '../components/wode/xiugaimima'
 import xindizhi from '../components/wode/xindizhi'
@@ -74,6 +77,9 @@ var routes = [
 	},
 	{ path: '/about', component: guanyu },
 	{ path: '/personalCenter', component: wode },
+	{ path: '/personalMessage', component: geren_xinxi },
+	{ path: '/verifyIdentity', component: yanzheng_shenfen },
+	{ path: '/changePhone', component: genghuan_shouji },
 	{ path: '/systemSetup', component: xitongshezhi },
 	{ path: '/changePassword', component: xiugaimima },
 	{ path: '/newReceiveAddress', component: xindizhi },
