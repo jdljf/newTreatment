@@ -7,14 +7,18 @@
 
     <ul class="liebiao">
       <li class="liebiao-xiang">
-        <p class="biaoti">{{messageDetail.title}}</p>
-        <p class="xiangxi">{{messageDetail.detail}}</p>
-        <p class="shijian">{{messageDetail.createTime}}</p>
+        <div class="liebiao-hezi">
+          <p class="biaoti">{{messageDetail.title}}</p>
+          <p class="xiangxi">{{messageDetail.detail}}</p>
+          <p class="shijian">{{messageDetail.createTime}}</p>
+        </div>
       </li>
       <li class="liebiao-xiang" v-for="perReply in messageDetail.messageDetail">
-        <p class="biaoti wodehuifu">我的回复</p>
-        <p class="xiangxi">{{perReply.detail}}</p>
-        <p class="shijian">{{perReply.createTime}}</p>
+        <div class="liebiao-hezi">
+          <p class="biaoti wodehuifu">我的回复</p>
+          <p class="xiangxi">{{perReply.detail}}</p>
+          <p class="shijian">{{perReply.createTime}}</p>
+        </div>
       </li>
     </ul>
 
@@ -90,18 +94,21 @@ export default {
   .liebiao {
     overflow: scroll;
     .liebiao-xiang {
-      padding: 0.4rem 0.2rem;
+      overflow: hidden;
       background: #fff;
-      margin-bottom: 0.2rem;
       font-size: 0.26rem;
-      .biaoti.wodehuifu {
-        color: #70efb1;
-      }
-      .xiangxi {
-        margin: 0.2rem 0 0.4rem 0;
-      }
-      .shijian {
-        font-size: 0.2rem;
+      margin-bottom: 0.2rem;
+      .liebiao-hezi {
+        margin: 0.4rem 0.2rem 0.4rem 0.2rem;
+        .biaoti.wodehuifu {
+          color: #70efb1;
+        }
+        .xiangxi {
+          margin: 0.2rem 0 0.4rem 0;
+        }
+        .shijian {
+          font-size: 0.2rem;
+        }
       }
     }
   }

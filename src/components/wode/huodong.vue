@@ -2,21 +2,21 @@
   <div class="huodong">
     <div class="toubu">
       <span class="iconfont icon-houtui icon"></span>
-      <p class="biaoti">活动详情</p>      
+      <p class="biaoti">活动详情</p>
     </div>
 
     <div class="neirong">
-      <img class="tu" src="../../assets/kecheng.png" alt="">
+      <img class="tu" src="../../assets/kecheng.png" alt>
+      <p v-for="activity in activity" class="xiangqing">{{activity}}</p>
+      <!-- <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
       <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
       <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
       <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
       <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
       <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
       <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
+      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>-->
     </div>
-    
   </div>
 </template>
 
@@ -24,7 +24,27 @@
 export default {
   name: "huodong",
   data() {
-    return {};
+    return {
+      activity: []
+    };
+  },
+  mounted() {
+    console.log(this.$route.query);
+    this.getActivity();
+  },
+  methods: {
+    getActivity() {
+      this.axios
+        .get("/api/getActivity", {
+          params: {
+            id: this.$route.query.id
+          }
+        })
+        .then(res => {
+          console.log(res.data);
+          this.activity = res.data.activity.detail;
+        });
+    }
   }
 };
 </script>
@@ -59,9 +79,9 @@ export default {
       margin-bottom: 0.1rem;
     }
     .xiangqing {
-      font-size: 0.2rem;
+      font-size: 0.24rem;
       line-height: 0.4rem;
-          text-indent: 0.5rem;
+      text-indent: 0.5rem;
     }
   }
 }

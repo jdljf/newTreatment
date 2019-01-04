@@ -9,20 +9,20 @@
       <li class="liebiao">
         <span class="mingcheng">新手机号:</span>
         <div class="shuru">
-          <input type="text" placeholder="请输入新的手机号">
+          <input v-model="newPhoneNumber" type="text" placeholder="请输入新的手机号">
         </div>
       </li>
       <li class="liebiao">
         <span class="mingcheng">验证码:</span>
         <div class="shuru">
-          <input type="text" placeholder="请输入短信验证码">
+          <input v-model="verificationCode" type="text" placeholder="请输入短信验证码">
         </div>
 
         <span class="huoqu">获取验证码</span>
       </li>
     </ul>
 
-    <span class="xiayibu">确定</span>
+    <span class="xiayibu" @click="sureChangePhone">确定</span>
   </div>
 </template>
 
@@ -31,7 +31,10 @@ export default {
   name: "yanzheng_shenfen",
   data() {
     return {
-      perMes: {}
+      perMes: {
+        newPhoneNumber: '',
+        verificationCode: ''
+      }
     };
   },
   mounted() {
@@ -44,8 +47,21 @@ export default {
         console.log(this.perMes);
       });
     },
-    gotoChangePhone() {
-      //   this.$router.push({path: ''})
+    sureChangePhone() {
+      this.axios.post('/api/sureChangePhone', {
+          newPhoneNumber: this.newPhoneNumber,
+          verificationCode: this.verificationCode
+      })
+      .then(res =>{
+        let err_code = res.data.err_code
+        // if (err_code == 1) {
+        //   return alert('请填写验证码')
+        // }
+        // else if (err_code == 2) {
+        //   return alert('请填写手机号')
+        // }
+        alert(res.data.message)
+      })   
     }
   }
 };

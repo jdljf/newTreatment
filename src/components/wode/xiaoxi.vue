@@ -17,27 +17,6 @@
           <i class="iconfont iconfont icon-qianjin qianjin"></i>
         </div>
       </li>
-      <!-- <li class="liebiao-xiang">
-        <i class="tu iconfont icon-ling ling zuo"></i>
-        <div class="zhong">
-          <div class="biaoti">课程消息</div>
-          <div class="xiangxi">我是很长很长很长很长很长很长的课程标题</div>
-        </div>
-        <div class="you">
-          <i class="iconfont iconfont icon-qianjin qianjin"></i>
-        </div>
-      </li>
-      <li class="liebiao-xiang">
-        <i class="tu iconfont icon-ling ling zuo"></i>
-        <div class="zhong">
-          <div class="biaoti">系统消息</div>
-          <div class="xiangxi">我是很长很长很长很长很长很长的课程标题</div>
-        </div>
-        <div class="you">
-          <span class="dian"></span>
-          <i class="iconfont iconfont icon-qianjin qianjin"></i>
-        </div>
-      </li> -->
     </ul>
   </div>
 </template>

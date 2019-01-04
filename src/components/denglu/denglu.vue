@@ -1,11 +1,24 @@
 <template>
   <div class="login">
-    <p>登录</p>
-    <form @submit.prevent="login">
-      <input type="text" name id v-model="person.name" placeholder="请输入用户名">
-      <input type="text" name id v-model="person.password" placeholder="请输入密码">
-      <button type="submit">登录</button>
-    </form>
+    <p class="mimadenglu">密码登录</p>
+    <div class="yaoqiu">
+      <span class="xinxi">手机</span>
+      <div class="shuru">
+        <input type="text" v-model="person.phoneNumber" placeholder="请输入手机号" class="shurukuang">
+      </div>
+    </div>
+    <div class="yaoqiu">
+      <span class="xinxi">密码</span>
+      <div class="shuru">
+        <input type="text" v-model="person.password" placeholder="请输入密码" class="shurukuang">
+      </div>
+    </div>
+
+    <div @click.prevent="login" class="denglu">登录</div>
+    <div class="qita">
+      <span class="wangji">忘记密码</span>
+      <span class="zhuce" @click="gotoRegister">注册登录</span>
+    </div>
   </div>
 </template>
 
@@ -15,19 +28,18 @@ export default {
   data() {
     return {
       person: {
-        name: "",
+        phoneNumber: "",
         password: ""
       }
     };
   },
   methods: {
-    login: function() {
-      console.log("sdadadada");
+    login() {
       console.log(window.localStorage.token);
       this.axios
         .post("/api/login", {
-          name: "aaa",
-          password: "123456"
+          phoneNumber: this.person.phoneNumber,
+          password: this.person.password
         })
         .then(res => {
           if (res.data.err_code === 1) {
@@ -60,6 +72,9 @@ export default {
           //   this.$router.push({path: '/error'})
           // }
         });
+    },
+    gotoRegister() {
+      this.$router.push({ path: "/register" });
     }
   }
 };
@@ -68,6 +83,53 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
 .login {
-  color: red;
+  padding: 1rem 0.7rem 0 0.7rem;
+  .mimadenglu {
+    height: 1rem;
+    font-size: 0.4rem;
+    font-weight: 600;
+  }
+  .yaoqiu {
+    border-bottom: 1px solid #ccc;
+    height: 0.8rem;
+    line-height: 0.8rem;
+    font-size: 0.29rem;
+    display: flex;
+    .xinxi {
+      width: 0.8rem;
+    }
+    .shuru {
+      flex: 1;
+      .shurukuang {
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+        outline: none;
+        border: 0 none;
+        vertical-align: top;
+        font-size: 0.29rem;
+      }
+    }
+  }
+  .denglu {
+    width: 100%;
+    height: 0.76rem;
+    line-height: 0.76rem;
+    text-align: center;
+    color: #fff;
+    background: #19e889;
+    border-radius: 4px;
+    font-size: 0.28rem;
+    margin: 0.6rem 0 0.22rem 0;
+  }
+  .qita {
+    font-size: 0.23rem;
+    .wangji {
+      float: left;
+    }
+    .zhuce {
+      float: right;
+    }
+  }
 }
 </style>

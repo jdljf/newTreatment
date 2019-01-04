@@ -1,6 +1,6 @@
 <template>
   <div class="jiangyi">
-    <div class="toubu">
+    <div class="toubu" @click="gotoPersonalMessage">
       <img src="../../assets/logo.png" alt class="zuo">
       <div class="zhong">
         <div class="biaoti">
@@ -105,6 +105,11 @@ export default {
     gotoMain() {
       this.$router.push({
         path: "/main"
+      });
+    },
+    gotoPersonalMessage(){
+      this.$router.push({
+        path: "/personalMessage"
       });
     }
   }

@@ -5,7 +5,7 @@
       <p class="biaoti">个人信息</p>
     </div>
 
-    <div class="touxiang">
+    <div class="touxiang" @click="changeAvatar">
       <img src="../../assets/logo.png" alt class="zuo">
       <div class="zhong">
         <div class="xiangxi">点击修改头像</div>
@@ -35,6 +35,13 @@
     </div>
 
     <div class="tishi">温馨提示：如果姓名和身份证有误，只能通过平台工作人员修改</div>
+
+    <div class="zezao" v-show="changeAva" @click="changeAva = false">
+      <div class="xiangce">相册</div>
+      <div class="paishe">拍摄</div>
+      <div class="quxiao">取消</div>  
+    </div>
+    
   </div>
 </template>
 
@@ -43,7 +50,8 @@ export default {
   name: "geren_xinxi",
   data() {
     return {
-      perMes: {}
+      perMes: {},
+      changeAva: false
     };
   },
   mounted() {
@@ -59,6 +67,9 @@ export default {
       },
       gotoChangePhone(){
           this.$router.push({path: '/verifyIdentity'})
+      },
+      changeAvatar(){
+        this.changeAva = true
       }
   }
 };
@@ -152,6 +163,37 @@ export default {
       color: #bbb;
       font-size: 0.21rem;
       padding: 0.1rem 0.2rem;
+  }
+  .zezao{
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba($color: #000000, $alpha: 0.5)
+  }
+  .xiangce, .paishe, .quxiao{    
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 5.5rem;
+    height: 0.8rem;
+    line-height: 0.8rem;
+    margin: 0 auto;
+    background: #fff;
+    text-align: center;
+    font-size: 0.29rem;
+    border-radius: 3px;
+  }
+  .quxiao{
+    bottom: 0.5rem;
+    color: #19e889;
+  }
+  .paishe{
+    bottom: 1.5rem;
+  }
+  .xiangce{
+    bottom: 2.33rem;
   }
 }
 </style>

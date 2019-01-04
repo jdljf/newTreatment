@@ -9,6 +9,8 @@ import store from './store/index'//引入store
 import Vuex from 'vuex'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import Mint from 'mint-ui'
+import 'mint-ui/lib/style.css'
 
 Vue.config.productionutTip = false
 
@@ -65,6 +67,7 @@ Vue.prototype.$setgoindex = function () {
 }
 
 Vue.use(VueAxios, axios)
+Vue.use(Mint)
 
 const router = new VueRouter({
   routes

@@ -6,7 +6,7 @@
     </div>
 
     <ul class="liebiao">
-      <li class="liebiao-xiang" v-for="(apply, index) in apply">
+      <li class="liebiao-xiang" v-for="(apply, index) in apply" @click="gotoActivity(apply._id)">
         <img src="../../assets/kecheng.png" alt class="zuo">
         <div class="zhong">
           <div class="kecheng-biaoti">{{apply.title}}</div>
@@ -25,7 +25,13 @@
           </div>
         </div>
         <div class="you">
-          <div :class="{yilingqu: yilingqu}" class="lingqu" @click="showMask(index)">领取</div>
+          <div
+            v-if="apply.reaminCount > 0 && !applyed[index].applyed"
+            class="lingqu"
+            @click="showMask(index)"
+          >领取</div>
+          <div v-if="apply.reaminCount > 0 && applyed[index].applyed" class="lingqu yilingqu">已领取</div>
+          <div v-if="apply.reaminCount <= 0" class="lingqu yilingqu">已结束</div>
         </div>
       </li>
     </ul>
@@ -62,12 +68,13 @@ export default {
   data() {
     return {
       apply: [],
+      applyed: [],
       message: "",
       yilingqu: false,
       xs: false,
       yijiesu: false,
       zezao: false,
-      suoyin: ''
+      suoyin: ""
     };
   },
   mounted() {
@@ -78,19 +85,20 @@ export default {
       this.axios.get("/api/getUserApply").then(res => {
         // console.log(res.data)
         this.apply = res.data.apply;
+        this.applyed = res.data.applyed;
         console.log(this.apply);
       });
     },
-    receive() {
-      this.zezao = false
-      console.log(this.suoyin)
+    receive(index) {
+      this.zezao = false;
+      console.log(this.suoyin);
       this.axios
         .post("/api/receiveApply", {
           id: this.apply[this.suoyin]._id
         })
         .then(res => {
           console.log(this.message);
-          if (res.data.err_code == 200) {
+          if (res.data.err_code == 1) {
             // alert()
             let that = this;
             this.message = res.data.message;
@@ -98,15 +106,28 @@ export default {
             setTimeout(function() {
               that.xs = true;
             }, 20);
+            this.applyed[this.suoyin].applyed = true;
+          }
+          if (res.data.err_code == 2) {
+            let that = this;
+            this.message = res.data.message;
+            this.yilingqu = true;
+            setTimeout(function() {
+              that.xs = true;
+            }, 20);
+            this.apply[this.suoyin].reaminCount = 0
           }
         });
     },
-    hideMask(){
-      this.zezao = false
+    hideMask() {
+      this.zezao = false;
     },
-    showMask(index){
-      this.zezao = true
-      this.suoyin = index
+    showMask(index) {
+      this.zezao = true;
+      this.suoyin = index;
+    },
+    gotoActivity(id){
+      this.$router.push({path: '/Activity', query: {id: id}})
     }
   }
 };

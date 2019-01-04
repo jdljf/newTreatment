@@ -8,12 +8,12 @@
     <ul>
       <li class="liebiao">
         <span class="mingcheng">原手机号:</span>
-        <span class="xinxi">12345678765</span>
+        <span class="xinxi">{{perMes.phoneNumber}}</span>
       </li>
       <li class="liebiao">
         <span class="mingcheng">验证码:</span>
         <div class="shuru">
-          <input type="text" placeholder="请输入短信验证码">
+          <input v-model="verificationCode" type="text" placeholder="请输入短信验证码">
         </div>
 
         <span class="huoqu">获取验证码</span>
@@ -42,7 +42,8 @@ export default {
   name: "yanzheng_shenfen",
   data() {
     return {
-      perMes: {}
+      perMes: {},
+      verificationCode: ''
     };
   },
   mounted() {
@@ -56,7 +57,19 @@ export default {
       });
     },
     gotoChangePhone() {
-        this.$router.push({path: '/changePhone'})
+      this.axios.post('/api/verifyIdentity', {
+          phoneNumber: this.perMes.phoneNumber,
+          verificationCode: this.verificationCode
+      })
+      .then(res =>{
+        let err_code = res.data.err_code
+        if (err_code == 0) {
+          this.$router.push({path: '/changePhone'})
+        }
+        else if (err_code == 1) {
+          alert('请填写验证码')
+        }
+      })        
     }
   }
 };
