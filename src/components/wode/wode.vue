@@ -190,7 +190,7 @@ export default {
           height: 0.65rem;
         }
         .mingcheng {
-          font-size: 0.2rem;
+          font-size: 0.25rem;
           color: #d6d6d6;
         }
       }

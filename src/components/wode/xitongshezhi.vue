@@ -1,26 +1,26 @@
 <template>
   <div class="xiaoxi">
     <div class="toubu">
-      <span class="iconfont icon-houtui icon"></span>
+      <span class="iconfont icon-houtui icon" @click="huitui"></span>
       <p class="biaoti">系统设置</p>
     </div>
 
     <ul class="liebiao">
-      <li class="liebiao-xiang">
-        <router-link to="/changePassword" class="luyou">
+      <li class="liebiao-xiang" @click="gotoChangePassword">
+        <!-- <router-link to="/changePassword" class="luyou"> -->
           <span>修改密码</span>
           <i class="iconfont iconfont icon-qianjin qianjin"></i>
-        </router-link>
+        <!-- </router-link> -->
       </li>
       <li class="liebiao-xiang">
         <span>意见反馈</span>
         <i class="iconfont iconfont icon-qianjin qianjin"></i>
       </li>
-      <li class="liebiao-xiang">
+      <!-- <li class="liebiao-xiang">
         <span>版本信息</span>
         <i class="iconfont iconfont icon-qianjin qianjin"></i>
-      </li>
-      <li class="liebiao-xiang">
+      </li> -->
+      <li class="liebiao-xiang" @click="loginOut">
         <span>退出登录</span>
         <i class="iconfont iconfont icon-qianjin qianjin"></i>
       </li>
@@ -33,6 +33,23 @@ export default {
   name: "xiaoxi",
   data() {
     return {};
+  },
+  methods: {
+    gotoChangePassword(){
+      this.$router.push({path: '/changePassword'})
+    },
+    loginOut(){
+      alert('确定要退出登录吗')
+      // this.$store.dispatch("UserLogin", token);
+      this.$store.dispatch('UserLogout')
+    },
+    huitui() {
+      if (this.$route.query.goindex === "true") {
+        this.$router.push("/");
+      } else {
+        this.$router.back(-1);
+      }
+    }
   }
 };
 </script>

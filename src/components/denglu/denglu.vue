@@ -58,6 +58,8 @@ export default {
             console.log(storage["_id"]);
             console.log(storage["token"]);
             let token = res.data.token;
+            console.log(token);
+            
             this.$store.dispatch("UserLogin", token);
             //如果用户手动输入"/"那么会跳转到这里来，即this.$route.query.redirect有参数
             let redirectUrl = decodeURIComponent(

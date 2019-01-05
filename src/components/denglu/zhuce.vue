@@ -156,8 +156,8 @@ export default {
         idNumber: "",
         password: "",
         province: "",
-        city: "",
         area: "",
+        city: "",
         address: ""
       },
       agree: true,
@@ -200,8 +200,8 @@ export default {
         }
       ],
       myAddressProvince: "",
-      myAddressCity: "",
-      myAddresscounty: ""
+      myAddresscounty: "",
+      myAddressCity: ""
     };
   },
   mounted() {
@@ -212,6 +212,9 @@ export default {
   },
   methods: {
     register() {
+      this.person.province = this.myAddressProvince
+      this.person.area  = this.myAddresscounty
+      this.person.city = this.myAddressCity
       this.axios
         .post("/api/register", {
           person: this.person,
@@ -221,7 +224,9 @@ export default {
         .then(res => {
           console.log(res);
           alert(res.data.message);
-          this.$router.push({ path: "/login" });
+          if (res.data.err_code === 0) {
+            // this.$router.push({ path: "/login" });
+          }
         });
       // .catch(function(res) {
       //   alert("出错了");
@@ -232,9 +237,9 @@ export default {
         //这个判断类似于v-if的效果（可以不加，但是vue会报错，很不爽）
         picker.setSlotValues(1, Object.keys(myaddress[values[0]])); // Object.keys()会返回一个数组，当前省的数组
         picker.setSlotValues(2, myaddress[values[0]][values[1]]); // 区/县数据就是一个数组
-        this.person.province = values[0];
-        this.person.area = values[1];
-        this.person.city = values[2];
+        this.myAddressProvince = values[0];
+        this.myAddresscounty = values[1];
+        this.myAddressCity = values[2];
       }
     },
     changeAvatar() {
@@ -253,7 +258,7 @@ export default {
   },
   computed: {
     area() {
-      return this.person.province + this.person.area + this.person.city;
+      return this.myAddressProvince + this.myAddresscounty + this.myAddressCity;
     }
   },
   watch: {

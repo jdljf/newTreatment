@@ -1,7 +1,7 @@
 <template>
   <div class="yanzheng_shenfen">
     <div class="toubu">
-      <span class="iconfont icon-houtui icon"></span>
+      <span class="iconfont icon-houtui icon" @click="huitui"></span>
       <p class="biaoti">验证身份</p>
     </div>
 
@@ -21,19 +21,6 @@
     </ul>
 
     <span class="xiayibu" @click="gotoChangePhone">下一步</span>
-    <!-- <div class="liebiao">
-      <span class="mingcheng">姓名:</span>
-      <span class="xinxi">{{perMes.name}}</span>
-    </div>
-
-    <div class="liebiao jianju" @click="gotoChangePhone">
-      <span class="mingcheng">手机号</span>
-      <span class="xinxi">{{perMes.phoneNumber}}</span>
-      <div class="you">
-        <span class="genghuan">更换</span>
-        <i class="iconfont icon-qianjin qianjin"></i>
-      </div>
-    </div>-->
   </div>
 </template>
 
@@ -70,6 +57,13 @@ export default {
           alert('请填写验证码')
         }
       })        
+    },
+    huitui() {
+      if (this.$route.query.goindex === "true") {
+        this.$router.push("/");
+      } else {
+        this.$router.back(-1);
+      }
     }
   }
 };

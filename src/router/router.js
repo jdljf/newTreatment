@@ -76,7 +76,11 @@ var routes = [
 		}
 	},
 	{ path: '/about', component: guanyu },
-	{ path: '/personalCenter', component: wode },
+	{
+		path: '/personalCenter', component: wode, meta: {
+			// keepAlive: true
+		}
+	},
 	{ path: '/personalMessage', component: geren_xinxi },
 	{ path: '/verifyIdentity', component: yanzheng_shenfen },
 	{ path: '/changePhone', component: genghuan_shouji },

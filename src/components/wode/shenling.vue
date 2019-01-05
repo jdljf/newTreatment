@@ -155,7 +155,7 @@ export default {
     }
   }
   .liebiao {
-    padding: 0 0 0.15rem 0.2rem;
+    margin: 0 0 0.15rem 0.2rem;
     background: #fff;
     .liebiao-xiang {
       display: flex;

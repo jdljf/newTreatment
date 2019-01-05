@@ -1,7 +1,7 @@
 <template>
   <div class="xiaoxi">
     <div class="toubu">
-      <span class="iconfont icon-houtui icon"></span>
+      <span class="iconfont icon-houtui icon" @click="huitui"></span>
       <p class="biaoti">我的消息</p>
     </div>
 
@@ -54,6 +54,14 @@ export default {
     },
     gotoMessageDetail(index) {
       this.$router.push({ path: "/messageDetail", query: { id: this.message._id, index: index, message_type: this.message.message[index].messageType} });
+    },
+    huitui(){
+      if (this.$route.query.goindex === 'true') {
+        this.$router.push('/')
+      }
+      else {
+        this.$router.back(-1)
+      }
     }
   }
 };

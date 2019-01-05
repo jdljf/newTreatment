@@ -1,7 +1,7 @@
 <template>
   <div class="geren_xinxi">
     <div class="toubu">
-      <span class="iconfont icon-houtui icon"></span>
+      <span class="iconfont icon-houtui icon" @click="huitui"></span>
       <p class="biaoti">个人信息</p>
     </div>
 
@@ -39,9 +39,8 @@
     <div class="zezao" v-show="changeAva" @click="changeAva = false">
       <div class="xiangce">相册</div>
       <div class="paishe">拍摄</div>
-      <div class="quxiao">取消</div>  
+      <div class="quxiao">取消</div>
     </div>
-    
   </div>
 </template>
 
@@ -55,22 +54,28 @@ export default {
     };
   },
   mounted() {
-      this.getChangePerMes()
+    this.getChangePerMes();
   },
   methods: {
-      getChangePerMes(){
-          this.axios.get('/api/getChangePerMes').then(res=>{
-              this.perMes = res.data.perMes
-              console.log(this.perMes);
-              
-          })
-      },
-      gotoChangePhone(){
-          this.$router.push({path: '/verifyIdentity'})
-      },
-      changeAvatar(){
-        this.changeAva = true
+    getChangePerMes() {
+      this.axios.get("/api/getChangePerMes").then(res => {
+        this.perMes = res.data.perMes;
+        console.log(this.perMes);
+      });
+    },
+    gotoChangePhone() {
+      this.$router.push({ path: "/verifyIdentity" });
+    },
+    changeAvatar() {
+      this.changeAva = true;
+    },
+    huitui() {
+      if (this.$route.query.goindex === "true") {
+        this.$router.push("/");
+      } else {
+        this.$router.back(-1);
       }
+    }
   }
 };
 </script>
@@ -145,34 +150,36 @@ export default {
       width: 1.3rem;
     }
     .xinxi {
-        flex: 1;
+      flex: 1;
     }
-    .you{
-        .genghuan{
-            color: #78c0fa;
-        }
-        .qianjin{
-            color: #d5d5d5;
-        }
+    .you {
+      .genghuan {
+        color: #78c0fa;
+      }
+      .qianjin {
+        color: #d5d5d5;
+      }
     }
   }
-  .liebiao.jianju{
-      margin-bottom: 10px;
+  .liebiao.jianju {
+    margin-bottom: 10px;
   }
-  .tishi{
-      color: #bbb;
-      font-size: 0.21rem;
-      padding: 0.1rem 0.2rem;
+  .tishi {
+    color: #bbb;
+    font-size: 0.21rem;
+    padding: 0.1rem 0.2rem;
   }
-  .zezao{
+  .zezao {
     position: fixed;
     left: 0;
     top: 0;
     bottom: 0;
     right: 0;
-    background: rgba($color: #000000, $alpha: 0.5)
+    background: rgba($color: #000000, $alpha: 0.5);
   }
-  .xiangce, .paishe, .quxiao{    
+  .xiangce,
+  .paishe,
+  .quxiao {
     position: absolute;
     left: 0;
     right: 0;
@@ -185,14 +192,14 @@ export default {
     font-size: 0.29rem;
     border-radius: 3px;
   }
-  .quxiao{
+  .quxiao {
     bottom: 0.5rem;
     color: #19e889;
   }
-  .paishe{
+  .paishe {
     bottom: 1.5rem;
   }
-  .xiangce{
+  .xiangce {
     bottom: 2.33rem;
   }
 }

@@ -1,12 +1,12 @@
 <template>
   <div class="jiangyi">
     <div class="toubu">
-      <span class="iconfont icon-houtui icon"></span>
-      <p class="biaoti">关于我们</p>      
+      <span class="iconfont icon-houtui icon" @click="huitui"></span>
+      <p class="biaoti">关于我们</p>
     </div>
 
     <div class="neirong">
-      <img class="tu" src="../../assets/kecheng.png" alt="">
+      <img class="tu" src="../../assets/kecheng.png" alt>
       <p class="xiangqing" v-for="content in content">{{ content }}</p>
     </div>
   </div>
@@ -20,17 +20,24 @@ export default {
       content: []
     };
   },
-  mounted(){
-    this.getAboutUs()
+  mounted() {
+    this.getAboutUs();
   },
-  methods:{
-    getAboutUs(){
-      this.axios.get('/api/getAboutUs').then(res=>{
+  methods: {
+    getAboutUs() {
+      this.axios.get("/api/getAboutUs").then(res => {
         if (res.data.err_code == 200) {
-          this.content = res.data.aboutUs.content
-          console.log(this.about)
+          this.content = res.data.aboutUs.content;
+          console.log(this.about);
         }
-      })
+      });
+    },
+    huitui() {
+      if (this.$route.query.goindex === "true") {
+        this.$router.push("/");
+      } else {
+        this.$router.back(-1);
+      }
     }
   }
 };
@@ -70,7 +77,7 @@ export default {
     .xiangqing {
       font-size: 0.27rem;
       line-height: 0.4rem;
-          text-indent: 0.5rem;
+      text-indent: 0.5rem;
     }
   }
 }

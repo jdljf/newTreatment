@@ -1,7 +1,7 @@
 <template>
   <div class="xiaoxi">
     <div class="toubu">
-      <span class="iconfont icon-houtui icon"></span>
+      <span class="iconfont icon-houtui icon" @click="huitui"></span>
       <p class="biaoti">{{header}}</p>
     </div>
 
@@ -9,14 +9,20 @@
       <li class="liebiao-xiang">
         <div class="liebiao-hezi">
           <p class="biaoti">{{messageDetail.title}}</p>
-          <p class="xiangxi">{{messageDetail.detail}}</p>
-          <p class="shijian">{{messageDetail.createTime}}</p>
+          <div class="neirong">
+            <p class="xiangxi" v-for="detail in messageDetail.detail">{{detail}}</p>
+          </div>
+
+          <p class="shijian">{{messageDetail.create_Time.substring(0, 10)}}</p>
         </div>
       </li>
       <li class="liebiao-xiang" v-for="perReply in messageDetail.messageDetail">
         <div class="liebiao-hezi">
           <p class="biaoti wodehuifu">我的回复</p>
-          <p class="xiangxi">{{perReply.detail}}</p>
+          <div class="neirong">
+            <p class="xiangxi">{{perReply.detail}}</p>
+          </div>
+
           <p class="shijian">{{perReply.createTime}}</p>
         </div>
       </li>
@@ -65,6 +71,14 @@ export default {
           this.messageDetail = res.data.message;
           console.log(this.message);
         });
+    },
+    huitui(){
+      if (this.$route.query.goindex === 'true') {
+        this.$router.push('/')
+      }
+      else {
+        this.$router.back(-1)
+      }
     }
   }
 };
@@ -77,6 +91,7 @@ export default {
   width: 100%;
   height: 100%;
   background: #eee;
+  overflow: scroll;
   .toubu {
     height: 0.72rem;
     line-height: 0.72rem;
@@ -92,22 +107,28 @@ export default {
     }
   }
   .liebiao {
-    overflow: scroll;
+    margin-bottom: 1.5rem;
     .liebiao-xiang {
       overflow: hidden;
       background: #fff;
       font-size: 0.26rem;
-      margin-bottom: 0.2rem;
+      margin: 0 0 0.2rem 0;
       .liebiao-hezi {
+        position: relative;
         margin: 0.4rem 0.2rem 0.4rem 0.2rem;
+
+        .biaoti {
+          margin: 0 0 0.2rem 0;
+        }
         .biaoti.wodehuifu {
           color: #70efb1;
         }
-        .xiangxi {
-          margin: 0.2rem 0 0.4rem 0;
+        .neirong {
+          min-height: 1.6rem;
         }
         .shijian {
-          font-size: 0.2rem;
+          margin: 0.4rem 0 0 0;
+          font-size: 0.24rem;
         }
       }
     }

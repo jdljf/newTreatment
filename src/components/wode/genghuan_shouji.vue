@@ -1,7 +1,7 @@
 <template>
   <div class="yanzheng_shenfen">
     <div class="toubu">
-      <span class="iconfont icon-houtui icon"></span>
+      <span class="iconfont icon-houtui icon" @click="huitui"></span>
       <p class="biaoti">更换手机</p>
     </div>
 
@@ -28,25 +28,16 @@
 
 <script>
 export default {
-  name: "yanzheng_shenfen",
+  name: "genghuan_shouji",
   data() {
     return {
-      perMes: {
         newPhoneNumber: '',
         verificationCode: ''
-      }
     };
   },
   mounted() {
-    this.getChangePerMes();
   },
   methods: {
-    getChangePerMes() {
-      this.axios.get("/api/getChangePerMes").then(res => {
-        this.perMes = res.data.perMes;
-        console.log(this.perMes);
-      });
-    },
     sureChangePhone() {
       this.axios.post('/api/sureChangePhone', {
           newPhoneNumber: this.newPhoneNumber,
@@ -61,7 +52,15 @@ export default {
         //   return alert('请填写手机号')
         // }
         alert(res.data.message)
+        this.$router.push({path: '/personalMessage'})
       })   
+    },
+    huitui() {
+      if (this.$route.query.goindex === "true") {
+        this.$router.push("/");
+      } else {
+        this.$router.back(-1);
+      }
     }
   }
 };
