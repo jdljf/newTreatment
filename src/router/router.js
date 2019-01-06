@@ -4,6 +4,7 @@ import sousuo from '../components/xueyuan/sousuo.vue'
 import zixun from '../components/xueyuan/zixun.vue'
 import denglu from '../components/denglu/denglu.vue'
 import denglu_tuichu from '../components/denglu/denglu_tuichu.vue'
+import wangji_mima from '../components/denglu/wangji_mima.vue'
 import zhuce from '../components/denglu/zhuce.vue'
 import chucuo from '../components/404/chucuo.vue'
 import duankai from '../components/404/duankai.vue'
@@ -40,6 +41,7 @@ var routes = [
 	{ path: '/questionNaire', component: wenjuan, name: '问卷' },
 	{ path: '/login', component: denglu, name: '登录' },
 	{ path: '/loginOut', component: denglu_tuichu, name: '退出登录' },
+	{ path: '/forgetPassword', component: wangji_mima, name: '忘记密码' },
 	{ path: '/register', component: zhuce, name: '注册' },
 	{ path: '/error', component: chucuo },
 	{ path: '/short', component: duankai },

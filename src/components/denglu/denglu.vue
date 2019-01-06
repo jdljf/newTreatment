@@ -16,7 +16,7 @@
 
     <div @click.prevent="login" class="denglu">登录</div>
     <div class="qita">
-      <span class="wangji">忘记密码</span>
+      <span class="wangji" @click="gotoChangeForgetPas">忘记密码</span>
       <span class="zhuce" @click="gotoRegister">注册登录</span>
     </div>
   </div>
@@ -77,7 +77,12 @@ export default {
     },
     gotoRegister() {
       this.$router.push({ path: "/register" });
-    }
+    },
+    gotoChangeForgetPas(){
+      this.$router.push({
+        path: '/forgetPassword'
+      });
+    },
   }
 };
 </script>
