@@ -2,7 +2,7 @@
   <div class="xiaoxi">
     <div class="toubu">
       <span class="iconfont icon-houtui icon" @click="huitui"></span>
-      <p class="biaoti">修改密码</p>
+      <p class="biaoti">忘记密码</p>
     </div>
 
     <div class="tijiao">
@@ -11,29 +11,28 @@
         <div class="shuru">
           <input
             type="text"
-            v-model="changePas.phoneNumber"
+            v-model="forgetPas.phoneNumber"
             placeholder="请输入手机号"
             class="shurukuang"
           >
         </div>
       </div>
       <div class="yaoqiu">
-        <span class="xinxi">旧密码</span>
+        <span class="xinxi">短信</span>
         <div class="shuru">
-          <input
-            type="text"
-            v-model="changePas.oldPassword"
-            placeholder="请输入旧密码"
-            class="shurukuang"
-          >
+          <input type="text" v-model="verificationCode" placeholder="请输入短信验证码" class="shurukuang">
         </div>
+
+        <span class="huoqu">
+          <span class="yanzhengma">获取验证码</span>
+        </span>
       </div>
       <div class="yaoqiu">
-        <span class="xinxi">新密码</span>
+        <span class="xinxi">密码</span>
         <div class="shuru">
           <input
             type="text"
-            v-model="changePas.newPassword"
+            v-model="forgetPas.newPassword"
             placeholder="请输入新密码"
             class="shurukuang"
           >
@@ -44,17 +43,14 @@
         <div class="shuru">
           <input
             type="text"
-            v-model="changePas.repeatPassword"
+            v-model="forgetPas.repeatPassword"
             placeholder="请再次输入密码"
             class="shurukuang"
           >
         </div>
       </div>
 
-      <div @click.prevent="changePassword" class="zhuceAnniu">确认修改</div>
-      <div class="tongyi">
-        <span @click="gotoChangeForgetPas">忘记密码</span>
-      </div>
+      <div @click.prevent="changeForgetPassword" class="zhuceAnniu">确认修改</div>
     </div>
   </div>
 </template>
@@ -64,45 +60,35 @@ export default {
   name: "xiaoxi",
   data() {
     return {
-      changePas: {
+      forgetPas: {
         phoneNumber: "",
-        oldPassword: "",
         newPassword: "",
         repeatPassword: ""
-      }
+      },
+      verificationCode: ""
     };
   },
   mounted() {
-    this.getPersonPhoneNum();
   },
   methods: {
-    getPersonPhoneNum() {
-      this.axios.get("/api/getPersonPhoneNum").then(res => {
-        if (res.data.err_code === 200) {
-          this.changePas.phoneNumber = res.data.phoneNumber;
-        }
-      });
-    },
-    changePassword() {
+    changeForgetPassword() {
       let reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,12}$/;
-      if (this.changePas.oldPassword.replace(/^\s+|\s+$/g, '').length <= 0) {
-        return alert("请输入旧密码");
-      }
+
       if (
-        !reg.test(this.changePas.newPassword) ||
-        !reg.test(this.changePas.repeatPassword)
+        !reg.test(this.forgetPas.newPassword) ||
+        !reg.test(this.forgetPas.repeatPassword)
       ) {
         return alert("密码必须由6-12位数字加字母组成");
       }
-      if (this.changePas.newPassword !== this.changePas.repeatPassword) {
+      if (this.forgetPas.newPassword !== this.forgetPas.repeatPassword) {
         return alert("密码必须相同");
       }
       this.axios
-        .post("/api/changePassword", {
-          phoneNumber: this.changePas.phoneNumber,
-          oldPassword: this.changePas.oldPassword,
-          newPassword: this.changePas.newPassword,
-          repeatPassword: this.changePas.repeatPassword
+        .post("/api/changeForgetPassword", {
+          phoneNumber: this.forgetPas.phoneNumber,
+          newPassword: this.forgetPas.newPassword,
+          repeatPassword: this.forgetPas.repeatPassword,
+          verificationCode: this.verificationCode
         })
         .then(res => {
           alert(res.data.message);
@@ -110,11 +96,6 @@ export default {
             
           }
         });
-    },
-    gotoChangeForgetPas(){
-      this.$router.push({
-        path: '/forgetPassword'
-      });
     },
     huitui() {
       if (this.$route.query.goindex === "true") {
