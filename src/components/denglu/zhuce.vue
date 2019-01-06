@@ -212,9 +212,12 @@ export default {
   },
   methods: {
     register() {
-      this.person.province = this.myAddressProvince
-      this.person.area  = this.myAddresscounty
-      this.person.city = this.myAddressCity
+      if (this.showAdd) {
+        this.person.province = this.myAddressProvince;
+        this.person.area = this.myAddresscounty;
+        this.person.city = this.myAddressCity;
+      }
+
       this.axios
         .post("/api/register", {
           person: this.person,
@@ -358,7 +361,7 @@ export default {
           outline: none;
           border: 0 none;
         }
-        .xiangxi{
+        .xiangxi {
           text-align: right;
         }
       }
