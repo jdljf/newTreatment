@@ -39,7 +39,7 @@ export default {
         })
         .then(res => {
           console.log(res.data);
-          this.addresses = res.data.address;
+          // this.addresses = res.data.address;
         });
     },
     deleteReceiveAddress(){
@@ -63,7 +63,6 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
 .dizhi-guanli {
-  color: red;
   .toubu {
     height: 0.72rem;
     line-height: 0.72rem;
