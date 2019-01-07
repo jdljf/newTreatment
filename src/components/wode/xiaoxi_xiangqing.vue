@@ -13,7 +13,7 @@
             <p class="xiangxi" v-for="detail in messageDetail.detail">{{detail}}</p>
           </div>
 
-          <p class="shijian">{{messageDetail.create_Time.substring(0, 10)}}</p>
+          <p class="shijian" v-if="messageDetail.create_Time!==undefined">{{messageDetail.create_Time.substring(0, 10)}}</p>
         </div>
       </li>
       <li class="liebiao-xiang" v-for="perReply in messageDetail.messageDetail">

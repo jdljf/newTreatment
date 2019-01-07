@@ -1,8 +1,8 @@
 <template>
   <div class="xindizhi">
     <div class="toubu">
-      <span class="iconfont icon-houtui icon"></span>
-      <p class="biaoti">新建收货地址</p>
+      <span class="iconfont icon-houtui icon" @click="huitui"></span>
+      <p class="biaoti">{{title}}</p>
     </div>
     <div class="tijiao">
       <div class="yaoqiu">
@@ -57,7 +57,7 @@
         </div>
       </div>
     </div>
-    <div class="zhuceAnniu" @click="createNewAddress">保存并使用</div>
+    <div class="zhuceAnniu" @click="createNewAddress">{{save}}</div>
 
     <div class="zezaoAdd" v-show="changeAdd" @click="changeAdd = false">
       <div class="xuanze">
@@ -81,7 +81,10 @@ export default {
   name: "xindizhi",
   data() {
     return {
+      title: '',
+      save: '',
       address: {
+        addressId: '',
         receiveName: "",
         province: "",
         city: "",
@@ -131,21 +134,41 @@ export default {
     };
   },
   mounted() {
-    // this.getReceiveAddress();
+    this.getReceiveAddress();
     this.$nextTick(() => {
       //vue里面全部加载好了再执行的函数 （类似于setTimeout）
       this.myAddressSlots[0].defaultIndex = 0; // 这里的值需要和 data里面 defaultIndex 的值不一样才能够初始化 //因为我没有看过源码（我猜测是因为数据没有改变，不会触发更新）
     });
   },
   methods: {
-    // getReceiveAddress() {
-    //   this.axios.get("/api/getReceiveAddress").then(res => {
-    //     var adressData = res.data.address;
-    //     console.log(res.data);
-    //     this.address.receiveName = adressData.receiveName;
-    //     console.log(this.address.receiveName);
-    //   });
-    // },
+    getReceiveAddress() {
+      this.address.addressId = this.$route.query.id
+      console.log(this.$route.query);
+      if (!this.address.addressId || this.address.addressId.length<=0) {
+        this.title = '新建收货地址'
+        this.save = '保存并使用'
+        this.showAdd = false
+      }
+      else {
+        this.title = '收货地址管理'
+        this.save = '保存'
+        this.axios.get("/api/getReceiveAddress", {
+          params: {
+            addressId: this.address.addressId
+          }
+        }).then(res => {
+          console.log(res.data);
+          let address = res.data.address
+          this.address = address;
+          this.showAdd = true
+          this.myAddressProvince = address.province
+          this.myAddresscounty = address.area
+          this.myAddressCity = address.city
+          // console.log(this.address.receiveName);
+        });  
+      }
+      
+    },
     onMyAddressChange(picker, values) {
       if (myaddress[values[0]]) {
         //这个判断类似于v-if的效果（可以不加，但是vue会报错，很不爽）
@@ -157,6 +180,8 @@ export default {
       }
     },
     createNewAddress() {
+      this.address.addressId = this.$route.query.id
+
       if (this.showAdd) {
         this.address.province = this.myAddressProvince;
         this.address.area = this.myAddresscounty;
@@ -165,6 +190,7 @@ export default {
       console.log(this.address);
       this.axios
         .post("/api/saveReceiveAddress", {
+          addressId: this.address.addressId,
           receiveName: this.address.receiveName,
           receivePhone: this.address.receivePhone,
           province: this.address.province,
@@ -174,11 +200,21 @@ export default {
           isDefault: this.address.isDefault
         })
         .then(res => {
-          console.log(res.data);
+          if (res.data.err_code !== 500) {
+            alert(res.data.message)
+            this.$router.push({path: '/adminAddress'})
+          }
         });
     },
     changeAddress() {
       this.changeAdd = true;
+    },
+    huitui() {
+      if (this.$route.query.goindex === "true") {
+        this.$router.push("/");
+      } else {
+        this.$router.back(-1);
+      }
     }
   },
   computed: {
