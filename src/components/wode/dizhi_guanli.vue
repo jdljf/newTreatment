@@ -2,7 +2,8 @@
   <div class="dizhi-guanli">
     <div class="toubu">
       <span class="iconfont icon-houtui icon" @click="huitui"></span>
-      <router-link style="float: right;font-size: 0.5rem;" to="/newReceiveAddress">+</router-link>
+      <!-- <router-link to="/newReceiveAddress">+</router-link> -->
+      <span @click="gotoReceiveAddress" class="add">+</span>
       <p class="biaoti">收货地址管理</p>
     </div>
     <ul class="dizhi">
@@ -53,10 +54,6 @@ export default {
     getReceiveAddresses() {
       this.axios
         .post("/api/getRecAddresses", {
-          //   params: {
-          //     person_id: "5c0c7716a6caac1440278678"
-          //     // address_id: ''
-          //   }
         })
         .then(res => {
           console.log(res.data);
@@ -73,6 +70,11 @@ export default {
         query: {
           id: id
         }
+      });
+    },
+    gotoReceiveAddress(){
+      this.$router.push({
+        path: "/newReceiveAddress"
       });
     },
     deleteReceiveAddress(id) {
@@ -146,6 +148,10 @@ export default {
     .biaoti {
       text-align: center;
       margin: 0 1rem;
+    }
+    .add{
+       float: right;
+       font-size: 0.5rem;
     }
   }
   .dizhi {

@@ -3,11 +3,13 @@
     <div class="toubu" @click="gotoPersonalMessage">
       <img src="../../assets/logo.png" alt class="zuo">
       <div class="zhong">
-        <div class="biaoti">
+        <div v-if="!notLogin" class="biaoti">
           {{person.name}}
           <span class="dianhua">({{person.phoneNumber}})</span>
         </div>
-        <div class="xiangxi">ID:{{person.idNumber}}</div>
+        <div v-if="notLogin" class="biaoti">未登录</div>
+        <div v-if="!notLogin" class="xiangxi">ID:{{person.idNumber}}</div>
+        <div v-if="notLogin" class="xiangxi">点击登录后获取更多权限</div>
       </div>
       <div class="you">
         <i class="iconfont icon-qianjin qianjin"></i>
@@ -88,12 +90,20 @@ export default {
   name: "jiangyi",
   data() {
     return {
-      person: {}
+      person: {},
+      notLogin: true
     };
   },
   mounted() {
-    console.log("sdadaw");
-    this.getPersonMessage();
+    if (!window.localStorage) {
+    }
+    let storage = window.localStorage;
+    if (storage["token"] === "") {
+      this.notLogin = true;
+    } else {
+      this.notLogin = false;
+      this.getPersonMessage();
+    }
   },
   methods: {
     getPersonMessage() {
@@ -107,10 +117,16 @@ export default {
         path: "/main"
       });
     },
-    gotoPersonalMessage(){
-      this.$router.push({
-        path: "/personalMessage"
-      });
+    gotoPersonalMessage() {
+      if (this.notLogin) {
+        this.$router.push({
+          path: "/Login"
+        });
+      } else {
+        this.$router.push({
+          path: "/personalMessage"
+        });
+      }
     }
   }
 };

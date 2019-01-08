@@ -1,7 +1,7 @@
 <template>
   <div class="shenling">
     <div class="toubu">
-      <span class="iconfont icon-houtui icon"></span>
+      <span class="iconfont icon-houtui icon" @click="huitui"></span>
       <p class="biaoti">申领</p>
     </div>
 
@@ -128,6 +128,13 @@ export default {
     },
     gotoActivity(id){
       this.$router.push({path: '/Activity', query: {id: id}})
+    },
+    huitui() {
+      if (this.$route.query.goindex === "true") {
+        this.$router.push("/");
+      } else {
+        this.$router.push({ path: "/personalCenter" });
+      }
     }
   }
 };
