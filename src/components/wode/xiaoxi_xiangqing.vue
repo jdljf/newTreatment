@@ -26,7 +26,7 @@
             <p class="xiangxi">{{perReply.detail}}</p>
           </div>
 
-          <p class="shijian">{{perReply.createTime}}</p>
+          <p class="shijian" v-if="perReply.create_Time!==undefined">{{perReply.create_Time.substring(0, 10)}}</p>
         </div>
       </li>
     </ul>
@@ -86,7 +86,7 @@ export default {
         .post("/api/sureAddComment", {
           commentId: this.$route.query.messageId,
           personComment: this.personComment,
-          create_Time: new Date().toLocaleDateString()
+          create_Time: new Date().toLocaleString()
         })
         .then(res => {
           if (res.data.err_code === 200) {
