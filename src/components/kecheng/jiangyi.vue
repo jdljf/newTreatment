@@ -6,16 +6,8 @@
     </div>
 
     <div class="neirong">
-      <img class="tu" src="../../assets/kecheng.png" alt>
-      <p class="xiangqing" v-for="content in handout">{{content}}</p>
-      <!-- <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>-->
+      <img class="tu" v-bind:src=" '/api' + handout.img " alt>
+      <p class="xiangqing" v-for="content in handout.content">{{content}}</p>
     </div>
 
     <div class="xiazai">
@@ -29,13 +21,11 @@ export default {
   name: "jiangyi",
   data() {
     return {
-      handout: []
+      handout: {}
     };
   },
   mounted() {
-    console.log(this.$route.query);
     this.getHandout();
-    // this.getSubject();
   },
   methods: {
     getHandout() {
@@ -43,12 +33,11 @@ export default {
         .get("/api/getHandout", {
           params: {
             id: this.$route.query.id,
-            index: this.$route.query.index
+            // index: this.$route.query.index
           }
         })
-        .then(res => {
-          this.handout = res.data.handout.content;
-          console.log(this.handout);
+        .then(res => {        
+          this.handout = res.data.handout;
         });
     }
   }
