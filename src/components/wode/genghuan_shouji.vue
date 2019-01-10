@@ -31,29 +31,32 @@ export default {
   name: "genghuan_shouji",
   data() {
     return {
-        newPhoneNumber: '',
-        verificationCode: ''
+      newPhoneNumber: "",
+      verificationCode: ""
     };
   },
-  mounted() {
-  },
+  mounted() {},
   methods: {
     sureChangePhone() {
-      this.axios.post('/api/sureChangePhone', {
+      this.axios
+        .post("/api/sureChangePhone", {
           newPhoneNumber: this.newPhoneNumber,
           verificationCode: this.verificationCode
-      })
-      .then(res =>{
-        let err_code = res.data.err_code
-        // if (err_code == 1) {
-        //   return alert('请填写验证码')
-        // }
-        // else if (err_code == 2) {
-        //   return alert('请填写手机号')
-        // }
-        alert(res.data.message)
-        this.$router.push({path: '/personalMessage'})
-      })   
+        })
+        .then(res => {
+          let err_code = res.data.err_code;
+          // if (err_code == 1) {
+          //   return alert('请填写验证码')
+          // }
+          // else if (err_code == 2) {
+          //   return alert('请填写手机号')
+          // }
+          this.$messagebox.alert(res.data.message).then(() => {
+            if (err_code === 200) {
+              this.$router.push({ path: "/personalMessage" });  
+            }            
+          });
+        });
     },
     huitui() {
       if (this.$route.query.goindex === "true") {

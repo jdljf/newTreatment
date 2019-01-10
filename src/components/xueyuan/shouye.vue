@@ -2,9 +2,12 @@
   <div class="shouye">
     <div class="swiper-container">
       <div class="swiper-wrapper">
-        <div class="swiper-slide">Slide 1</div>
+        <div v-for="banner in banner" class="swiper-slide">
+          <img v-bind:src=" '/api' + banner " alt>
+        </div>
+        <!-- <div class="swiper-slide">Slide 1</div>
         <div class="swiper-slide">Slide 2</div>
-        <div class="swiper-slide">Slide 3</div>
+        <div class="swiper-slide"></div>-->
       </div>
       <!-- 如果需要分页器 -->
       <div class="swiper-pagination"></div>
@@ -12,7 +15,7 @@
       <!-- <div class="swiper-button-prev"></div>
       <div class="swiper-button-next"></div>-->
     </div>
-    
+
     <div class="gongneng">
       <router-link to="/curriculum" class="gongneng-xiang">
         <img src="../../assets/kecheng_logo.png" alt>
@@ -128,8 +131,6 @@
         <div class="xuanze">我的</div>
       </div>
     </div>
-
-    
   </div>
 </template>
 
@@ -143,36 +144,47 @@ export default {
     return {
       flowClassify: [],
       subClassify: [],
-      videos: []
+      videos: [],
+      banner: []
     };
   },
   mounted() {
-    var swiper = new Swiper(".swiper-container", {
-      speed: 500,
-      autoplay: 2000,
-      autoplayDisableOnInteraction: false,
-      loop: true,
-      // 如果需要分页器
-      pagination: ".swiper-pagination",
-      preventClicks: false,
-      paginationClickable: true, // 此参数设置为true时，点击分页器的指示点分页器会控制Swiper切换。
-      preventClicksPropagation: false // 阻止click冒泡
-      // 如果需要前进后退按钮
-      // nextButton: '.swiper-button-next',
-      // prevButton: '.swiper-button-prev',
-    });
-
-    // swiper.params.pagination.clickable = true;
-    console.log(swiper);
-    //此外还需要重新初始化pagination
-    // swiper.pagination.destroy();
-    // swiper.pagination.init()
-    // swiper.pagination.bullets.eq(0).addClass('swiper-pagination-bullet-active');
-
+    this.getBanner();
     this.getFlowClassify();
     this.getmessage();
   },
   methods: {
+    initSwiper() {
+      var swiper = new Swiper(".swiper-container", {
+        speed: 500,
+        autoplay: 2000,
+        autoplayDisableOnInteraction: false,
+        loop: true,
+        // 如果需要分页器
+        pagination: ".swiper-pagination",
+        preventClicks: false,
+        paginationClickable: true, // 此参数设置为true时，点击分页器的指示点分页器会控制Swiper切换。
+        preventClicksPropagation: false // 阻止click冒泡
+        // 如果需要前进后退按钮
+        // nextButton: '.swiper-button-next',
+        // prevButton: '.swiper-button-prev',
+      });
+
+      // swiper.params.pagination.clickable = true;
+      //此外还需要重新初始化pagination
+      // swiper.pagination.destroy();
+      // swiper.pagination.init()
+      // swiper.pagination.bullets.eq(0).addClass('swiper-pagination-bullet-active');
+    },
+    getBanner() {
+      this.axios.get("/api/getBanner").then(res => {        
+        this.banner = res.data.banner;
+
+        this.$nextTick(function() {
+          this.initSwiper()
+        });
+      });
+    },
     getmessage() {
       this.axios.get("/api/informationFlow", {}).then(res => {
         console.log(res.data);
@@ -223,17 +235,17 @@ export default {
         }
       });
     },
-    gotoMain(){
+    gotoMain() {
       this.$router.push({
-        path: '/main'
-      })
+        path: "/main"
+      });
     },
-    gotoPersonCenter(){
-      console.log('个人');
-      
+    gotoPersonCenter() {
+      console.log("个人");
+
       this.$router.push({
-        path: '/personalCenter'
-      })
+        path: "/personalCenter"
+      });
     }
   }
 };
@@ -249,6 +261,12 @@ export default {
   .swiper-container {
     width: 100%;
     height: 2.4rem;
+    .swiper-slide {
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
   }
   .gongneng {
     padding: 1rem 0.2rem 0.4rem;

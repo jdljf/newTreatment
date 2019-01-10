@@ -201,8 +201,9 @@ export default {
         })
         .then(res => {
           if (res.data.err_code !== 500) {
-            alert(res.data.message)
-            this.$router.push({path: '/adminAddress'})
+            this.$messagebox.alert(res.data.message).then(()=>{
+              this.$router.push({path: '/adminAddress'})
+            })
           }
         });
     },

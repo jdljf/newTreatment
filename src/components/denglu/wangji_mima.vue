@@ -68,20 +68,28 @@ export default {
       verificationCode: ""
     };
   },
-  mounted() {
-  },
+  mounted() {},
   methods: {
     changeForgetPassword() {
       let reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,12}$/;
 
+      if (this.forgetPas.phoneNumber.replace(/^\s+|\s+$/g, "").length <= 0) {
+        return this.$messagebox.alert("请输入手机号");
+      } else if (!/^1[34578]\d{9}$/.test(this.forgetPas.phoneNumber)) {
+        return this.$messagebox.alert("请输入正确手机号");
+      }
+      
+      if (this.verificationCode.replace(/^\s+|\s+$/g, "").length <= 0) {
+        return this.$messagebox.alert("请输入验证码");
+      }
       if (
         !reg.test(this.forgetPas.newPassword) ||
         !reg.test(this.forgetPas.repeatPassword)
       ) {
-        return alert("密码必须由6-12位数字加字母组成");
+        return this.$messagebox.alert("密码必须由6-12位数字加字母组成");
       }
       if (this.forgetPas.newPassword !== this.forgetPas.repeatPassword) {
-        return alert("密码必须相同");
+        return this.$messagebox.alert("密码必须相同");
       }
       this.axios
         .post("/api/changeForgetPassword", {
@@ -91,10 +99,7 @@ export default {
           verificationCode: this.verificationCode
         })
         .then(res => {
-          alert(res.data.message);
-          if (res.data.err_code === 200) {
-            
-          }
+          this.$messagebox.alert(res.data.message);
         });
     },
     huitui() {

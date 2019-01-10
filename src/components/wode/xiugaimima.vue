@@ -85,17 +85,17 @@ export default {
     },
     changePassword() {
       let reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,12}$/;
-      if (this.changePas.oldPassword.replace(/^\s+|\s+$/g, '').length <= 0) {
-        return alert("请输入旧密码");
+      if (this.changePas.oldPassword.replace(/^\s+|\s+$/g, "").length <= 0) {
+        return this.$messagebox.alert("请输入旧密码");
       }
       if (
         !reg.test(this.changePas.newPassword) ||
         !reg.test(this.changePas.repeatPassword)
       ) {
-        return alert("密码必须由6-12位数字加字母组成");
+        return this.$messagebox.alert("密码必须由6-12位数字加字母组成");
       }
       if (this.changePas.newPassword !== this.changePas.repeatPassword) {
-        return alert("密码必须相同");
+        return this.$messagebox.alert("密码必须相同");
       }
       this.axios
         .post("/api/changePassword", {
@@ -105,15 +105,16 @@ export default {
           repeatPassword: this.changePas.repeatPassword
         })
         .then(res => {
-          alert(res.data.message);
-          if (res.data.err_code === 200) {
-            
-          }
+          this.$messagebox.alert(res.data.message).then(() => {
+            if (res.data.err_code === 200) {
+              this.$router.push({ path: "/personalCenter" });
+            }
+          });
         });
     },
-    gotoChangeForgetPas(){
+    gotoChangeForgetPas() {
       this.$router.push({
-        path: '/forgetPassword'
+        path: "/forgetPassword"
       });
     },
     huitui() {

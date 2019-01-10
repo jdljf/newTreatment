@@ -53,7 +53,7 @@ export default {
       });
     },
     gotoMessageDetail(index) {
-      this.$router.push({ path: "/messageDetail", query: { id: this.message._id, index: index, message_type: this.message.message[index].messageType} });
+      this.$router.push({ path: "/messageDetail", query: { messageId: this.message.message[index]._id, message_type: this.message.message[index].messageType} });
     },
     huitui(){
       if (this.$route.query.goindex === 'true') {

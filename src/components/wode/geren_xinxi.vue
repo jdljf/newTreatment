@@ -60,7 +60,6 @@ export default {
     getChangePerMes() {
       this.axios.get("/api/getChangePerMes").then(res => {
         this.perMes = res.data.perMes;
-        console.log(this.perMes);
       });
     },
     gotoChangePhone() {
@@ -73,7 +72,9 @@ export default {
       if (this.$route.query.goindex === "true") {
         this.$router.push("/");
       } else {
-        this.$router.back(-1);
+        this.$router.push({
+          path: '/personalCenter'
+        });
       }
     }
   }
