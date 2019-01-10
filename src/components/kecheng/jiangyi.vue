@@ -59,6 +59,7 @@ export default {
 <style lang="scss" scoped>
 .jiangyi {
   position: relative;
+  overflow: auto;
   .toubu {
     height: 0.72rem;
     line-height: 0.72rem;
@@ -74,11 +75,7 @@ export default {
     }
   }
   .neirong {
-    position: fixed;
-    top: 0.82rem;
-    bottom: 1.85rem;
     padding: 0.2rem;
-    overflow: scroll;
     width: 100%;
     box-sizing: border-box;
     .tu {
@@ -93,10 +90,7 @@ export default {
     }
   }
   .xiazai {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    position: relative;
     height: 1.85rem;
     background: #f1f1f1;
     .anniu {
