@@ -1,7 +1,10 @@
 <template>
   <div class="kemu-xiangqing">
     <div class="shipin">
-      <img src="../../assets/kecheng.png" alt>
+      <video v-bind:src=" '/api' + detail.videoUrl" controls="controls" class="bofang">
+        <!-- 您的设备不支持video -->
+      </video>
+      <!-- <img src="../../assets/kecheng.png" alt> -->
       <span class="iconfont icon-houtui icon" @click="huitui"></span>
     </div>
 
@@ -523,8 +526,13 @@ console.log(this.formAnswer);
 .kemu-xiangqing {
   .shipin {
     position: relative;
+    height: 4rem;
     img {
       width: 100%;
+    }
+    .bofang{
+      width: 100%;
+      height: 100%;
     }
     .icon {
       position: absolute;
