@@ -107,7 +107,7 @@ export default {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: 19e889;
+      background: #19e889;
       text-align: center;
       color: #fff;
       font-size: 0.3rem;

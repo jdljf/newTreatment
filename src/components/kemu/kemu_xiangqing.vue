@@ -27,7 +27,7 @@
         </div>
       </div>
 
-      <div class="anniuBox">
+      <div class="anniuBox" v-if="canStudy == 1">
         <div class="anniu" @click="gotoHandout">课件讲义</div>
         <div class="anniu" @click="gotoTest">立即测验</div>
       </div>
@@ -86,10 +86,11 @@
       </div>
 
       <div class="qupinlun">
-        <input class="xiedian" type="text" placeholder="写点什么吧！">
-        <i class="iconfont icon-buoumaotubiao48 icon">
+        <input v-model="videoComment" class="xiedian" type="text" placeholder="写点什么吧！">
+        <span @click="sureAddComment" class="queding">确定</span>
+        <!-- <i class="iconfont icon-buoumaotubiao48 icon">
           <span class="pinglunshu">124</span>
-        </i>
+        </i> -->
       </div>
     </div>
 
@@ -147,7 +148,9 @@ export default {
       trueCount: 0,
       answerRes: [],
       totalScore: 0,
-      input: []
+      input: [],
+      canStudy: 1,
+      videoComment: ''
     };
   },
   activated(){
@@ -161,16 +164,10 @@ export default {
     this.getSubjectDetail();
     this.getSubjectComment();
     this.getSubAboutVideo();
+    this.canStudy = this.$route.query.canStudy
   },
   methods: {
-    huitui(){
-      if (this.$route.query.goindex === 'true') {
-        this.$router.push('/')
-      }
-      else {
-        this.$router.back(-1)
-      }
-    },
+    
     gotoHandout() {
       this.$router.push({
         path: "/handout",
@@ -414,9 +411,37 @@ console.log(this.formAnswer);
           console.log(this.comment);
         });
     },
-    gotoComment() {},
+    sureAddComment() {
+
+      if (this.videoComment.replace(/^\s+|\s+$/g, "").length <= 0) {
+        return this.$messagebox.alert("请输入评论");
+      }
+
+      this.axios
+        .post("/api/sureAddVideoComment", {
+          videoId: this.$route.query.id,
+          personComment: this.videoComment
+
+        })
+        .then(res => {
+          if (res.data.err_code !== 500) {
+            this.$messagebox.alert(res.data.message).then(()=>{
+              location.reload()
+            })
+          }
+        });
+    },
+    gotoComment(){},
     collect() {},
-    share() {}
+    share() {},
+    huitui(){
+      if (this.$route.query.goindex === 'true') {
+        this.$router.push('/')
+      }
+      else {
+        this.$router.back(-1)
+      }
+    },
   },
   filters: {
     errorMes: function(str, index, trueAnswer) {
@@ -689,16 +714,36 @@ console.log(this.formAnswer);
     bottom: 0;
     left: 0;
     right: 0;
+    height: 0.88rem;
     border-top: 1px solid #ccc;
-    padding: 0.1rem 0.4rem 0.1rem 0.2rem;
+    padding: 0.1rem 0.2rem 0.1rem 0.2rem;
     background: #fff;
+    box-sizing: border-box;
+    display: flex;
     .xiedian {
-      width: 80%;
-      border: 0 none;
+      // width: 80%;
+      // border: 0 none;
+      // background: #eee;
+      // color: #aaa;
+      // padding: 0.1rem 0.2rem;
+      // outline: none;
+      flex: 1;
+      height: 100%;
       background: #eee;
-      color: #aaa;
-      padding: 0.1rem 0.2rem;
       outline: none;
+      border: none;
+      box-sizing: border-box;
+      font-size: 0.2rem;
+      padding: 0 0 0 0.15rem;
+    }
+    .queding {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 0.9rem;
+      font-size: 0.25rem;
+      color: #19e889;
+      // background: #ccc;
     }
     .icon {
       position: relative;

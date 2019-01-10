@@ -40,7 +40,6 @@ axios.interceptors.response.use(
   },
   // 默认除了2xx之外都是错误的，就会走到这
   error => {
-    console.log(error)
     if (error.response) {
       console.log(error.response)
       switch (error.response.status) {

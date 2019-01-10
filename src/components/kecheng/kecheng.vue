@@ -10,10 +10,10 @@
         <img src="../../assets/kecheng.png" alt class="zuo">
         <div class="zhong">
           <div class="kecheng-biaoti">{{curriculum.title}}</div>
-          <div class="shangci" v-if="curriculum.lastLearn !== undefined">>
+          <div class="shangci" v-if="curriculum.lastLearn !== undefined">
             <span>上次学习:</span>
             <span class="riqi">{{curriculum.lastLearn.split(' ')[0]}}</span>
-            <span class="riqi"{{curriculum.lastLearn.split(' ')[1]}}</span>
+            <span class="riqi">{{curriculum.lastLearn.split(' ')[1]}}</span>
           </div>
         </div>
         <div class="you">
@@ -117,7 +117,7 @@ export default {
         flex: 1;
         overflow: hidden;
         .kecheng-biaoti {
-          font-size: 0.2rem;
+          font-size: 0.25rem;
           height: 0.74rem;
           line-height: 0.37rem;
           overflow: hidden;
@@ -126,7 +126,7 @@ export default {
         .shangci {
           position: absolute;
           bottom: 0;
-          font-size: 0.04rem;
+          font-size: 0.22rem;
           color: #ccc;
           .riqi {
             margin: 0 0.1rem;
@@ -139,13 +139,13 @@ export default {
         height: 1.2rem;
         text-align: center;
         .jindu {
-          font-size: 8px;
+          font-size: 0.3rem;
         }
         .zhuangtai {
           position: absolute;
           bottom: 0;
           color: #76efb3;
-          font-size: 8px;
+          font-size: 0.23rem;
           width: 100%;
         }
       }
