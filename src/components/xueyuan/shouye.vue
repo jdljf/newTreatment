@@ -43,7 +43,15 @@
     <div class="kemufenlei">
       <div class="biaoti">科目分类</div>
       <div class="fenlei">
-        <div class="fenlei-xiang">
+        <div
+          @click="gotoSubject()"
+          class="fenlei-xiang"
+          v-for="(classify, index) in classify.slice(0,3)"
+        >
+          <img src="../../assets/renwen_logo.png" alt>
+          <div>{{classify.name}}</div>
+        </div>
+        <!-- <div class="fenlei-xiang">
           <img src="../../assets/renwen_logo.png" alt>
           <div>医学人文</div>
         </div>
@@ -54,21 +62,25 @@
         <div class="fenlei-xiang">
           <img src="../../assets/xiyi_logo.png" alt>
           <div>西医</div>
-        </div>
+        </div>-->
       </div>
       <div class="fenlei">
-        <div class="fenlei-xiang">
+        <div
+          @click="gotoSubject()"
+          class="fenlei-xiang"
+          v-for="(classify, index) in classify.slice(3,6)"
+        >
           <img src="../../assets/zhongyi_logo.png" alt>
-          <div>中医</div>
+          <div>{{classify.name}}</div>
         </div>
-        <div class="fenlei-xiang">
+        <!-- <div class="fenlei-xiang">
           <img src="../../assets/gonggong_logo.png" alt>
           <div>公共卫生</div>
         </div>
         <div class="fenlei-xiang">
           <img src="../../assets/linchuang_logo.png" alt>
           <div>临床实践</div>
-        </div>
+        </div>-->
       </div>
     </div>
 
@@ -136,6 +148,7 @@
 
 <script>
 import Swiper from "swiper";
+import { mapState, mapGetters, mapActions } from "vuex";
 import "swiper/dist/css/swiper.min.css";
 
 export default {
@@ -146,12 +159,21 @@ export default {
       subClassify: [],
       videos: [],
       banner: []
+      // classify: []
     };
+  },
+  computed: {
+    ...mapGetters({
+      classify: "subjectClassify/renderClassifyData"
+    })
   },
   mounted() {
     this.getBanner();
+    // this.getClassify()
+    this.$store.dispatch("subjectClassify/getClassifyAct");
     this.getFlowClassify();
     this.getmessage();
+    console.log(this.$store.getters);
   },
   methods: {
     initSwiper() {
@@ -176,12 +198,18 @@ export default {
       // swiper.pagination.init()
       // swiper.pagination.bullets.eq(0).addClass('swiper-pagination-bullet-active');
     },
+    getClassify() {
+      this.axios.get("/api/getClassify").then(res => {
+        // this.subject = res.data.personSubject.detail;
+        this.classify = res.data.classify;
+      });
+    },
     getBanner() {
-      this.axios.get("/api/getBanner").then(res => {        
+      this.axios.get("/api/getBanner").then(res => {
         this.banner = res.data.banner;
 
         this.$nextTick(function() {
-          this.initSwiper()
+          this.initSwiper();
         });
       });
     },
@@ -233,6 +261,13 @@ export default {
         query: {
           id: this.videos[index]._id
         }
+      });
+    },
+    gotoSubject() {
+      console.log("ssdada");
+
+      this.$router.push({
+        path: "/subject"
       });
     },
     gotoMain() {
@@ -323,15 +358,20 @@ export default {
   }
   .xinxiliu {
     .toubu {
-      height: 0.72rem;
+      height: 0.73rem;
       line-height: 0.72rem;
-      padding: 0 0.2rem 0 0.4rem;
+      padding: 0 0.2rem;
       background: #fff;
       border-bottom: 1px solid #f1f1f1;
       overflow: auto;
+      white-space: nowrap;
       font-size: 0.26rem;
+      .icon {
+        margin-right: 0.2rem;
+      }
       .kemu_zhonglei {
         margin-right: 0.4rem;
+        display: inline-block;
       }
     }
     .liebiao {

@@ -2,12 +2,16 @@
   <div class="kemu">
     <div class="toubu">
       <span class="iconfont icon-houtui icon"></span>
-      <span class="kemu_zhonglei" v-for="classify in classify" @click="changeClassify(classify._id)">{{classify.name}}</span>
+      <span
+        class="kemu_zhonglei"
+        v-for="classify in classify"
+        @click="changeClassify(classify._id)"
+      >{{classify.name}}</span>
       <!-- <span class="kemu_zhonglei">内科</span>
       <span class="kemu_zhonglei">外科</span>
-      <span class="kemu_zhonglei">骨科</span> -->
+      <span class="kemu_zhonglei">骨科</span>-->
     </div>
-    <router-view></router-view>
+    <!-- <router-view></router-view> -->
     <!-- <fenlei></fenlei> -->
     <!-- <ul class="liebiao">
       <li class="liebiao-xiang" v-for="subject in subject">
@@ -29,35 +33,37 @@
           <i class="iconfont icon-wenjianjia"></i>
         </div>
       </li>
-    </ul> -->
+    </ul>-->
   </div>
 </template>
 
 <script>
-import fenlei from '../common/fenlei'
+import fenlei from "../common/fenlei";
+import { mapState, mapGetters, mapActions } from "vuex";
 
 export default {
   name: "kemu",
   data() {
     return {
-      subject: [],
-      classify: []
+      subject: []
     };
   },
   mounted() {
-    this.getClassify()
+    console.log(this.$store.getter);
+
+    this.changeClassify();
     // this.getSubject();
   },
+  computed: {
+    ...mapGetters({
+      classify: "subjectClassify/renderClassifyData"
+    })
+  },
+
   methods: {
-    getClassify() {
-      this.axios.get("/api/getClassify").then(res => {
-        // this.subject = res.data.personSubject.detail;
-        this.classify = res.data.classify
-      });
-    },
-    changeClassify(id){
-      console.log(id)
-      this.$router.push({'path':'/subject/list', query: {id: id}})
+    changeClassify(id) {
+      console.log(id);
+      this.$router.push({ path: "/subject/list", query: { id: id } });
     }
   },
   components: {
@@ -70,18 +76,20 @@ export default {
 <style lang="scss" scoped>
 .kemu {
   .toubu {
-    height: 0.72rem;
+    height: 0.73rem;
     line-height: 0.72rem;
     padding: 0 0.2rem;
     background: #fff;
     border-bottom: 1px solid #f1f1f1;
     overflow: auto;
+    white-space: nowrap;
     font-size: 0.26rem;
     .icon {
       margin-right: 0.2rem;
     }
     .kemu_zhonglei {
       margin-right: 0.4rem;
+      display: inline-block;
     }
   }
   .liebiao {
