@@ -106,7 +106,7 @@
                 <i class="iconfont icon-guankan01"></i>
                 <span>{{videos.watched}}</span>
                 <i class="iconfont icon-buoumaotubiao48"></i>
-                <span>{{videos.common}}</span>
+                <span>{{videos.comment}}</span>
               </span>
             </div>
           </div>

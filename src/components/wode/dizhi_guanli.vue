@@ -78,8 +78,8 @@ export default {
       });
     },
     deleteReceiveAddress(id) {
-      alert("确定删除该地址吗");
-      this.axios
+      this.$messagebox.alert("确定删除该地址吗").then(action=>{
+        this.axios
         .get("/api/delRecAddresses", {
           params: {
             addressId: id
@@ -87,12 +87,14 @@ export default {
         })
         .then(res => {
           if (res.data.err_code === 200) {
-            alert(res.data.message);
+            return this.$messagebox.alert(res.data.message);
             location.reload();
           }
           // alert(res.data.message);
           // window.location.reload();
         });
+      })
+      
     },
     handleClick(index) {
       this.axios
@@ -103,7 +105,7 @@ export default {
         })
         .then(res => {
           if (res.data.err_code === 200) {
-            alert(res.data.message);
+            return this.$messagebox.alert(res.data.message);
             for (let i = 0; i < this.addresses.length; i++) {
               this.addresses[i].isDefault = false;
             }

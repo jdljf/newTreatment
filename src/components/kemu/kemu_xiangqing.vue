@@ -634,18 +634,10 @@ export default {
       console.log(this.totalScore);
     },
     submitAnswers() {
-      Object.keys(this.formAnswer).forEach((item, index) => {
-        console.log(this.formAnswer[item]);
-
-        if (this.formAnswer[item].length <= 0) {
-          return (this.canSubmit = false);
-        } else {
-          this.canSubmit = true;
+      for (let item in this.checkedNames) {
+        if (this.checkedNames[item].length <= 0) {
+          return this.$messagebox.alert("还有问题没有回答，请回答完毕再提交");
         }
-      });
-
-      if (!this.canSubmit) {
-        return alert("还有问题没有回答，请回答完毕再提交");
       }
 
       let query = {
