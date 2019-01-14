@@ -40,7 +40,6 @@ axios.interceptors.response.use(
   },
   // 默认除了2xx之外都是错误的，就会走到这
   error => {
-    console.log(error)
     if (error.response) {
       console.log(error.response)
       switch (error.response.status) {
@@ -122,6 +121,15 @@ Vue.use(VueRouter)
 new Vue({
   created() {
     this.checkDevice();
+    //在页面加载时读取sessionStorage里的状态信息
+    if (sessionStorage.getItem("store")) {
+      this.$store.replaceState(Object.assign({}, this.$store.state, JSON.parse(sessionStorage.getItem("store"))))
+    }
+
+    //在页面刷新时将vuex里的信息保存到sessionStorage里
+    window.addEventListener("beforeunload", () => {
+      sessionStorage.setItem("store", JSON.stringify(this.$store.state))
+    })
   },
   methods: {
     checkDevice() {

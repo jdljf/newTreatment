@@ -1,7 +1,7 @@
 <template>
   <div class="qiandao_chenggong">
     <div class="neirong">
-      <div class="iconfont icon-houtui icon"></div>
+      <div class="iconfont icon-houtui icon" @click="huitui"></div>
       <div class="gradient">
         <i class="iconfont icon-icon-test1 iconChenggong"></i>
       </div>
@@ -15,16 +15,28 @@
 <script>
 export default {
   name: "qiandao",
-  mounted() {
-    // 注意：是this.$route.query，不是this.$router.query
-    this.message = this.$route.query.message,
-    this.getMedicalBeans = this.$route.query.getMedicalBeans;
-  },
   data() {
     return {
       message: "",
       getMedicalBeans: ""
     };
+  },
+  mounted() {
+    // 注意：是this.$route.query，不是this.$router.query
+    this.message = this.$route.query.message,
+    this.getMedicalBeans = this.$route.query.getMedicalBeans;
+  },
+  methods: {
+    huitui(){
+      if (this.$route.query.goindex === 'true') {
+        this.$router.push('/')
+      }
+      else {
+        this.$router.push({
+          path: '/main'
+        })
+      }
+    }
   }
 };
 </script>
@@ -83,12 +95,12 @@ export default {
     }
 
     .chenggong {
-      margin: 0rem 0 0.02rem 0;
+      margin: 0rem 0 0.05rem 0;
       font-size: 0.3rem;
       color: #fff;
     }
     .yidou {
-      font-size: 0.12rem;
+      font-size: 0.28rem;
       color: #f4f4f4;
     }
   }
