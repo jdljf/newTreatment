@@ -44,9 +44,10 @@
       <div class="biaoti">科目分类</div>
       <div class="fenlei">
         <div
-          @click="gotoSubject()"
+          @click="gotoSubject(index)"
           class="fenlei-xiang"
-          v-for="(classify, index) in classify.slice(0,3)"
+          v-for="(classify, index) in classify"
+          v-if="index < 3"
         >
           <img src="../../assets/renwen_logo.png" alt>
           <div>{{classify.name}}</div>
@@ -66,9 +67,10 @@
       </div>
       <div class="fenlei">
         <div
-          @click="gotoSubject()"
+          @click="gotoSubject(index)"
           class="fenlei-xiang"
-          v-for="(classify, index) in classify.slice(3,6)"
+          v-for="(classify, index) in classify"
+          v-if="index >=3&&index<=6"
         >
           <img src="../../assets/zhongyi_logo.png" alt>
           <div>{{classify.name}}</div>
@@ -263,11 +265,12 @@ export default {
         }
       });
     },
-    gotoSubject() {
-      console.log("ssdada");
-
+    gotoSubject(index) {
       this.$router.push({
-        path: "/subject"
+        path: "/subject",
+        query: {
+          index: index
+        }
       });
     },
     gotoMain() {
