@@ -4,11 +4,11 @@
       <img src="../../assets/logo.png" alt class="zuo">
       <div class="zhong">
         <div v-if="!notLogin" class="biaoti">
-          {{person.name}}
-          <span class="dianhua">({{person.phoneNumber}})</span>
+          {{name}}
+          <span class="dianhua">({{phoneNumber}})</span>
         </div>
         <div v-if="notLogin" class="biaoti">未登录</div>
-        <div v-if="!notLogin" class="xiangxi">ID:{{person.idNumber}}</div>
+        <div v-if="!notLogin" class="xiangxi">ID:{{idNumber}}</div>
         <div v-if="notLogin" class="xiangxi">点击登录后获取更多权限</div>
       </div>
       <div class="you">
@@ -19,15 +19,15 @@
     <div class="gundong">
       <div class="tongji">
         <div class="tongji-xiang">
-          <div class="shuliang">{{person.curriculum || 0}}</div>
+          <div class="shuliang">{{curriculum}}</div>
           <div class="mingcheng">我的课程</div>
         </div>
         <div class="tongji-xiang">
-          <div class="shuliang">{{person.learnedTime || 0}}</div>
+          <div class="shuliang">{{learnedTime}}</div>
           <div class="mingcheng">我的学时</div>
         </div>
         <div class="tongji-xiang">
-          <div class="shuliang">{{person.medicalBeans || 0}}</div>
+          <div class="shuliang">{{medicalBeans}}</div>
           <div class="mingcheng">我的医豆</div>
         </div>
       </div>
@@ -86,8 +86,10 @@
 </template>
 
 <script>
+import { mapState, mapGetters, mapActions } from "vuex";
+
 export default {
-  name: "jiangyi",
+  name: "wode",
   data() {
     return {
       person: {},
@@ -102,8 +104,19 @@ export default {
       this.notLogin = true;
     } else {
       this.notLogin = false;
-      this.getPersonMessage();
+      // this.getPersonMessage();
+      this.$store.dispatch("user/getPersonMessage");
     }
+  },
+  computed: {
+    ...mapGetters({
+      name: "user/name",
+      idNumber: "user/idNumber",
+      phoneNumber: "user/phoneNumber",
+      curriculum: "user/curriculum",
+      learnedTime: "user/learnedTime",
+      medicalBeans: "user/medicalBeans"
+    })
   },
   methods: {
     getPersonMessage() {
