@@ -96,7 +96,7 @@
         >{{flowClassify.name}}</span>
       </div>
 
-      <div v-if="noData" class="noData">暂时没有数据</div>
+      <div v-if="noData"  class="NewData">暂时没有数据</div>
       <ul class="liebiao">
         <li class="liebiao-xiang" v-for="(videos, index) in videos">
           <div @click="gotoDetail(index)" v-if="videos.isVideo">
