@@ -12,8 +12,13 @@
         ></video>
       </div>
 
+      <div class="shangci" v-if="canJumpPlay">
+        您上次观看到{{this.lastWatchTime}}，
+        <span @click="gotoLastWatchTime" class="tiaozhuan">点击跳转播放</span>
+      </div>
       <!-- 暂停 -->
       <span @click="playOrPause" v-show="!isPlay" class="iconfont icon-cha1 play"></span>
+
       <div class="control" :class="{showControl: showControl}">
         <!-- 时间 -->
         <span class="time">{{currentTime}}</span>
@@ -42,7 +47,9 @@
         <!-- 全屏 -->
         <span @click="fullScreen" class="iconfont icon-quanping fullScreen"></span>
       </div>
-
+      <!-- <div class="topControl"> -->
+      <span @click.stop="huitui" v-show="showControl" class="iconfont icon-houtui icon"></span>
+      <!-- </div> -->
       <div class="volume-body" v-show="showVolumnControl" ref="vDurationbar">
         <div
           @touchstart.stop="vDrawbarDown"
@@ -58,7 +65,6 @@
     </div>
 
     <div class="miaoshu">{{detail.title}}</div>
-    <span class="iconfont icon-houtui icon" @click="huitui"></span>
     <div v-if="!istest">
       <div class="caozuo">
         <div class="caozuo-xiangqing">
@@ -203,6 +209,12 @@ export default {
       input: [],
       canStudy: 1,
       videoComment: "",
+      storagePlayTime: [],
+      exitVideoPlayTime: false,
+      indexOfvideoId: "",
+      canJumpPlay: false,
+      lastWatchTime: "",
+      storagePlayTimeLength: '',
 
       isFullScreen: false,
       currentTime: "0:00",
@@ -220,8 +232,12 @@ export default {
     console.log("判断");
   },
   mounted() {
+    // for (let i = 0; i < 39; i++) {
+    //   window.localStorage.removeItem('videoPlayTime')
+    // }
+    console.log(window.localStorage);
+
     console.log(this.$route.query.id);
-    console.log(this.$route.query.index);
     this.getSubjectDetail();
     this.getSubjectComment();
     this.getSubAboutVideo();
@@ -230,11 +246,72 @@ export default {
       // this.$refs.video.load();
       // this.buffer()
       this.$refs.video.onloadedmetadata = e => {
-        console.log(e);
         this.endTime = this.getTime(this.$refs.video.duration);
         this.buffer();
         this.updatesound(null, 35);
       };
+      // let aa = JSON.stringify([
+      //   {
+      //     videoId: this.$route.query.id,
+      //     playTime: "00:00:10"
+      //   }
+      // ]);
+      // window.localStorage.setItem('videoPlayTime', aa)
+      // window.localStorage.removeItem('videoPlayTime')
+      // console.log(window.localStorage);
+
+      // let bb = window.localStorage.getItem('videoPlayTime')
+      // console.log(bb);
+
+      if (!window.localStorage) {
+        this.$messagebox.alert("您的设备不支持localStorage");
+      } else {
+        let storage = window.localStorage;
+
+        let storageData = JSON.parse(storage.getItem("videoPlayTime"));
+        console.log(storageData);
+        if (storageData !== null) {
+          console.log("有sotrage");
+          this.storagePlayTime = [];
+          this.exitVideoPlayTime = storageData.some( (item, index, storageData) => {
+            
+            // return item.videoId == '5c22d77b14e8c218542299b9'
+            return item.videoId == this.$route.query.id
+          });
+          console.log(this.exitVideoPlayTime);
+
+          if (this.exitVideoPlayTime) {
+            console.log('存在');
+            
+            this.indexOfvideoId = this.findIndexByKeyValue(
+              storageData,
+              "videoId",
+              this.$route.query.id
+            );
+
+            console.log(storageData[this.indexOfvideoId].playTime);
+
+            this.lastWatchTime = storageData[this.indexOfvideoId].playTime;
+            this.canJumpPlay = true;
+
+            this.storagePlayTime = storageData;
+            this.storagePlayTimeLength = this.storagePlayTime.length
+            // this.$refs.video.currentTime = this.storagePlayTime[indexOfvideoId].playTime
+          } else if (!this.exitVideoPlayTime) {
+            console.log('不存在');
+            
+            this.storagePlayTime = storageData;
+            this.storagePlayTimeLength = this.storagePlayTime.length
+          }
+        } else {
+          console.log("没storage");
+
+          this.exitVideoPlayTime = false;
+          this.canJumpPlay = false;
+          this.storagePlayTime = [];
+          this.storagePlayTimeLength = 0;
+        }
+      }
       // this.timeUpdate()
     });
   },
@@ -418,17 +495,6 @@ export default {
     changeVolumnControl() {
       this.showVolumnControl = !this.showVolumnControl;
     },
-    // changeBar(item) {
-    //   event.stopPropagation();
-    //   console.log(item);
-
-    //   let maxDuration = this.$refs.video.duration;
-    //   let position, percentage;
-    //   // if (!this.isFullScreen) {
-    //   position = item - this.$refs.progress.offsetLeft;
-    //   // }
-    //   // percentage = 100 * (position / )
-    // },
     buffer() {
       let maxDuration = this.$refs.video.duration;
       let currentBuffer;
@@ -441,7 +507,17 @@ export default {
         setTimeout(this.buffer, 500);
       }
     },
+    findIndexByKeyValue(arraytosearch, key, valuetosearch) {
+      for (var i = 0; i < arraytosearch.length; i++) {
+        if (arraytosearch[i][key] == valuetosearch) {
+          return i;
+        }
+      }
+      return -1;
+    },
     timeUpdate(e) {
+      console.log("wwww");
+
       let currentTime = e.target.currentTime;
       let duration = e.target.duration;
       let percent = (currentTime / duration) * 100;
@@ -453,6 +529,34 @@ export default {
       if (this.currentTime == this.endTime) {
         // isPlay.className = "stop";
         this.isPlay = false;
+      }
+      let storage = window.localStorage;
+
+      if (this.exitVideoPlayTime) {
+        
+
+        this.storagePlayTime[this.indexOfvideoId].playTime = this.currentTime;
+        let playTimeArr = JSON.stringify(this.storagePlayTime);
+// console.log(playTimeArr);
+        window.localStorage.setItem("videoPlayTime", playTimeArr);
+      } 
+      else {
+        console.log(this.storagePlayTime);
+
+        // this.storagePlayTime.push({
+        //   videoId: this.detail._id,
+        //   playTime: this.currentTime
+        // });
+        let length = this.storagePlayTime.length
+        this.storagePlayTime[this.storagePlayTimeLength] = {
+          videoId: this.detail._id,
+          playTime: this.currentTime
+        }
+
+        let playTimeArr = JSON.stringify(this.storagePlayTime);
+        console.log(playTimeArr);
+
+        window.localStorage.setItem("videoPlayTime", playTimeArr);
       }
     },
     // 原生全屏
@@ -737,6 +841,19 @@ export default {
     gotoComment() {},
     collect() {},
     share() {},
+    gotoLastWatchTime() {
+      let timeArr = this.lastWatchTime.split(':')
+      // console.log(parseInt('05')*60);
+      let sumTime = 0
+      // sumTime = (1 *3600) + (29*60) + 8
+      sumTime = (parseInt(timeArr[0]) * 3600) + (parseInt(timeArr[1]) * 60) + parseInt(timeArr[2])
+      console.log(sumTime);
+      
+      this.$refs.video.currentTime = sumTime;
+      this.canJumpPlay = false;
+      this.$refs.video.play()
+      this.isPlay = true
+    },
     huitui() {
       if (this.$route.query.goindex === "true") {
         this.$router.push("/");
@@ -833,12 +950,6 @@ export default {
       width: 100%;
       height: 100%;
     }
-    .icon {
-      position: absolute;
-      top: 0.2rem;
-      left: 0.2rem;
-      color: #fff;
-    }
   }
   .box {
     position: relative;
@@ -859,7 +970,18 @@ export default {
         display: none !important;
       }
     }
-
+    .shangci {
+      position: absolute;
+      top: 30%;
+      color: #ccc;
+      text-align: center;
+      width: 100%;
+      font-size: 0.26rem;
+      .tiaozhuan {
+        display: inline-block;
+        color: #19e889;
+      }
+    }
     .play {
       width: 0.8rem;
       height: 0.8rem;
@@ -956,6 +1078,14 @@ export default {
       .volume {
         margin: 0 0.2rem;
       }
+    }
+
+    .icon {
+      position: absolute;
+      top: 0rem;
+      left: 0rem;
+      padding: 0.2rem 0.2rem 0.2rem 0.2rem;
+      color: #fff;
     }
     .volume-body {
       position: absolute;

@@ -9,7 +9,10 @@ const state = {
     province: '',
     area: '',
     city: '',
-    address: ''
+    address: '',
+    curriculum: 0,
+    learnedTime: 0,
+    medicalBeans: 0
 }
 
 const getters = {
@@ -37,12 +40,20 @@ const getters = {
     address(state) {
         return state.address
     },
+    curriculum(state){
+        return state.curriculum
+    },
+    learnedTime(state){
+        return state.learnedTime
+    },
+    medicalBeans(state){
+        return state.medicalBeans
+    }
 }
 
 const mutations = {
     getPersonMessage: async (state) => {
         let res = await axios.get("/api/getPersonMessage", )
-        console.log('个人信息', res);
 
         state.name = res.data.name;
         state.phoneNumber = res.data.phoneNumber;
@@ -52,6 +63,9 @@ const mutations = {
         state.area = res.data.area;
         state.city = res.data.city;
         state.address = res.data.address;
+        state.curriculum = res.data.curriculum
+        state.learnedTime = res.data.learnedTime
+        state.medicalBeans = res.data.medicalBeans
         console.log(state);
 
     },

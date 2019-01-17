@@ -49,7 +49,7 @@
           v-for="(classify, index) in classify"
           v-if="index < 3"
         >
-          <img src="../../assets/renwen_logo.png" alt>
+          <img :src="subClassifyImgs[index]" alt>
           <div>{{classify.name}}</div>
         </div>
         <!-- <div class="fenlei-xiang">
@@ -72,7 +72,7 @@
           v-for="(classify, index) in classify"
           v-if="index >=3&&index<=6"
         >
-          <img src="../../assets/zhongyi_logo.png" alt>
+          <img :src="subClassifyImgs[index]" alt>
           <div>{{classify.name}}</div>
         </div>
         <!-- <div class="fenlei-xiang">
@@ -88,7 +88,7 @@
 
     <div class="xinxiliu">
       <div class="toubu">
-        <span v-for="flowClassify in flowClassify" class="kemu_zhonglei">{{flowClassify.title}}</span>
+        <span v-for="flowClassify in flowClassify" class="kemu_zhonglei">{{flowClassify.name}}</span>
       </div>
 
       <ul class="liebiao">
@@ -121,7 +121,7 @@
                 <i class="iconfont icon-guankan01"></i>
                 <span>{{videos.watched}}</span>
                 <i class="iconfont icon-buoumaotubiao48"></i>
-                <span>{{videos.common}}</span>
+                <span>{{videos.comment}}</span>
               </span>
             </div>
           </div>
@@ -157,7 +157,15 @@ export default {
   name: "shouye",
   data() {
     return {
-      flowClassify: [],
+      // flowClassify: [],
+      subClassifyImgs: [
+        "/static/renwen_logo.png",
+        "/static/jisuanji_logo.png",
+        "/static/xiyi_logo.png",
+        "/static/zhongyi_logo.png",
+        "/static/gonggong_logo.png",
+        "/static/linchuang_logo.png"
+      ],
       subClassify: [],
       videos: [],
       banner: []
@@ -166,14 +174,16 @@ export default {
   },
   computed: {
     ...mapGetters({
-      classify: "subjectClassify/renderClassifyData"
+      classify: "subjectClassify/renderClassifyData",
+      flowClassify: "flowClassify/renderFlowClassifyData"
     })
   },
   mounted() {
     this.getBanner();
     // this.getClassify()
     this.$store.dispatch("subjectClassify/getClassifyAct");
-    this.getFlowClassify();
+    this.$store.dispatch("flowClassify/getFlowClassifyAct");
+    // this.getFlowClassify();
     this.getmessage();
     console.log(this.$store.getters);
   },
@@ -360,6 +370,7 @@ export default {
     }
   }
   .xinxiliu {
+    margin-bottom: 1.5rem;
     .toubu {
       height: 0.73rem;
       line-height: 0.72rem;
@@ -375,6 +386,11 @@ export default {
       .kemu_zhonglei {
         margin-right: 0.4rem;
         display: inline-block;
+        box-sizing: border-box;
+        height: 100%;
+      }
+      .active {
+        border-bottom: 4px solid #19e889;
       }
     }
     .liebiao {
