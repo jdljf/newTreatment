@@ -114,24 +114,6 @@ export default {
       }
 
       console.log(this.lastIndex);
-      
-      // if (index !== "") {
-      //   if (index == this.lastIndex && this.pageNum == 1) {
-      //     // this.index = index
-      //     this.pageNum = 1;
-      //     return false;
-      //   } else {
-      //     this.checkedindex = index;
-      //     this.query = dataName;
-      //     this.lastIndex = index;
-      //     // this.subject = []
-      //     // this.pageNum = 1
-      //   }
-      // } else {
-      //   this.checkedindex = i;
-      //   this.query = classify[i].dataName;
-      //   this.lastIndex = i;
-      // }
 
       this.axios
         .get("/api/getSubject", {
@@ -157,29 +139,6 @@ export default {
         });
     },
     getMoreSubject(dataName, index = "") {
-      console.log(index);
-
-      // let i = this.$route.query.index;
-      // let classify = this.$store.getters["subjectClassify/renderClassifyData"];
-      // let query;
-
-      // if (index !== "") {
-      //   if (index == this.lastIndex) {
-      //     // this.index = index
-      //     return false;
-      //   } else {
-      //     this.checkedindex = index;
-      //     this.query = dataName;
-      //     this.lastIndex = index;
-      //     this.subject = []
-      //     this.pageNum = 1
-      //   }
-      // } else {
-      //   this.checkedindex = i;
-      //   this.query = classify[i].dataName;
-      //   this.lastIndex = i;
-      // }
-      // console.log(this.query);
       
       this.axios
         .get("/api/getSubject", {
