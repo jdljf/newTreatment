@@ -88,9 +88,15 @@
 
     <div class="xinxiliu">
       <div class="toubu">
-        <span v-for="flowClassify in flowClassify" class="kemu_zhonglei">{{flowClassify.name}}</span>
+        <span
+          @click="getInformationFlow(flowClassify.dataName, index)"
+          :class="{active: index==checkedindex}"
+          v-for="(flowClassify, index) in flowClassify"
+          class="kemu_zhonglei"
+        >{{flowClassify.name}}</span>
       </div>
 
+      <div v-if="noData" class="noData">暂时没有数据</div>
       <ul class="liebiao">
         <li class="liebiao-xiang" v-for="(videos, index) in videos">
           <div @click="gotoDetail(index)" v-if="videos.isVideo">
@@ -127,6 +133,16 @@
           </div>
         </li>
       </ul>
+
+      <div
+        v-infinite-scroll="loadMore"
+        infinite-scroll-disabled="busy"
+        infinite-scroll-distance="30"
+        v-if="!noData"
+      >
+        <div class="NewData">{{loadText}}</div>
+        <!-- <div v-show="noNewData">没有更多数据了</div> -->
+      </div>
     </div>
 
     <div class="dibu">
@@ -168,7 +184,14 @@ export default {
       ],
       subClassify: [],
       videos: [],
-      banner: []
+      banner: [],
+      busy: false,
+      pageNum: 1,
+      pageSize: 6,
+      checkedindex: 0,
+      noData: false,
+      noNewData: false,
+      loadText: "加载中"
       // classify: []
     };
   },
@@ -184,7 +207,7 @@ export default {
     this.$store.dispatch("subjectClassify/getClassifyAct");
     this.$store.dispatch("flowClassify/getFlowClassifyAct");
     // this.getFlowClassify();
-    this.getmessage();
+    this.getInformationFlow();
     console.log(this.$store.getters);
   },
   methods: {
@@ -225,11 +248,87 @@ export default {
         });
       });
     },
-    getmessage() {
-      this.axios.get("/api/informationFlow", {}).then(res => {
-        console.log(res.data);
-        this.videos = res.data.videos;
-      });
+    getInformationFlow(dataName = "", index = "") {
+      // let i = this.$route.query.index;
+      let flowClassify = this.$store.getters[
+        "flowClassify/renderFlowClassifyData"
+      ];
+
+      if (index !== "") {
+        if (index == this.checkIndex) {
+          return false;
+        } else if (index !== this.checkIndex) {
+          this.videos == [];
+          this.checkedindex = index;
+          this.query = dataName;
+          this.checkIndex = index;
+          this.pageNum = 1;
+        } else if (this.pageNum > 1) {
+          this.pageNum++;
+        }
+      } else {
+        this.checkedindex = 0;
+        this.query = "recommend";
+        // this.lastIndex = i;
+      }
+
+      console.log(this.checkIndex);
+
+      this.axios
+        .get("/api/informationFlow", {
+          params: {
+            dataName: this.query,
+            pageNum: this.pageNum,
+            pageSize: this.pageSize
+          }
+        })
+        .then(res => {
+          console.log(res.data);
+          if (this.pageNum == 1 && res.data.videos.length <= 0) {
+            this.busy = true;
+            this.noData = true;
+          } else if (this.pageNum > 1 && res.data.videos.length <= 0) {
+            (this.busy = true), (this.noNewData = true);
+            this.loadText = "没有更多数据了";
+            this.pageNum = 1;
+          } else {
+            this.busy = false;
+            this.videos = res.data.videos;
+          }
+        });
+    },
+    getMoreInformationFlow(dataName, index = "") {
+      this.axios
+        .get("/api/informationFlow", {
+          params: {
+            dataName: dataName,
+            pageNum: index,
+            pageSize: this.pageSize
+          }
+        })
+        .then(res => {
+          console.log(res.data);
+          if (this.pageNum == 1 && res.data.videos.length <= 0) {
+            this.busy = true;
+            this.noData = true;
+          } else if (this.pageNum > 1 && res.data.videos.length <= 0) {
+            (this.busy = true), (this.noNewData = true);
+            this.loadText = "没有更多数据了";
+            this.pageNum = 0;
+          } else {
+            this.busy = false;
+            this.videos.push(...res.data.videos);
+          }
+        });
+    },
+    loadMore: function() {
+      this.busy = true;
+      let that = this;
+      setTimeout(() => {
+        this.pageNum++;
+        this.getMoreInformationFlow(that.query, this.pageNum);
+        //  this.busy = false
+      }, 2000);
     },
     getFlowClassify(id) {
       console.log(id);
@@ -460,6 +559,12 @@ export default {
       .liebiao-xiang:last-child {
         border: 0 none;
       }
+    }
+    .NewData {
+      text-align: center;
+      height: 0.6rem;
+      line-height: 0.6rem;
+      font-size: 0.26rem;
     }
   }
   .dibu {
