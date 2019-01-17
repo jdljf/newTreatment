@@ -4,14 +4,12 @@
       <span class="iconfont icon-houtui icon" @click="huitui"></span>
       <span
         v-for="(classify, index) in classify"
-        @click="getSubject(classify.dataName, index)"
+        @click="getSubject(classify.dataName, index, false)"
         :class="{active: index==checkedindex}"
         class="kemu_zhonglei"
       >{{classify.name}}</span>
-      <!-- <span class="kemu_zhonglei">内科</span>
-      <span class="kemu_zhonglei">外科</span>
-      <span class="kemu_zhonglei">骨科</span>-->
     </div>
+    <div v-if="noData" class="noData">暂时没有数据</div>
     <div class="kemu_liebiao">
       <ul class="liebiao">
         <li
@@ -37,50 +35,17 @@
             <i class="iconfont icon-wenjianjia"></i>
           </div>
         </li>
-        <!-- <li class="liebiao-xiang" >
-        <div class="shipin">
-          <img src="../../assets/kecheng.png" alt>
-          <div class="jindu">
-            <div class="baifenbi">50%</div>
-            <div class="yixuexi">已学习</div>
-          </div>
-        </div>
-
-        <div class="miaoshu">dsadsad</div>
-
-        <div class="caozuo">
-          <i class="iconfont icon-guankan01"></i>
-          <span>432</span>
-          <i class="iconfont icon-buoumaotubiao48"></i>
-          <span>424</span>
-          <i class="iconfont icon-wenjianjia"></i>
-        </div>
-        </li>-->
       </ul>
     </div>
-    <!-- <router-view></router-view> -->
-    <!-- <fenlei></fenlei> -->
-    <!-- <ul class="liebiao">
-      <li class="liebiao-xiang" v-for="subject in subject">
-        <div class="shipin">
-          <img src="../../assets/kecheng.png" alt>
-          <div class="jindu">
-            <div class="baifenbi">{{ subject.proportion }}%</div>
-            <div class="yixuexi">已学习</div>
-          </div>
-        </div>
-
-        <div class="miaoshu">{{ subject.describe }}</div>
-
-        <div class="caozuo">
-          <i class="iconfont icon-guankan01"></i>
-          <span>{{ subject.watched }}</span>
-          <i class="iconfont icon-buoumaotubiao48"></i>
-          <span>{{ subject.comment }}</span>
-          <i class="iconfont icon-wenjianjia"></i>
-        </div>
-      </li>
-    </ul>-->
+    <div
+      v-infinite-scroll="loadMore"
+      infinite-scroll-disabled="busy"
+      infinite-scroll-distance="30"
+      v-if="!noData"
+    >
+      <div v-show="!noNewData" class="NewData">{{loadText}}</div>
+      <!-- <div v-show="noNewData">没有更多数据了</div> -->
+    </div>
   </div>
 </template>
 
@@ -93,7 +58,14 @@ export default {
   data() {
     return {
       subject: [],
-      checkedindex: ""
+      checkedindex: "",
+      lastIndex: "",
+      pageNum: 1,
+      pageSize: 6,
+      busy: false,
+      noData: false,
+      noNewData: false,
+      loadText: "加载中"
     };
   },
   mounted() {
@@ -113,33 +85,57 @@ export default {
     changeClassify(dataName) {
       this.$router.push({ path: "/subject/list", query: { id: id } });
     },
-    getSubject(dataName, index) {
+    getSubject(dataName, index = "") {
       console.log(index);
 
       let i = this.$route.query.index;
       let classify = this.$store.getters["subjectClassify/renderClassifyData"];
       let query;
 
-      if (index === '') {        
+      if (index !== "") {
+        if (index == this.lastIndex) {
+          return false;
+        } else {
+          this.checkedindex = index;
+          query = dataName;
+          this.lastIndex = index;
+        }
+      } else {
         this.checkedindex = i;
-        query = dataName
-      } else {        
-        this.checkedindex = index;
-        query = classify[i].dataName
+        query = classify[i].dataName;
+        this.lastIndex = i;
       }
-      console.log(this.checkedindex);
 
       this.axios
         .get("/api/getSubject", {
           params: {
-            dataName: query
+            dataName: query,
+            pageNum: this.pageNum,
+            pageSize: this.pageSize
           }
         })
         .then(res => {
           console.log(res.data);
-
-          this.subject = res.data.videos;
+          if (this.pageNum == 1 && res.data.videos.length <= 0) {
+            this.busy = true;
+            this.noData = true;
+          } else if (this.pageNum > 1 && res.data.videos.length <= 0) {
+            (this.busy = true), (this.noNewData = true);
+            this.loadText = "没有更多数据了";
+          } else {
+            this.busy = false;
+            this.subject.push(...res.data.videos);
+          }
         });
+    },
+    loadMore: function() {
+      this.busy = true;
+
+      setTimeout(() => {
+        this.pageNum++;
+        this.getSubject();
+        //  this.busy = false
+      }, 2000);
     },
     gotoSubjectDetail(index) {
       console.log(this.$route.query.id);
@@ -166,6 +162,10 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
 .kemu {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
   .toubu {
     height: 0.73rem;
     line-height: 0.72rem;
@@ -187,6 +187,10 @@ export default {
     .active {
       border-bottom: 4px solid #19e889;
     }
+  }
+  .noData {
+    text-align: center;
+    margin-top: 50%;
   }
   .kemu_liebiao {
     .liebiao {
@@ -243,68 +247,16 @@ export default {
           }
         }
       }
-      .liebiao-xiang:last-child {
-        border: 0 none;
-      }
+      // .liebiao-xiang:last-child {
+      //   border: 0 none;
+      // }
     }
   }
-  .liebiao {
-    .liebiao-xiang {
-      border-bottom: 1px solid #ccc;
-      .shipin {
-        position: relative;
-        margin: 0.2rem 0.2rem 0.2rem 0.2rem;
-        box-sizing: border-box;
-        img {
-          width: 100%;
-        }
-        .jindu {
-          position: absolute;
-          top: 0;
-          left: 0.2rem;
-          background: #349dff;
-          text-align: center;
-          color: #fff;
-          padding: 0.2rem;
-          .baifenbi {
-            font-size: 0.32rem;
-            font-weight: 600;
-          }
-          .yixuexi {
-            font-size: 0.2rem;
-          }
-        }
-      }
-      .miaoshu {
-        padding: 0rem 0.2rem;
-        font-size: 0.3rem;
-      }
-      .caozuo {
-        display: flex;
-        align-items: center;
-        height: 0.3rem;
-        padding: 0.2rem 0.2rem;
-        color: #333;
-        i {
-          font-size: 0.4rem;
-          margin-right: 0.09rem;
-          color: #aaa;
-        }
-        i:last-child {
-          flex: 1;
-          margin: 0;
-          text-align: right;
-          font-size: 0.35rem;
-        }
-        span {
-          font-size: 0.25rem;
-          margin-right: 0.2rem;
-        }
-      }
-    }
-    .liebiao-xiang:last-child {
-      border: 0 none;
-    }
+  .NewData {
+    text-align: center;
+    height: 0.6rem;
+    line-height: 0.6rem;
+    font-size: 0.26rem;
   }
 }
 </style>
