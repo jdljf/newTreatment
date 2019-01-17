@@ -4,7 +4,7 @@
       <span class="iconfont icon-houtui icon" @click="huitui"></span>
       <span
         v-for="(classify, index) in classify"
-        @click="getSubject(classify.dataName, index, false)"
+        @click="getSubject(classify.dataName, index)"
         :class="{active: index==checkedindex}"
         class="kemu_zhonglei"
       >{{classify.name}}</span>
@@ -43,7 +43,7 @@
       infinite-scroll-distance="30"
       v-if="!noData"
     >
-      <div v-show="!noNewData" class="NewData">{{loadText}}</div>
+      <div class="NewData">{{loadText}}</div>
       <!-- <div v-show="noNewData">没有更多数据了</div> -->
     </div>
   </div>
@@ -59,6 +59,8 @@ export default {
     return {
       subject: [],
       checkedindex: "",
+      query: '',
+      index: '',
       lastIndex: "",
       pageNum: 1,
       pageSize: 6,
@@ -85,31 +87,56 @@ export default {
     changeClassify(dataName) {
       this.$router.push({ path: "/subject/list", query: { id: id } });
     },
-    getSubject(dataName, index = "") {
-      console.log(index);
-
+    getSubject(dataName="", index=""){
       let i = this.$route.query.index;
       let classify = this.$store.getters["subjectClassify/renderClassifyData"];
-      let query;
 
-      if (index !== "") {
+
+      if (index !== '') {
         if (index == this.lastIndex) {
-          return false;
-        } else {
+          return false
+        } 
+        else if (index !== this.lastIndex) {
+          this.subject == []
           this.checkedindex = index;
-          query = dataName;
+          this.query = dataName
           this.lastIndex = index;
+          this.pageNum = 1
         }
-      } else {
-        this.checkedindex = i;
-        query = classify[i].dataName;
-        this.lastIndex = i;
+        else if (this.pageNum > 1) {
+          this.pageNum++
+        }
       }
+      else {
+        this.checkedindex = i;
+        this.query = classify[i].dataName;
+        this.lastIndex = i;        
+      }
+
+      console.log(this.lastIndex);
+      
+      // if (index !== "") {
+      //   if (index == this.lastIndex && this.pageNum == 1) {
+      //     // this.index = index
+      //     this.pageNum = 1;
+      //     return false;
+      //   } else {
+      //     this.checkedindex = index;
+      //     this.query = dataName;
+      //     this.lastIndex = index;
+      //     // this.subject = []
+      //     // this.pageNum = 1
+      //   }
+      // } else {
+      //   this.checkedindex = i;
+      //   this.query = classify[i].dataName;
+      //   this.lastIndex = i;
+      // }
 
       this.axios
         .get("/api/getSubject", {
           params: {
-            dataName: query,
+            dataName: this.query,
             pageNum: this.pageNum,
             pageSize: this.pageSize
           }
@@ -122,6 +149,55 @@ export default {
           } else if (this.pageNum > 1 && res.data.videos.length <= 0) {
             (this.busy = true), (this.noNewData = true);
             this.loadText = "没有更多数据了";
+            this.pageNum = 1
+          } else {
+            this.busy = false;
+            this.subject = res.data.videos;
+          }
+        });
+    },
+    getMoreSubject(dataName, index = "") {
+      console.log(index);
+
+      // let i = this.$route.query.index;
+      // let classify = this.$store.getters["subjectClassify/renderClassifyData"];
+      // let query;
+
+      // if (index !== "") {
+      //   if (index == this.lastIndex) {
+      //     // this.index = index
+      //     return false;
+      //   } else {
+      //     this.checkedindex = index;
+      //     this.query = dataName;
+      //     this.lastIndex = index;
+      //     this.subject = []
+      //     this.pageNum = 1
+      //   }
+      // } else {
+      //   this.checkedindex = i;
+      //   this.query = classify[i].dataName;
+      //   this.lastIndex = i;
+      // }
+      // console.log(this.query);
+      
+      this.axios
+        .get("/api/getSubject", {
+          params: {
+            dataName: dataName,
+            pageNum: index,
+            pageSize: this.pageSize
+          }
+        })
+        .then(res => {
+          console.log(res.data);
+          if (this.pageNum == 1 && res.data.videos.length <= 0) {
+            this.busy = true;
+            this.noData = true;
+          } else if (this.pageNum > 1 && res.data.videos.length <= 0) {
+            (this.busy = true), (this.noNewData = true);
+            this.loadText = "没有更多数据了";
+            this.pageNum = 0
           } else {
             this.busy = false;
             this.subject.push(...res.data.videos);
@@ -130,10 +206,10 @@ export default {
     },
     loadMore: function() {
       this.busy = true;
-
+      let that = this
       setTimeout(() => {
         this.pageNum++;
-        this.getSubject();
+        this.getMoreSubject(that.query, this.pageNum);
         //  this.busy = false
       }, 2000);
     },
