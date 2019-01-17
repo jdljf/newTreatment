@@ -7,13 +7,15 @@ import actions from './actions.js'       //异步修改state的值
 
 import user from './modules/user'
 import subjectClassify from './modules/classify'
+import flowClassify from './modules/flowClassify'
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
     modules: {
         user,
-        subjectClassify
+        subjectClassify,
+        flowClassify
     },
     state,
     mutations,

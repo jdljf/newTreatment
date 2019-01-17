@@ -19,10 +19,10 @@
         >
           <div class="shipin">
             <img src="../../assets/kecheng.png" alt>
-            <div class="jindu">
+            <!-- <div class="jindu">
               <div class="baifenbi">{{ subject.proportion }}%</div>
               <div class="yixuexi">已学习</div>
-            </div>
+            </div> -->
           </div>
 
           <div class="miaoshu">{{ subject.describe }}</div>
