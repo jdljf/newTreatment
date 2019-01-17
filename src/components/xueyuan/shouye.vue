@@ -49,7 +49,7 @@
           v-for="(classify, index) in classify"
           v-if="index < 3"
         >
-          <img src="../../assets/renwen_logo.png" alt>
+          <img :src="subClassifyImgs[index]" alt>
           <div>{{classify.name}}</div>
         </div>
         <!-- <div class="fenlei-xiang">
@@ -72,7 +72,7 @@
           v-for="(classify, index) in classify"
           v-if="index >=3&&index<=6"
         >
-          <img src="../../assets/zhongyi_logo.png" alt>
+          <img :src="subClassifyImgs[index]" alt>
           <div>{{classify.name}}</div>
         </div>
         <!-- <div class="fenlei-xiang">
@@ -158,6 +158,14 @@ export default {
   data() {
     return {
       // flowClassify: [],
+      subClassifyImgs: [
+        "/static/renwen_logo.png",
+        "/static/jisuanji_logo.png",
+        "/static/xiyi_logo.png",
+        "/static/zhongyi_logo.png",
+        "/static/gonggong_logo.png",
+        "/static/linchuang_logo.png"
+      ],
       subClassify: [],
       videos: [],
       banner: []
@@ -167,7 +175,7 @@ export default {
   computed: {
     ...mapGetters({
       classify: "subjectClassify/renderClassifyData",
-      flowClassify: 'flowClassify/renderFlowClassifyData'
+      flowClassify: "flowClassify/renderFlowClassifyData"
     })
   },
   mounted() {
