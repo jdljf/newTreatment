@@ -108,6 +108,7 @@
       </div>
 
       <div class="pinglunqu">评论区</div>
+      <div v-if="noData" class="NewData">暂时没有评论</div>
       <div class="pinglunqu-xijie">
         <div class="pinglun-xijie">
           <div class="xijie" v-for="comment in comment">
@@ -141,8 +142,15 @@
             </div>
           </div>
         </div>
+        <div
+          v-infinite-scroll="loadMore"
+          infinite-scroll-disabled="busy"
+          infinite-scroll-distance="30"
+          v-if="!noData"
+        >
+          <div class="NewData">{{loadText}}</div>
+        </div>
       </div>
-
       <div class="qupinlun" v-show="!isFullScreen">
         <input v-model="videoComment" class="xiedian" type="text" placeholder="写点什么吧！">
         <span @click="sureAddComment" class="queding">确定</span>
@@ -214,8 +222,16 @@ export default {
       indexOfvideoId: "",
       canJumpPlay: false,
       lastWatchTime: "",
-      storagePlayTimeLength: '',
-
+      storagePlayTimeLength: "",
+      // 下拉数据
+      busy: false,
+      pageNum: 1,
+      pageSize: 6,
+      checkedindex: 0,
+      noData: false,
+      noNewData: false,
+      loadText: "加载中",
+      // 视频数据
       isFullScreen: false,
       currentTime: "0:00",
       endTime: "",
@@ -239,7 +255,7 @@ export default {
 
     console.log(this.$route.query.id);
     this.getSubjectDetail();
-    this.getSubjectComment();
+    this.getMoreComment();
     this.getSubAboutVideo();
     this.canStudy = this.$route.query.canStudy;
     this.$nextTick(() => {
@@ -273,16 +289,17 @@ export default {
         if (storageData !== null) {
           console.log("有sotrage");
           this.storagePlayTime = [];
-          this.exitVideoPlayTime = storageData.some( (item, index, storageData) => {
-            
-            // return item.videoId == '5c22d77b14e8c218542299b9'
-            return item.videoId == this.$route.query.id
-          });
+          this.exitVideoPlayTime = storageData.some(
+            (item, index, storageData) => {
+              // return item.videoId == '5c22d77b14e8c218542299b9'
+              return item.videoId == this.$route.query.id;
+            }
+          );
           console.log(this.exitVideoPlayTime);
 
           if (this.exitVideoPlayTime) {
-            console.log('存在');
-            
+            console.log("存在");
+
             this.indexOfvideoId = this.findIndexByKeyValue(
               storageData,
               "videoId",
@@ -295,13 +312,13 @@ export default {
             this.canJumpPlay = true;
 
             this.storagePlayTime = storageData;
-            this.storagePlayTimeLength = this.storagePlayTime.length
+            this.storagePlayTimeLength = this.storagePlayTime.length;
             // this.$refs.video.currentTime = this.storagePlayTime[indexOfvideoId].playTime
           } else if (!this.exitVideoPlayTime) {
-            console.log('不存在');
-            
+            console.log("不存在");
+
             this.storagePlayTime = storageData;
-            this.storagePlayTimeLength = this.storagePlayTime.length
+            this.storagePlayTimeLength = this.storagePlayTime.length;
           }
         } else {
           console.log("没storage");
@@ -316,6 +333,15 @@ export default {
     });
   },
   methods: {
+    loadMore: function() {
+      this.busy = true;
+      let that = this;
+      setTimeout(() => {
+        this.pageNum++;
+        this.getMoreComment();
+        //  this.busy = false
+      }, 2000);
+    },
     zeroFill(num) {
       if (num < 10) {
         num = "0" + num;
@@ -533,25 +559,22 @@ export default {
       let storage = window.localStorage;
 
       if (this.exitVideoPlayTime) {
-        
-
         this.storagePlayTime[this.indexOfvideoId].playTime = this.currentTime;
         let playTimeArr = JSON.stringify(this.storagePlayTime);
-// console.log(playTimeArr);
+        // console.log(playTimeArr);
         window.localStorage.setItem("videoPlayTime", playTimeArr);
-      } 
-      else {
+      } else {
         console.log(this.storagePlayTime);
 
         // this.storagePlayTime.push({
         //   videoId: this.detail._id,
         //   playTime: this.currentTime
         // });
-        let length = this.storagePlayTime.length
+        let length = this.storagePlayTime.length;
         this.storagePlayTime[this.storagePlayTimeLength] = {
           videoId: this.detail._id,
           playTime: this.currentTime
-        }
+        };
 
         let playTimeArr = JSON.stringify(this.storagePlayTime);
         console.log(playTimeArr);
@@ -808,17 +831,40 @@ export default {
           this.aboutList = res.data.list;
         });
     },
-    getSubjectComment() {
+    getMoreComment() {
       this.axios
         .get("/api/getSubjectComment", {
           params: {
-            id: this.$route.query.id
+            id: this.$route.query.id,
+            pageNum: this.pageNum,
+            pageSize: this.pageSize
           }
         })
         .then(res => {
-          this.comment = res.data.comment.comment;
-          console.log(this.comment);
+          console.log(res.data);
+          if (this.pageNum == 1 && res.data.comment <= 0) {
+            this.busy = true;
+            this.noData = true;
+          } else if (this.pageNum > 1 && res.data.comment <= 0) {
+            (this.busy = true), (this.noNewData = true);
+            this.loadText = "没有更多数据了";
+            this.pageNum = 0;
+          } else {
+            this.busy = false;
+            this.comment.push(...res.data.comment);
+            console.log(this.comment);
+          }
         });
+      // this.axios
+      //   .get("/api/getSubjectComment", {
+      //     params: {
+      //       id: this.$route.query.id
+      //     }
+      //   })
+      //   .then(res => {
+      //     this.comment = res.data.comment.comment;
+      //     console.log(this.comment);
+      //   });
     },
     sureAddComment() {
       if (this.videoComment.replace(/^\s+|\s+$/g, "").length <= 0) {
@@ -842,17 +888,20 @@ export default {
     collect() {},
     share() {},
     gotoLastWatchTime() {
-      let timeArr = this.lastWatchTime.split(':')
+      let timeArr = this.lastWatchTime.split(":");
       // console.log(parseInt('05')*60);
-      let sumTime = 0
+      let sumTime = 0;
       // sumTime = (1 *3600) + (29*60) + 8
-      sumTime = (parseInt(timeArr[0]) * 3600) + (parseInt(timeArr[1]) * 60) + parseInt(timeArr[2])
+      sumTime =
+        parseInt(timeArr[0]) * 3600 +
+        parseInt(timeArr[1]) * 60 +
+        parseInt(timeArr[2]);
       console.log(sumTime);
-      
+
       this.$refs.video.currentTime = sumTime;
       this.canJumpPlay = false;
-      this.$refs.video.play()
-      this.isPlay = true
+      this.$refs.video.play();
+      this.isPlay = true;
     },
     huitui() {
       if (this.$route.query.goindex === "true") {
@@ -888,51 +937,6 @@ export default {
         return String.fromCharCode(65 + index);
       };
     }
-  },
-  watch: {
-    // checkedNames: {
-    //   deep: true,
-    //   handler: function(newVal, oldVal) {
-    //     console.log(newVal);
-    //     // console.log(this.test[0].trueAnswe[0]);
-    //     // for (let i = 0; i < this.test.length; i++) {
-    //     //   console.log(newVal.ans1);
-    //     //   console.log(this.test[1].trueAnswer);
-    //     //   console.log(this.test[1].trueAnswer.indexOf("0"));
-    //     //   console.log(this.test[1].trueAnswer.indexOf(newVal.ans0));
-    //     //   // if (typeof newVal.ans0 === "number") {
-    //     //   //   var kk = parseInt(newVal[`ans0`]);
-    //     //   //   console.log(this.test[1].trueAnswer.indexOf(kk));
-    //     //   // }
-    //     //   // console.log(this.test[0].trueAnswer.indexOf(parseInt(newVal[`ans${0}`])));
-    //     // }
-    //     for (let i = 0; i < this.test.length; i++) {
-    //       for (let j = 0; j < this.test[i].trueAnswer.length; j++) {
-    //         // console.log(this.test[i].trueAnswer[j]);
-    //         if (typeof newVal[`ans${i}`] === "number") {
-    //           // console.log(newVal[`ans${i}`]);
-    //           // console.log(this.test[i].trueAnswer);
-    //           if (this.test[i].trueAnswer.indexOf(newVal[`ans${i}`]) >= 0) {
-    //             console.log("答案正确");
-    //           } else {
-    //             console.log(newVal[`ans${i}`]);
-    //           }
-    //         }
-    //         if (newVal[`ans${i}`] instanceof Array) {
-    //           for (let k = 0; k < newVal[`ans${i}`].length; k++) {
-    //             if (
-    //               newVal[`ans${i}`].length >= 2 &&
-    //               this.test[i].trueAnswer.indexOf(newVal[`ans${i}`][k]) >= 0
-    //             ) {
-    //               console.log("答案正确");
-    //             } else {
-    //             }
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
   }
 };
 </script>
@@ -989,13 +993,11 @@ export default {
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%);
-      // margin:
+      transform: translate(-50%, -0%);
       background: rgba(#ccc, 0.2);
       color: #fff;
       text-align: center;
       line-height: 0.8rem;
-      // z-index: 217483650;
     }
     .control {
       transition: bottom 0.5s linear 0s;
@@ -1229,6 +1231,12 @@ export default {
     color: #aaa;
     background: #eee;
     padding: 0 0.2rem;
+  }
+  .NewData {
+    text-align: center;
+    height: 0.6rem;
+    line-height: 0.6rem;
+    font-size: 0.26rem;
   }
   .pinglunqu-xijie {
     margin-bottom: 1rem;
