@@ -317,12 +317,6 @@ export default {
       }
       // this.timeUpdate()
     });
-
-    if (!this.checkCollect) {
-      this.collectImg = "/static/icon/collect-success.png";
-    } else {
-      this.collectImg = "/static/icon/collect.png";
-    }
   },
   methods: {
     zeroFill(num) {
@@ -801,7 +795,12 @@ export default {
         .then(res => {
           this.detail = res.data.detail;
           this.checkCollect = res.data.collectedVideo;
-          console.log(res.data);
+
+          if (this.checkCollect) {
+            this.collectImg = "/static/icon/collect-success.png";
+          } else {
+            this.collectImg = "/static/icon/collect.png";
+          }
         });
     },
     getSubAboutVideo() {
@@ -823,7 +822,7 @@ export default {
           }
         })
         .then(res => {
-          this.comment = res.data.comment.comment;
+          this.comment = res.data.comment;
           console.log(this.comment);
         });
     },
@@ -863,7 +862,7 @@ export default {
           }
         })
         .then(res => {
-          console.log(res.data);
+          this.detail.collect = res.data.collect;
         });
     },
     share() {},

@@ -6,12 +6,14 @@
     </div>
 
     <ul class="liebiao">
-      <li class="liebiao-xiang" v-for="aboutList in aboutList">
+      <li class="liebiao-xiang" v-for="(aboutList, index) in aboutList">
         <img src="../../assets/kecheng.png" alt class="zuo">
         <div class="zhong">
           <div class="kecheng-biaoti">{{aboutList.title}}</div>
-          <div class="shangci">时长:
-            <span class="riqi">{{aboutList.durationTime}}</span>
+          <div class="shangci">
+            <!-- <span>时长:</span>
+            <span class="riqi">{{aboutList.durationTime}}</span>-->
+            <img :src="collecteds[index]?'/static/icon/collect-success.png': '/static/icon/collect.png'" class="img" alt>
           </div>
         </div>
       </li>
@@ -24,7 +26,9 @@ export default {
   name: "xiangguan",
   data() {
     return {
-      aboutList: []
+      collectImg: '/static/icon/collect.png',
+      aboutList: [],
+      collecteds: []
     };
   },
   mounted() {
@@ -35,7 +39,8 @@ export default {
         }
       })
       .then(res => {
-        this.aboutList = res.data.list
+        this.aboutList = res.data.list;
+        this.collecteds = res.data.collecteds
       });
   }
 };
@@ -63,12 +68,13 @@ export default {
     }
   }
   .liebiao {
-    margin: 0 0 0.15rem 0.2rem;
+    margin: 0 0 0.15rem 0rem;
     background: #fff;
     .liebiao-xiang {
       display: flex;
       padding: 0.23rem 0.3rem 0.23rem 0;
-      border-bottom: 1px solid #f1f1f1;
+      border-bottom: 1px solid #ccc;
+      margin: 0 0 0 0.2rem;
       .zuo {
         // margin-left: 0.2rem;
         width: 1.6rem;
@@ -90,10 +96,14 @@ export default {
         .shangci {
           position: absolute;
           bottom: 0;
-          font-size: 0.2rem;
+          font-size: 0.25rem;
+          width: 100%;
           color: #ccc;
           .riqi {
             margin: 0 0.1rem;
+          }
+          .img {
+            float: right;
           }
         }
       }
