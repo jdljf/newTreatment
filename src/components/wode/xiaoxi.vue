@@ -42,7 +42,7 @@ export default {
       checkedindex: "",
       message: [],
       pageNum: 1,
-      pageSize: 2,
+      pageSize: 4,
       busy: false,
       noData: false,
       noNewData: false,
@@ -94,8 +94,7 @@ export default {
           } else {
             this.busy = false;
             this.message.push(...res.data.message);
-            console.log(this.message);
-            
+            console.log(this.message);            
           }
         });
     },
@@ -103,8 +102,8 @@ export default {
       this.$router.push({
         path: "/messageDetail",
         query: {
-          messageId: this.message.message[index]._id,
-          message_type: this.message.message[index].messageType
+          messageId: this.message[index]._id,
+          message_type: this.message[index].messageType
         }
       });
     },
