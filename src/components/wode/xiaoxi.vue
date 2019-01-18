@@ -30,7 +30,6 @@
       v-if="!noData"
     >
       <div class="NewData">{{loadText}}</div>
-      <!-- <div v-show="noNewData">没有更多数据了</div> -->
     </div>
   </div>
 </template>
@@ -100,13 +99,6 @@ export default {
           }
         });
     },
-    // getMyMessage() {
-    //   this.axios.get("/api/getMyMessage").then(res => {
-    //     this.message = res.data.message
-    //     console.log(res.data);
-
-    //   });
-    // },
     gotoMessageDetail(index) {
       this.$router.push({
         path: "/messageDetail",
