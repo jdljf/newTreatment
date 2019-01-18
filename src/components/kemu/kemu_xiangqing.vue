@@ -68,19 +68,19 @@
     <div v-if="!istest">
       <div class="caozuo">
         <div class="caozuo-xiangqing">
-          <div class="iconfont icon-guankan01 tubiao"></div>
+          <img src="/static/icon/watched.png" alt>
           <div class="shuliang">{{detail.watched}}</div>
         </div>
         <div class="caozuo-xiangqing" @click="gotoComment">
-          <div class="iconfont icon-buoumaotubiao48 tubiao"></div>
+          <img src="/static/icon/comment.png" alt>
           <div class="shuliang">{{detail.comment}}</div>
         </div>
         <div class="caozuo-xiangqing" @click="collect">
-          <div class="iconfont icon-wenjianjia tubiao"></div>
+          <img :src="collectImg" alt>
           <div class="shuliang">{{detail.collect}}</div>
         </div>
         <div class="caozuo-xiangqing" @click="share">
-          <div class="iconfont icon-fenxiang tubiao"></div>
+          <img src="/static/icon/share.png" alt>
           <div class="shuliang">{{detail.share}}</div>
         </div>
       </div>
@@ -108,7 +108,6 @@
       </div>
 
       <div class="pinglunqu">评论区</div>
-      <div v-if="noData" class="NewData">暂时没有评论</div>
       <div class="pinglunqu-xijie">
         <div class="pinglun-xijie">
           <div class="xijie" v-for="comment in comment">
@@ -142,15 +141,8 @@
             </div>
           </div>
         </div>
-        <div
-          v-infinite-scroll="loadMore"
-          infinite-scroll-disabled="busy"
-          infinite-scroll-distance="30"
-          v-if="!noData"
-        >
-          <div class="NewData">{{loadText}}</div>
-        </div>
       </div>
+
       <div class="qupinlun" v-show="!isFullScreen">
         <input v-model="videoComment" class="xiedian" type="text" placeholder="写点什么吧！">
         <span @click="sureAddComment" class="queding">确定</span>
@@ -200,6 +192,8 @@ export default {
   name: "kemu_xiangqing",
   data() {
     return {
+      collectImg: "",
+      checkCollect: false,
       detail: {},
       comment: [],
       aboutList: [],
@@ -223,15 +217,7 @@ export default {
       canJumpPlay: false,
       lastWatchTime: "",
       storagePlayTimeLength: "",
-      // 下拉数据
-      busy: false,
-      pageNum: 1,
-      pageSize: 6,
-      checkedindex: 0,
-      noData: false,
-      noNewData: false,
-      loadText: "加载中",
-      // 视频数据
+
       isFullScreen: false,
       currentTime: "0:00",
       endTime: "",
@@ -255,7 +241,7 @@ export default {
 
     console.log(this.$route.query.id);
     this.getSubjectDetail();
-    this.getMoreComment();
+    this.getSubjectComment();
     this.getSubAboutVideo();
     this.canStudy = this.$route.query.canStudy;
     this.$nextTick(() => {
@@ -331,17 +317,14 @@ export default {
       }
       // this.timeUpdate()
     });
+
+    if (!this.checkCollect) {
+      this.collectImg = "/static/icon/collect-success.png";
+    } else {
+      this.collectImg = "/static/icon/collect.png";
+    }
   },
   methods: {
-    loadMore: function() {
-      this.busy = true;
-      let that = this;
-      setTimeout(() => {
-        this.pageNum++;
-        this.getMoreComment();
-        //  this.busy = false
-      }, 2000);
-    },
     zeroFill(num) {
       if (num < 10) {
         num = "0" + num;
@@ -817,6 +800,7 @@ export default {
         })
         .then(res => {
           this.detail = res.data.detail;
+          this.checkCollect = res.data.collectedVideo;
           console.log(res.data);
         });
     },
@@ -831,40 +815,17 @@ export default {
           this.aboutList = res.data.list;
         });
     },
-    getMoreComment() {
+    getSubjectComment() {
       this.axios
         .get("/api/getSubjectComment", {
           params: {
-            id: this.$route.query.id,
-            pageNum: this.pageNum,
-            pageSize: this.pageSize
+            id: this.$route.query.id
           }
         })
         .then(res => {
-          console.log(res.data);
-          if (this.pageNum == 1 && res.data.comment <= 0) {
-            this.busy = true;
-            this.noData = true;
-          } else if (this.pageNum > 1 && res.data.comment <= 0) {
-            (this.busy = true), (this.noNewData = true);
-            this.loadText = "没有更多数据了";
-            this.pageNum = 0;
-          } else {
-            this.busy = false;
-            this.comment.push(...res.data.comment);
-            console.log(this.comment);
-          }
+          this.comment = res.data.comment.comment;
+          console.log(this.comment);
         });
-      // this.axios
-      //   .get("/api/getSubjectComment", {
-      //     params: {
-      //       id: this.$route.query.id
-      //     }
-      //   })
-      //   .then(res => {
-      //     this.comment = res.data.comment.comment;
-      //     console.log(this.comment);
-      //   });
     },
     sureAddComment() {
       if (this.videoComment.replace(/^\s+|\s+$/g, "").length <= 0) {
@@ -885,7 +846,26 @@ export default {
         });
     },
     gotoComment() {},
-    collect() {},
+    collect() {
+      if (!this.checkCollect) {
+        this.checkCollect = true;
+        this.collectImg = "/static/icon/collect-success.png";
+      } else {
+        this.checkCollect = false;
+        this.collectImg = "/static/icon/collect.png";
+      }
+
+      this.axios
+        .get("/api/wantToCollectVideo", {
+          params: {
+            videoId: this.$route.query.id,
+            wantCollect: this.checkCollect
+          }
+        })
+        .then(res => {
+          console.log(res.data);
+        });
+    },
     share() {},
     gotoLastWatchTime() {
       let timeArr = this.lastWatchTime.split(":");
@@ -993,11 +973,13 @@ export default {
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -0%);
+      transform: translate(-50%, -50%);
+      // margin:
       background: rgba(#ccc, 0.2);
       color: #fff;
       text-align: center;
       line-height: 0.8rem;
+      // z-index: 217483650;
     }
     .control {
       transition: bottom 0.5s linear 0s;
@@ -1146,8 +1128,15 @@ export default {
     .caozuo-xiangqing {
       flex: 1;
       text-align: center;
+      font-size: 0;
+      .img {
+        background-image: url("../../assets/icon/watched.png");
+      }
       .tubiao {
-        font-size: 0.4rem;
+        background-image: url("../../assets/icon/share.png");
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        -moz-background-size: 100% 100%;
       }
       .shuliang {
         color: #ccc;
@@ -1231,12 +1220,6 @@ export default {
     color: #aaa;
     background: #eee;
     padding: 0 0.2rem;
-  }
-  .NewData {
-    text-align: center;
-    height: 0.6rem;
-    line-height: 0.6rem;
-    font-size: 0.26rem;
   }
   .pinglunqu-xijie {
     margin-bottom: 1rem;
