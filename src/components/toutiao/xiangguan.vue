@@ -13,7 +13,12 @@
           <div class="shangci">
             <!-- <span>时长:</span>
             <span class="riqi">{{aboutList.durationTime}}</span>-->
-            <img :src="collecteds[index]?'/static/icon/collect-success.png': '/static/icon/collect.png'" class="img" alt>
+            <img
+              @click="collectAboutVideo(aboutList._id, index)"
+              :src="collecteds[index]?'/static/icon/collect-success.png': '/static/icon/collect.png'"
+              class="img"
+              alt
+            >
           </div>
         </div>
       </li>
@@ -26,22 +31,46 @@ export default {
   name: "xiangguan",
   data() {
     return {
-      collectImg: '/static/icon/collect.png',
+      collectImg: "/static/icon/collect.png",
       aboutList: [],
-      collecteds: []
+      collecteds: [],
     };
   },
   mounted() {
-    this.axios
-      .get("/api/getAboutVideo", {
-        params: {
-          id: this.$route.query.id
-        }
-      })
-      .then(res => {
-        this.aboutList = res.data.list;
-        this.collecteds = res.data.collecteds
-      });
+    this.getAboutVideo();
+  },
+  methods: {    
+    getAboutVideo() {
+      this.axios
+        .get("/api/getAboutVideo", {
+          params: {
+            id: this.$route.query.id
+          }
+        })
+        .then(res => {
+          this.aboutList = res.data.list;
+          this.collecteds = res.data.collecteds;   
+        });
+    },
+    collectAboutVideo(id, index) {
+
+      if (this.collecteds[index] == false) {
+        this.collecteds.splice(index, 1, true)
+      } else if (this.collecteds[index] == true) {
+         this.collecteds.splice(index, 1, false)
+      }
+
+      this.axios
+        .get("/api/wantToCollectVideo", {
+          params: {
+            videoId: id,
+            wantCollect: this.collecteds[index]
+          }
+        })
+        .then(res => {
+          console.log(res.data);
+        });
+    }
   }
 };
 </script>
