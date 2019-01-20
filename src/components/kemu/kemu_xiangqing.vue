@@ -108,6 +108,7 @@
       </div>
 
       <div class="pinglunqu">评论区</div>
+      <div v-if="noData" class="NewData">暂时没有评论</div>
       <div class="pinglunqu-xijie">
         <div class="pinglun-xijie">
           <div class="xijie" v-for="comment in comment">
@@ -141,8 +142,15 @@
             </div>
           </div>
         </div>
+        <div
+          v-infinite-scroll="loadMore"
+          infinite-scroll-disabled="busy"
+          infinite-scroll-distance="30"
+          v-if="!noData"
+        >
+          <div class="NewData">{{loadText}}</div>
+        </div>
       </div>
-
       <div class="qupinlun" v-show="!isFullScreen">
         <input v-model="videoComment" class="xiedian" type="text" placeholder="写点什么吧！">
         <span @click="sureAddComment" class="queding">确定</span>
@@ -187,7 +195,6 @@
 
 <script>
 import Vue from "vue";
-
 export default {
   name: "kemu_xiangqing",
   data() {
@@ -217,7 +224,15 @@ export default {
       canJumpPlay: false,
       lastWatchTime: "",
       storagePlayTimeLength: "",
-
+      // 下拉数据
+      busy: false,
+      pageNum: 1,
+      pageSize: 6,
+      checkedindex: 0,
+      noData: false,
+      noNewData: false,
+      loadText: "加载中",
+      // 视频数据
       isFullScreen: false,
       currentTime: "0:00",
       endTime: "",
@@ -238,10 +253,9 @@ export default {
     //   window.localStorage.removeItem('videoPlayTime')
     // }
     console.log(window.localStorage);
-
     console.log(this.$route.query.id);
     this.getSubjectDetail();
-    this.getSubjectComment();
+    this.getMoreComment();
     this.getSubAboutVideo();
     this.canStudy = this.$route.query.canStudy;
     this.$nextTick(() => {
@@ -261,15 +275,12 @@ export default {
       // window.localStorage.setItem('videoPlayTime', aa)
       // window.localStorage.removeItem('videoPlayTime')
       // console.log(window.localStorage);
-
       // let bb = window.localStorage.getItem('videoPlayTime')
       // console.log(bb);
-
       if (!window.localStorage) {
         this.$messagebox.alert("您的设备不支持localStorage");
       } else {
         let storage = window.localStorage;
-
         let storageData = JSON.parse(storage.getItem("videoPlayTime"));
         console.log(storageData);
         if (storageData !== null) {
@@ -282,33 +293,26 @@ export default {
             }
           );
           console.log(this.exitVideoPlayTime);
-
           if (this.exitVideoPlayTime) {
             console.log("存在");
-
             this.indexOfvideoId = this.findIndexByKeyValue(
               storageData,
               "videoId",
               this.$route.query.id
             );
-
             console.log(storageData[this.indexOfvideoId].playTime);
-
             this.lastWatchTime = storageData[this.indexOfvideoId].playTime;
             this.canJumpPlay = true;
-
             this.storagePlayTime = storageData;
             this.storagePlayTimeLength = this.storagePlayTime.length;
             // this.$refs.video.currentTime = this.storagePlayTime[indexOfvideoId].playTime
           } else if (!this.exitVideoPlayTime) {
             console.log("不存在");
-
             this.storagePlayTime = storageData;
             this.storagePlayTimeLength = this.storagePlayTime.length;
           }
         } else {
           console.log("没storage");
-
           this.exitVideoPlayTime = false;
           this.canJumpPlay = false;
           this.storagePlayTime = [];
@@ -319,6 +323,15 @@ export default {
     });
   },
   methods: {
+    loadMore: function() {
+      this.busy = true;
+      let that = this;
+      setTimeout(() => {
+        this.pageNum++;
+        this.getMoreComment();
+        //  this.busy = false
+      }, 2000);
+    },
     zeroFill(num) {
       if (num < 10) {
         num = "0" + num;
@@ -337,7 +350,6 @@ export default {
     changeControl() {
       event.stopPropagation();
       console.log("点击了屏幕");
-
       if (!this.showControl) {
         this.showControl = true;
       } else if (this.showControl) {
@@ -354,18 +366,17 @@ export default {
           }
         }
       }
-
       return false;
     },
     // 播放或者暂停
     playOrPause() {
       event.stopPropagation();
       console.log("点击了按钮");
-
       this.showControl = false;
       if (this.$refs.video.paused) {
         this.$refs.video.play();
         this.isPlay = true;
+        this.canJumpPlay = false
       } else {
         this.$refs.video.pause();
         this.isPlay = false;
@@ -379,7 +390,6 @@ export default {
     drawbarDown(e) {
       // console.log(this.$refs.box.offsetTop);
       console.log(this.firstPoint(e).clientX);
-
       console.log(this.$refs.box.offsetLeft);
       this.progressDrag = true;
       if (!this.isFullScreen) {
@@ -420,7 +430,6 @@ export default {
     },
     updatesound(x, n) {
       console.log(this.$refs.vDurationbar.offsetTop);
-
       if (n) {
         this.soundPercent = n;
       } else {
@@ -443,9 +452,7 @@ export default {
       this.soundDrage = true;
       console.log(this.firstPoint(e).clientY);
       console.log(this.$refs.box);
-
       console.log(this.$refs.box.offsetTop);
-
       if (!this.isFullScreen) {
         this.updatesound(this.firstPoint(e).clientY - this.$refs.box.offsetTop);
       } else if (this.isFullScreen) {
@@ -474,15 +481,12 @@ export default {
     },
     updateprogress(x) {
       console.log("更新进度条");
-
       console.log(this.$refs.durationbar.offsetLeft);
       console.log(this.$refs.durationbar.offsetWidth);
-
       var percent =
         (100 * (x - this.$refs.durationbar.offsetLeft)) /
         this.$refs.durationbar.offsetWidth;
       console.log(percent);
-
       if (percent > 100) {
         percent = 100;
       }
@@ -520,21 +524,16 @@ export default {
     },
     timeUpdate(e) {
       console.log("wwww");
-
       let currentTime = e.target.currentTime;
       let duration = e.target.duration;
       let percent = (currentTime / duration) * 100;
-
       this.$refs.currentbar.style.width = percent + "%";
-
       this.currentTime = this.getTime(e.target.currentTime);
-
       if (this.currentTime == this.endTime) {
         // isPlay.className = "stop";
         this.isPlay = false;
       }
       let storage = window.localStorage;
-
       if (this.exitVideoPlayTime) {
         this.storagePlayTime[this.indexOfvideoId].playTime = this.currentTime;
         let playTimeArr = JSON.stringify(this.storagePlayTime);
@@ -542,7 +541,6 @@ export default {
         window.localStorage.setItem("videoPlayTime", playTimeArr);
       } else {
         console.log(this.storagePlayTime);
-
         // this.storagePlayTime.push({
         //   videoId: this.detail._id,
         //   playTime: this.currentTime
@@ -552,10 +550,8 @@ export default {
           videoId: this.detail._id,
           playTime: this.currentTime
         };
-
         let playTimeArr = JSON.stringify(this.storagePlayTime);
         console.log(playTimeArr);
-
         window.localStorage.setItem("videoPlayTime", playTimeArr);
       }
     },
@@ -564,23 +560,17 @@ export default {
       event.stopPropagation();
       let itemHeight = document.documentElement.clientHeight;
       let itemWidth = document.documentElement.clientWidth;
-
       console.log(itemHeight);
-
       if (!this.isFullScreen) {
         this.$refs.box.style.transform = "rotate(90deg)";
-
         this.$refs.box.style.height = itemWidth + "px";
         this.$refs.box.style.width = itemHeight + "px";
-
         this.$refs.box.style["margin-left"] = "100%";
         this.isFullScreen = true;
       } else if (this.isFullScreen) {
         this.$refs.box.style.transform = "rotate(0deg)";
-
         this.$refs.box.style.height = "4rem";
         this.$refs.box.style.width = "100%";
-
         this.$refs.box.style["margin-left"] = "0";
         this.isFullScreen = false;
       }
@@ -602,7 +592,6 @@ export default {
         .then(res => {
           // this.comment = res.data.comment.comment;
           let testData = res.data.test.test;
-
           for (let i = 0; i < testData.length; i++) {
             if (typeof testData.trueAnswer === "string") {
               testData[i].trueAnswer = testData[i].trueAnswer.split(",");
@@ -612,11 +601,9 @@ export default {
                 return opt;
               })
               .sort();
-
             Vue.set(this.checkedNames, `ans${i}`, []);
             Vue.set(this.formAnswer, `ans${i}`, []);
             console.log(this.checkedNames);
-
             if (testData[i].trueAnswer) {
               let arr = [];
               let arr1 = [];
@@ -628,7 +615,6 @@ export default {
               Vue.set(this.selectIcon, `ans${i}`, arr1);
             }
           }
-
           this.test = testData;
           console.log(this.test);
         });
@@ -643,13 +629,10 @@ export default {
           return (this.canSubmit = true);
         }
       });
-
       if (!this.canSubmit) {
         return alert("还有问题没有回答，请回答完毕再查看");
       }
-
       console.log(this.formAnswer);
-
       this.formAnswer.forEach((item, index) => {});
     },
     selectAns(ansIndex, queIndex) {
@@ -659,13 +642,11 @@ export default {
       if (!(this.checkedNames[`ans${queIndex}`] instanceof Array)) {
         // console.log(this.checkedNames[`ans${queIndex}`]);
         // console.log(typeof this.checkedNames[`ans${queIndex}`]);
-
         if (
           this.checkedNames[`ans${queIndex}`].length ==
           this.test[queIndex].trueAnswer.length
         ) {
           // console.log(this.checkedNames[`ans${queIndex}`]);
-
           if (
             this.checkedNames[`ans${queIndex}`]
               .split(",")
@@ -697,13 +678,10 @@ export default {
             this.test[queIndex].trueAnswer.sort().join(",")
           ) {
             console.log(`quandui`);
-
             for (let k = 0; k < this.test[queIndex].trueAnswer.length; k++) {
               let z = this.checkedNames[`ans${queIndex}`][k].charCodeAt() - 65;
-
               // console.log(z.charCodeAt() - 65)
               // 如果选的答案和正确答案有相同
-
               // 各种操作
               this.selectWord[`ans${queIndex}`][z] = false;
               this.selectIcon[`ans${queIndex}`][z] = true;
@@ -718,10 +696,8 @@ export default {
           } else {
             for (let k = 0; k < this.test[queIndex].trueAnswer.length; k++) {
               let z = this.checkedNames[`ans${queIndex}`][k].charCodeAt() - 65;
-
               // console.log(z.charCodeAt() - 65)
               // 如果选的答案和正确答案有相同
-
               // 各种操作
               this.selectWord[`ans${queIndex}`][z] = true;
               this.selectIcon[`ans${queIndex}`][z] = true;
@@ -743,7 +719,6 @@ export default {
           return this.$messagebox.alert("还有问题没有回答，请回答完毕再提交");
         }
       }
-
       let query = {
         formAnswer: this.formAnswer,
         trueCount: this.trueCount,
@@ -752,7 +727,6 @@ export default {
       };
       console.log(query);
       console.log(this.formAnswer);
-
       // this.$router.push({ path: "/testResult", query: query });
       this.axios
         .post("/api/submitTestAnswers", {
@@ -767,7 +741,6 @@ export default {
             return alert(res.data.message);
           }
           console.log(res.data);
-
           let query = {
             totalScore: this.totalScore,
             trueCount: this.trueCount,
@@ -784,7 +757,6 @@ export default {
     },
     getSubjectDetail() {
       console.log(this.$route.query);
-
       this.axios
         .get("/api/getSubjectDetail", {
           params: {
@@ -814,23 +786,45 @@ export default {
           this.aboutList = res.data.list;
         });
     },
-    getSubjectComment() {
+    getMoreComment() {
       this.axios
         .get("/api/getSubjectComment", {
           params: {
-            id: this.$route.query.id
+            id: this.$route.query.id,
+            pageNum: this.pageNum,
+            pageSize: this.pageSize
           }
         })
         .then(res => {
-          this.comment = res.data.comment;
-          console.log(this.comment);
+          console.log(res.data);
+          if (this.pageNum == 1 && res.data.comment <= 0) {
+            this.busy = true;
+            this.noData = true;
+          } else if (this.pageNum > 1 && res.data.comment <= 0) {
+            (this.busy = true), (this.noNewData = true);
+            this.loadText = "没有更多数据了";
+            this.pageNum = 0;
+          } else {
+            this.busy = false;
+            this.comment.push(...res.data.comment);
+            console.log(this.comment);
+          }
         });
+      // this.axios
+      //   .get("/api/getSubjectComment", {
+      //     params: {
+      //       id: this.$route.query.id
+      //     }
+      //   })
+      //   .then(res => {
+      //     this.comment = res.data.comment.comment;
+      //     console.log(this.comment);
+      //   });
     },
     sureAddComment() {
       if (this.videoComment.replace(/^\s+|\s+$/g, "").length <= 0) {
         return this.$messagebox.alert("请输入评论");
       }
-
       this.axios
         .post("/api/sureAddVideoComment", {
           videoId: this.$route.query.id,
@@ -846,7 +840,6 @@ export default {
     },
     gotoComment() {},
     collect() {
-      console.log('ooooo')
       if (!this.checkCollect) {
         this.checkCollect = true;
         this.collectImg = "/static/icon/collect-success.png";
@@ -877,7 +870,6 @@ export default {
         parseInt(timeArr[1]) * 60 +
         parseInt(timeArr[2]);
       console.log(sumTime);
-
       this.$refs.video.currentTime = sumTime;
       this.canJumpPlay = false;
       this.$refs.video.play();
@@ -894,7 +886,6 @@ export default {
   filters: {
     errorMes: function(str, index, trueAnswer) {
       let i = String.fromCharCode(65 + index);
-
       if (trueAnswer.indexOf(i) < 0) {
         return "错误答案";
       } else {
@@ -903,7 +894,6 @@ export default {
     },
     errorIcon: function(str, erric, index, trueAnswer) {
       let i = String.fromCharCode(65 + index);
-
       if (trueAnswer.indexOf(i) < 0) {
         return erric;
       } else {
@@ -973,13 +963,11 @@ export default {
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%);
-      // margin:
+      transform: translate(-50%, -0%);
       background: rgba(#ccc, 0.2);
       color: #fff;
       text-align: center;
       line-height: 0.8rem;
-      // z-index: 217483650;
     }
     .control {
       transition: bottom 0.5s linear 0s;
@@ -1058,12 +1046,10 @@ export default {
         // align-items: center;
         // justify-content: center;
       }
-
       .volume {
         margin: 0 0.2rem;
       }
     }
-
     .icon {
       position: absolute;
       top: 0rem;
@@ -1128,15 +1114,8 @@ export default {
     .caozuo-xiangqing {
       flex: 1;
       text-align: center;
-      font-size: 0;
-      .img {
-        background-image: url("../../assets/icon/watched.png");
-      }
       .tubiao {
-        background-image: url("../../assets/icon/share.png");
-        background-repeat: no-repeat;
-        background-size: 100% 100%;
-        -moz-background-size: 100% 100%;
+        font-size: 0.4rem;
       }
       .shuliang {
         color: #ccc;
@@ -1187,7 +1166,7 @@ export default {
     .xiangguan-shipin {
       display: flex;
       .xiangguan-xiang {
-        flex: 1;
+        flex: 0 0 33.33%;
         img {
           width: 100%;
         }
@@ -1221,6 +1200,12 @@ export default {
     background: #eee;
     padding: 0 0.2rem;
   }
+  .NewData {
+    text-align: center;
+    height: 0.6rem;
+    line-height: 0.6rem;
+    font-size: 0.26rem;
+  }
   .pinglunqu-xijie {
     margin-bottom: 1rem;
     .pinglun-xijie {
@@ -1232,7 +1217,6 @@ export default {
         padding: 0.2rem 0.2rem 0.2rem 0;
         .pl {
           display: flex;
-
           // padding: 0.2rem 0;
           img {
             width: 0.55rem;

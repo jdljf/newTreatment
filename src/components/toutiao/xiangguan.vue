@@ -89,17 +89,6 @@ export default {
             this.collecteds.push(...res.data.collecteds);
           }
         });
-
-      // this.axios
-      //   .get("/api/getAboutVideo", {
-      //     params: {
-      //       id: this.$route.query.id
-      //     }
-      //   })
-      //   .then(res => {
-      //     this.aboutList = res.data.list;
-      //     this.collecteds = res.data.collecteds;
-      //   });
     },
     collectAboutVideo(id, index) {
       if (this.collecteds[index] == false) {
