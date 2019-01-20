@@ -21,10 +21,10 @@
             <span class="">{{curriculum.lastLearn.split('T')[1].split('.')[0]}}</span>
           </div>
         </div>
-        <div class="you">
+        <!-- <div class="you">
           <div class="jindu">{{curriculum.progress}}%</div>
           <div class="zhuangtai">已通过</div>
-        </div>
+        </div> -->
       </li>
     </ul>
   </div>

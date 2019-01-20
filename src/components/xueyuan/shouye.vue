@@ -21,10 +21,10 @@
         <img src="../../assets/kecheng_logo.png" alt>
         <div>课程</div>
       </router-link>
-      <div class="gongneng-xiang">
+      <!-- <div class="gongneng-xiang">
         <img src="../../assets/ketang_logo.png" alt>
         <div>我的课堂</div>
-      </div>
+      </div> -->
       <router-link to="/headline" class="gongneng-xiang">
         <img src="../../assets/toutiao_logo.png" alt>
         <div>头条视讯</div>
@@ -85,7 +85,7 @@
         </div>-->
       </div>
     </div>
-
+    <div></div>
     <div class="xinxiliu">
       <div class="toubu">
         <span
@@ -96,7 +96,7 @@
         >{{flowClassify.name}}</span>
       </div>
 
-      <div v-if="noData"  class="NewData">暂时没有数据</div>
+      <div v-if="noData" class="NewData">暂时没有数据</div>
       <ul class="liebiao">
         <li class="liebiao-xiang" v-for="(videos, index) in videos">
           <div @click="gotoDetail(index)" v-if="videos.isVideo">
@@ -107,7 +107,8 @@
             <div class="miaoshu">{{videos.title}}</div>
 
             <div class="caozuo">
-              <span class="left">{{videos.durationTime}}分钟前</span>
+              <!-- <span class="left">{{videos.durationTime}}分钟前</span> -->
+              <span class="left">{{timeFn(videos.createTime)}}前</span>
               <span class="right">
                 <i class="iconfont icon-guankan01"></i>
                 <span>{{videos.watched}}</span>
@@ -122,7 +123,7 @@
               <div class="wenzi">{{videos.title}}</div>
             </div>
             <div class="caozuo">
-              <span class="left">{{videos.durationTime}}分钟前</span>
+              <span class="left">{{timeFn(videos.createTime)}}前</span>
               <span class="right">
                 <i class="iconfont icon-guankan01"></i>
                 <span>{{videos.watched}}</span>
@@ -191,8 +192,9 @@ export default {
       checkedindex: 0,
       noData: false,
       noNewData: false,
-      loadText: "加载中"
+      loadText: "加载中",
       // classify: []
+      time: ""
     };
   },
   computed: {
@@ -209,6 +211,7 @@ export default {
     // this.getFlowClassify();
     this.getInformationFlow();
     console.log(this.$store.getters);
+    // this.timeFn()
   },
   methods: {
     initSwiper() {
@@ -295,6 +298,8 @@ export default {
             this.busy = false;
             this.videos = res.data.videos;
           }
+
+          // console.log(this.timeFn(this.videos[0].createTime))
         });
     },
     getMoreInformationFlow(dataName, index = "") {
@@ -320,6 +325,80 @@ export default {
             this.videos.push(...res.data.videos);
           }
         });
+    },
+    timeFn(di) {
+      //di作为一个变量传进来
+      //如果时间格式是正确的，那下面这一步转化时间格式就可以不用了
+      // var dateBegin = new Date(d1.replace(/-/g, "/")); //将-转化为/，使用new Date
+      console.log(di);
+      
+      var dateBegin = di.split(".")[0]
+        .replace("-/g", "/")
+        .replace("T", " ");
+        
+        console.log(dateBegin);
+        
+      dateBegin = new Date(dateBegin)
+      var dateEnd = new Date(); //获取当前时间
+      var dateDiff = dateEnd.getTime() - dateBegin.getTime(); //时间差的毫秒数
+      var dayDiff = Math.floor(dateDiff / (24 * 3600 * 1000)); //计算出相差天数
+      var leave1 = dateDiff % (24 * 3600 * 1000); //计算天数后剩余的毫秒数
+      var hours = Math.floor(leave1 / (3600 * 1000)); //计算出小时数
+      //计算相差分钟数
+      var leave2 = leave1 % (3600 * 1000); //计算小时数后剩余的毫秒数
+      var minutes = Math.floor(leave2 / (60 * 1000)); //计算相差分钟数
+      //计算相差秒数
+      var leave3 = leave2 % (60 * 1000); //计算分钟数后剩余的毫秒数
+      var seconds = Math.round(leave3 / 1000);
+      // console.log(
+      //   " 相差 " +
+      //     dayDiff +
+      //     "天 " +
+      //     hours +
+      //     "小时 " +
+      //     minutes +
+      //     " 分钟" +
+      //     seconds +
+      //     " 秒"
+      // );      
+      if (dayDiff > 0 && hours >=0 && minutes >=0 && seconds >=0) {
+        return dayDiff + '天'
+      }
+      else if (dayDiff <= 0 && hours >0 && minutes >=0 && seconds >=0){
+        return hours + '小时'
+      }
+      else if (dayDiff <= 0 && hours <=0 && minutes >0 && seconds >=0){
+        return minutes + '分钟'
+      }
+      else if (dayDiff <= 0 && hours <=0 && minutes <=0 && seconds >0) {
+        return seconds + '秒'
+      }
+    },
+    getDays() {
+      //构造当前日期对象
+      var date = new Date();
+      var year = date.getFullYear(); //获取年份
+      var mouth = date.getMonth() + 1; //获取当前月份
+      var days; //定义当月的天数；
+      if (mouth == 2) {
+        //当月份为二月时，根据闰年还是非闰年判断天数
+        days = year % 4 == 0 ? 29 : 28;
+      } else if (
+        mouth == 1 ||
+        mouth == 3 ||
+        mouth == 5 ||
+        mouth == 7 ||
+        mouth == 8 ||
+        mouth == 10 ||
+        mouth == 12
+      ) {
+        //月份为：1,3,5,7,8,10,12 时，为大月.则天数为31；
+        days = 31;
+      } else {
+        //其他月份，天数为：30.
+        days = 30;
+      }
+      return days;
     },
     loadMore: function() {
       this.busy = true;
