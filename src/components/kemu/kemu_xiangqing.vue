@@ -846,6 +846,7 @@ export default {
     },
     gotoComment() {},
     collect() {
+      console.log('ooooo')
       if (!this.checkCollect) {
         this.checkCollect = true;
         this.collectImg = "/static/icon/collect-success.png";
