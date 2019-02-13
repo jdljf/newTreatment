@@ -59,7 +59,7 @@ export default {
             console.log(storage["token"]);
             let token = res.data.token;
             console.log(token);
-            
+
             this.$store.dispatch("UserLogin", token);
             //如果用户手动输入"/"那么会跳转到这里来，即this.$route.query.redirect有参数
             let redirectUrl = decodeURIComponent(
@@ -78,11 +78,11 @@ export default {
     gotoRegister() {
       this.$router.push({ path: "/register" });
     },
-    gotoChangeForgetPas(){
+    gotoChangeForgetPas() {
       this.$router.push({
-        path: '/forgetPassword'
+        path: "/forgetPassword"
       });
-    },
+    }
   }
 };
 </script>
@@ -99,11 +99,12 @@ export default {
   .yaoqiu {
     border-bottom: 1px solid #ccc;
     height: 0.8rem;
-    line-height: 0.8rem;
     font-size: 0.29rem;
     display: flex;
     .xinxi {
       width: 0.8rem;
+      display: flex;
+      align-items: center;
     }
     .shuru {
       flex: 1;
@@ -113,8 +114,8 @@ export default {
         box-sizing: border-box;
         outline: none;
         border: 0 none;
-        vertical-align: top;
         font-size: 0.29rem;
+        line-height: 0.8rem;
       }
     }
   }
