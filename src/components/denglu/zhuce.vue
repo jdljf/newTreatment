@@ -343,18 +343,22 @@ export default {
     .yaoqiu {
       border-bottom: 1px solid #ccc;
       height: 0.8rem;
-      line-height: 0.8rem;
       font-size: 0.27rem;
       display: flex;
       margin: 0 0 0.2rem 0;
       .xinxi {
         width: 1.3rem;
+        display: flex;
+        align-items: center;
       }
       .zhong {
         position: relative;
         flex: 1;
         overflow: hidden;
         color: #8b8b8b;
+        display: flex;
+        align-items: center;
+        flex-flow: row-reverse;
         input {
           width: 100%;
           height: 100%;
@@ -384,11 +388,14 @@ export default {
           box-sizing: border-box;
           outline: none;
           border: 0 none;
-          vertical-align: top;
           font-size: 0.29rem;
+          line-height: 0.8rem;
         }
       }
       .huoqu {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         .yanzhengma {
           padding: 0.1rem 0.2rem;
           box-sizing: border-box;
