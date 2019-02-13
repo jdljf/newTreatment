@@ -24,7 +24,7 @@
       <!-- <div class="gongneng-xiang">
         <img src="../../assets/ketang_logo.png" alt>
         <div>我的课堂</div>
-      </div> -->
+      </div>-->
       <router-link to="/headline" class="gongneng-xiang">
         <img src="../../assets/toutiao_logo.png" alt>
         <div>头条视讯</div>
@@ -75,14 +75,6 @@
           <img :src="subClassifyImgs[index]" alt>
           <div>{{classify.name}}</div>
         </div>
-        <!-- <div class="fenlei-xiang">
-          <img src="../../assets/gonggong_logo.png" alt>
-          <div>公共卫生</div>
-        </div>
-        <div class="fenlei-xiang">
-          <img src="../../assets/linchuang_logo.png" alt>
-          <div>临床实践</div>
-        </div>-->
       </div>
     </div>
     <div></div>
@@ -331,14 +323,15 @@ export default {
       //如果时间格式是正确的，那下面这一步转化时间格式就可以不用了
       // var dateBegin = new Date(d1.replace(/-/g, "/")); //将-转化为/，使用new Date
       console.log(di);
-      
-      var dateBegin = di.split(".")[0]
+
+      var dateBegin = di
+        .split(".")[0]
         .replace("-/g", "/")
         .replace("T", " ");
-        
-        console.log(dateBegin);
-        
-      dateBegin = new Date(dateBegin)
+
+      console.log(dateBegin);
+
+      dateBegin = new Date(dateBegin);
       var dateEnd = new Date(); //获取当前时间
       var dateDiff = dateEnd.getTime() - dateBegin.getTime(); //时间差的毫秒数
       var dayDiff = Math.floor(dateDiff / (24 * 3600 * 1000)); //计算出相差天数
@@ -360,18 +353,15 @@ export default {
       //     " 分钟" +
       //     seconds +
       //     " 秒"
-      // );      
-      if (dayDiff > 0 && hours >=0 && minutes >=0 && seconds >=0) {
-        return dayDiff + '天'
-      }
-      else if (dayDiff <= 0 && hours >0 && minutes >=0 && seconds >=0){
-        return hours + '小时'
-      }
-      else if (dayDiff <= 0 && hours <=0 && minutes >0 && seconds >=0){
-        return minutes + '分钟'
-      }
-      else if (dayDiff <= 0 && hours <=0 && minutes <=0 && seconds >0) {
-        return seconds + '秒'
+      // );
+      if (dayDiff > 0 && hours >= 0 && minutes >= 0 && seconds >= 0) {
+        return dayDiff + "天";
+      } else if (dayDiff <= 0 && hours > 0 && minutes >= 0 && seconds >= 0) {
+        return hours + "小时";
+      } else if (dayDiff <= 0 && hours <= 0 && minutes > 0 && seconds >= 0) {
+        return minutes + "分钟";
+      } else if (dayDiff <= 0 && hours <= 0 && minutes <= 0 && seconds > 0) {
+        return seconds + "秒";
       }
     },
     getDays() {
@@ -558,6 +548,8 @@ export default {
       overflow: auto;
       white-space: nowrap;
       font-size: 0.26rem;
+      width: 100%;
+      box-sizing: border-box;
       .icon {
         margin-right: 0.2rem;
       }
@@ -566,6 +558,9 @@ export default {
         display: inline-block;
         box-sizing: border-box;
         height: 100%;
+        &:last-child {
+          margin: 0;
+        }
       }
       .active {
         border-bottom: 4px solid #19e889;
