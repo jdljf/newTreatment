@@ -51,12 +51,9 @@
         <div class="you" v-show="!showAdd">
           <i class="iconfont icon-qianjin qianjin"></i>
         </div>
-        <div class="zhong" v-show="showAdd" @click="changeAdd = true">
-          <input type="text" v-bind:value="area">
+        <div class="zhong" v-show="showAdd" @click="changeAdd = true" :class="{left: showAdd}">
+          <div class="xiangxi">{{area}}</div>
         </div>
-        <!-- <div class="shuru">
-          <input type="text" v-model="person.phoneNumber" placeholder="请输入手机号" class="shurukuang">
-        </div>-->
       </div>
       <div class="yaoqiu">
         <span class="xinxi">执业地址</span>
@@ -71,10 +68,7 @@
         <span class="tiaokuan" @click="showClause">《服务条款》</span>
       </div>
     </div>
-    <!-- <div style="width: 100%;height: 300px;">
-      
-      <p>地址3级联动：</p>
-    </div>-->
+
     <div class="zezao" v-show="changeAva" @click="changeAva = false">
       <div class="xiangce">相册</div>
       <div class="paishe">拍摄</div>
@@ -336,7 +330,7 @@ export default {
         .qianjin {
           padding-left: 0.1rem;
           text-align: right;
-          color: #d5d5d5;
+          color: #8b8b8b;
         }
       }
     }
@@ -359,15 +353,10 @@ export default {
         display: flex;
         align-items: center;
         flex-flow: row-reverse;
-        input {
-          width: 100%;
-          height: 100%;
-          outline: none;
-          border: 0 none;
-        }
-        .xiangxi {
-          text-align: right;
-        }
+        font-size: 0.29rem;
+      }
+      .left {
+        flex-flow: row;
       }
       .you {
         display: flex;
@@ -377,7 +366,7 @@ export default {
         .qianjin {
           padding-left: 0.1rem;
           text-align: right;
-          color: #ccc;
+          color: #8b8b8b;
         }
       }
       .shuru {
@@ -390,6 +379,26 @@ export default {
           border: 0 none;
           font-size: 0.29rem;
           line-height: 0.8rem;
+          color: #8b8b8b;
+        }
+
+        input::-webkit-input-placeholder {
+          /* WebKit browsers */
+          color: #8b8b8b;
+        }
+        input:-moz-placeholder {
+          /* Mozilla Firefox 4 to 18 */
+          color: #8b8b8b;
+          opacity: 1;
+        }
+        input::-moz-placeholder {
+          /* Mozilla Firefox 19+ */
+          color: #8b8b8b;
+          opacity: 1;
+        }
+        input::-ms-input-placeholder {
+          /* Internet Explorer 10+ */
+          color: #8b8b8b;
         }
       }
       .huoqu {
