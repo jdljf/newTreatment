@@ -94,36 +94,43 @@
       </div>
 
       <div class="tiaokuan_neiorng">
-        <p
-          class="xiangqing"
-        >我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。</p>
-        <p
-          class="xiangqing"
-        >我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。</p>
-        <p
-          class="xiangqing"
-        >我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。</p>
-        <p
-          class="xiangqing"
-        >我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。</p>
-        <p
-          class="xiangqing"
-        >我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。</p>
-        <p
-          class="xiangqing"
-        >我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。</p>
-        <p
-          class="xiangqing"
-        >我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。</p>
-        <p
-          class="xiangqing"
-        >我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。</p>
-        <p
-          class="xiangqing"
-        >我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。</p>
-        <p
-          class="xiangqing"
-        >我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。我是服务条款文字内容。</p>
+        <ul class="bigTitle">
+          <li class="bigTitle-item">本网站服务条款的确认和接纳</li>
+          <ul class="title">
+            <li class="title-item">本网站各项服务的所有权和运作权归本网站拥有。</li>
+          </ul>
+          <li class="bigTitle-item">用户必须：</li>
+          <ul class="title">
+            <li class="title-item">自行配备上网的所需设备， 包括个人电脑、调制解调器或其他必备上网装置</li>
+            <li class="title-item">自行负担个人上网所支付的与此服务有关的电话费用、 网络费用</li>
+          </ul>
+          <li class="bigTitle-item">用户在本网站上交易平台上不得发布下列违法信息</li>
+          <ul class="title">
+            <li class="title-item">反对宪法所确定的基本原则的；</li>
+            <li class="title-item">危害国家安全，泄露国家秘密，颠覆国家政权，破坏国家统一的；</li>
+            <li class="title-item">损害国家荣誉和利益的</li>
+            <li class="title-item">煽动民族仇恨、民族歧视，破坏民族团结的</li>
+            <li class="title-item">破坏国家宗教政策，宣扬邪教和封建迷信的</li>
+            <li class="title-item">散布谣言，扰乱社会秩序，破坏社会稳定的</li>
+            <li class="title-item">散布淫秽、色情、赌博、暴力、凶杀、恐怖或者教唆犯罪的</li>
+            <li class="title-item">侮辱或者诽谤他人，侵害他人合法权益的</li>
+            <li class="title-item">含有法律、行政法规禁止的其他内容的</li>
+          </ul>
+          <li class="bigTitle-item">有关个人资料，用户需同意</li>
+          <ul class="title">
+            <li class="title-item">提供及时、详尽及准确的个人资料</li>
+            <li class="title-item">同意接收来自本网站的信息</li>
+            <li class="title-item">不断更新注册资料，符合及时、详尽准确的要求。所有原始键入的资料将引用为注册资料</li>
+            <li class="title-item">本网站不公开用户的姓名、地址、电子邮箱和笔名，以下情况除外</li>
+            <ul class="smallTitle">
+              <li class="smallTitle-item">用户授权本网站透露这些信息</li>
+              <li
+                class="smallTitle-item"
+              >相应的法律及程序要求本网站提供用户的个人资料。如果用户提供的资料包含有不正确的信息，本网站保留结束用户使用本网站信息服务资格的权利</li>
+            </ul>
+          </ul>
+        </ul>
+
         <div class="tongyi">
           <input type="checkbox" v-model="agree">
           <span>同意</span>
@@ -514,7 +521,31 @@ export default {
     background: #fff;
     overflow: scroll;
     .tiaokuan_neiorng {
-      padding: 0.3rem 0.3rem 0.3rem 0.3rem;
+      padding: 0.3rem 0.3rem 0.3rem 0.6rem;
+      .bigTitle {
+        list-style-type: decimal;
+        .bigTitle-item {
+          font-size: 0.28rem;
+          padding: 0 0 0.18rem 0;
+          font-weight: 600;
+        }
+        .title {
+          list-style-type: lower-latin;
+          padding: 0 0 0 0.3rem;
+          font-size: 0.25rem;
+          .title-item {
+            padding: 0 0 0.15rem 0rem;
+          }
+          .smallTitle {
+            list-style-type: lower-roman;
+            padding: 0 0 0 0.3rem;
+            font-size: 0.25rem;
+            .smallTitle-item {
+              padding: 0 0 0.15rem 0;
+            }
+          }
+        }
+      }
       .xiangqing {
         font-size: 0.28rem;
         line-height: 0.4rem;
