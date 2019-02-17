@@ -161,6 +161,7 @@
     </div>
 
     <div v-if="istest" class="ceyan">
+      <div v-if="istest && test.length <= 0" style="text-align: center">{{testWord}}</div>
       <div class="form">
         <ul>
           <li class="timu" v-for="(test, index) in test">
@@ -187,7 +188,7 @@
             </ul>
           </li>
         </ul>
-        <span class="jiaojuan" @click="submitAnswers">交卷</span>
+        <span class="jiaojuan" v-if="test.length > 0" @click="submitAnswers">交卷</span>
       </div>
     </div>
   </div>
@@ -206,6 +207,7 @@ export default {
       aboutList: [],
       istest: false,
       test: [],
+      testWord: "加载中",
       checkedNames: {},
       formAnswer: {},
       canSubmit: false,
@@ -234,7 +236,7 @@ export default {
       loadText: "加载中",
       // 视频数据
       isFullScreen: false,
-      currentTime: "0:00",
+      currentTime: "00:00:00",
       endTime: "",
       isPlay: false,
       showControl: false,
@@ -376,7 +378,7 @@ export default {
       if (this.$refs.video.paused) {
         this.$refs.video.play();
         this.isPlay = true;
-        this.canJumpPlay = false
+        this.canJumpPlay = false;
       } else {
         this.$refs.video.pause();
         this.isPlay = false;
@@ -582,7 +584,6 @@ export default {
       });
     },
     gotoTest() {
-      this.istest = true;
       this.axios
         .get("/api/getTest", {
           params: {
@@ -591,32 +592,39 @@ export default {
         })
         .then(res => {
           // this.comment = res.data.comment.comment;
-          let testData = res.data.test.test;
-          for (let i = 0; i < testData.length; i++) {
-            if (typeof testData.trueAnswer === "string") {
-              testData[i].trueAnswer = testData[i].trueAnswer.split(",");
-            }
-            testData[i].trueAnswer = testData[i].trueAnswer
-              .map(function(opt, index) {
-                return opt;
-              })
-              .sort();
-            Vue.set(this.checkedNames, `ans${i}`, []);
-            Vue.set(this.formAnswer, `ans${i}`, []);
-            console.log(this.checkedNames);
-            if (testData[i].trueAnswer) {
-              let arr = [];
-              let arr1 = [];
-              for (let j = 0; j < testData[i].answer.length; j++) {
-                arr.push(false);
-                arr1.push(false);
+          this.$nextTick(() => {
+            this.istest = true;
+            let testData = res.data.test.test;
+            if (testData.length > 0) {
+              for (let i = 0; i < testData.length; i++) {
+                if (typeof testData.trueAnswer === "string") {
+                  testData[i].trueAnswer = testData[i].trueAnswer.split(",");
+                }
+                testData[i].trueAnswer = testData[i].trueAnswer
+                  .map(function(opt, index) {
+                    return opt;
+                  })
+                  .sort();
+                Vue.set(this.checkedNames, `ans${i}`, []);
+                Vue.set(this.formAnswer, `ans${i}`, []);
+                console.log(this.checkedNames);
+                if (testData[i].trueAnswer) {
+                  let arr = [];
+                  let arr1 = [];
+                  for (let j = 0; j < testData[i].answer.length; j++) {
+                    arr.push(false);
+                    arr1.push(false);
+                  }
+                  Vue.set(this.selectWord, `ans${i}`, arr);
+                  Vue.set(this.selectIcon, `ans${i}`, arr1);
+                }
               }
-              Vue.set(this.selectWord, `ans${i}`, arr);
-              Vue.set(this.selectIcon, `ans${i}`, arr1);
+              this.test = testData;
+            } else {
+              this.testWord = "暂时没有试题";
             }
-          }
-          this.test = testData;
-          console.log(this.test);
+            console.log(this.test);
+          });
         });
     },
     seeResult() {
@@ -963,7 +971,7 @@ export default {
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -0%);
+      transform: translate(-50%, -50%);
       background: rgba(#ccc, 0.2);
       color: #fff;
       text-align: center;
@@ -1104,7 +1112,7 @@ export default {
     }
   }
   .miaoshu {
-    padding: 0rem 0.2rem;
+    padding: 0.12rem 0.2rem 0;
     font-size: 0.28rem;
     margin-bottom: 0.2rem;
   }

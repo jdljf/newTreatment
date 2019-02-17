@@ -143,12 +143,12 @@
         <div class="iconfont icon-shuben icon"></div>
         <div class="xuanze">学院</div>
       </div>
-      <div class="dibu-xiang">
+      <!-- <div class="dibu-xiang">
         <div class="baiyuan">
           <div class="cha">X</div>
         </div>
         <div class="xuanze">挑战</div>
-      </div>
+      </div> -->
       <div class="dibu-xiang" @click="gotoPersonCenter">
         <div class="iconfont icon-home icon"></div>
         <div class="xuanze">我的</div>
@@ -431,7 +431,8 @@ export default {
         path: "/subjectDetail",
         query: {
           // index: index,
-          id: this.videos[index]._id
+          id: this.videos[index]._id,
+          canStudy: this.videos[index].canStudy
         }
       });
     },
