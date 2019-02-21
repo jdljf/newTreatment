@@ -78,7 +78,7 @@ export default {
       } else if (!/^1[34578]\d{9}$/.test(this.forgetPas.phoneNumber)) {
         return this.$messagebox.alert("请输入正确手机号");
       }
-      
+
       if (this.verificationCode.replace(/^\s+|\s+$/g, "").length <= 0) {
         return this.$messagebox.alert("请输入验证码");
       }
@@ -191,12 +191,13 @@ export default {
     .yaoqiu {
       border-bottom: 1px solid #ccc;
       height: 0.8rem;
-      line-height: 0.8rem;
       font-size: 0.27rem;
       display: flex;
       margin: 0 0 0.2rem 0;
       .xinxi {
         width: 1.3rem;
+        display: flex;
+        align-items: center;
       }
       .zhong {
         position: relative;
@@ -232,11 +233,14 @@ export default {
           box-sizing: border-box;
           outline: none;
           border: 0 none;
-          vertical-align: top;
           font-size: 0.29rem;
+          line-height: 0.8rem;
         }
       }
       .huoqu {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         .yanzhengma {
           padding: 0.1rem 0.2rem;
           box-sizing: border-box;

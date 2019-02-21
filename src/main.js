@@ -77,6 +77,9 @@ router.beforeEach((to, from, next) => {
   console.log('跳转前', to)
   let token = store.state.token;
   //判断要去的路由有没有requiresAuth
+  if (to.meta.title) {//判断是否有标题
+    document.title = to.meta.title
+  }
   if (to.meta.requiresAuth) {
 
     if (token) {
@@ -93,6 +96,8 @@ router.beforeEach((to, from, next) => {
   } else {
     next();
   }
+  
+  next()//执行进入路由，如果不写就不会进入目标页
 })
 
 router.afterEach((to, from, next) => {

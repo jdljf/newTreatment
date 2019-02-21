@@ -25,7 +25,7 @@
             </div> -->
           </div>
 
-          <div class="miaoshu">{{ subject.describe }}</div>
+          <div class="miaoshu">{{ subject.title }}</div>
 
           <div class="caozuo">
             <i class="iconfont icon-guankan01"></i>
@@ -177,7 +177,7 @@ export default {
 
       this.$router.push({
         path: "/subjectDetail",
-        query: { index: index, id: this.$route.query.id }
+        query: { index: index, id: this.subject[index]._id,canStudy: this.subject[index].canStudy }
       });
     },
     huitui() {

@@ -7,15 +7,7 @@
 
     <div class="neirong">
       <img class="tu" src="../../assets/kecheng.png" alt>
-      <p class="xiangqing" v-for="content in handout.content">{{content}}</p>
-      <!-- <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p> -->
+      <p class="xiangqing" v-for="content in handout">{{content}}</p>
     </div>
 
     <div class="caozuo">
@@ -106,6 +98,8 @@ export default {
         })
         .then(res => {
           this.handout = res.data.handout;
+          console.log(res.data);
+          
         });
     },
     getSubjectDetail() {
@@ -131,7 +125,7 @@ export default {
           }
         })
         .then(res => {
-          this.comment = res.data.comment.comment;
+          this.comment = res.data.comment;
           console.log(this.comment);
         });
     },
