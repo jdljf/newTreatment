@@ -13,7 +13,10 @@
             <p class="xiangxi" v-for="detail in messageDetail.detail">{{detail}}</p>
           </div>
 
-          <p class="shijian">{{messageDetail.create_Time.substring(0, 10)}}</p>
+          <p
+            class="shijian"
+            v-if="messageDetail.create_Time!==undefined"
+          >{{messageDetail.create_Time.substring(0, 10)}}</p>
         </div>
       </li>
       <li class="liebiao-xiang" v-for="perReply in messageDetail.messageDetail">
@@ -23,13 +26,14 @@
             <p class="xiangxi">{{perReply.detail}}</p>
           </div>
 
-          <p class="shijian">{{perReply.createTime}}</p>
+          <p class="shijian" v-if="perReply.create_Time!==undefined">{{perReply.create_Time.substring(0, 10)}}</p>
         </div>
       </li>
     </ul>
 
     <div class="huifu" v-if="comment">
-      <input type="text" class="huifukuang" placeholder="写点什么吧！">
+      <input v-model="personComment" type="text" class="huifukuang" placeholder="写点什么吧！">
+      <span @click="sureAddComment" class="queding">确定</span>
     </div>
   </div>
 </template>
@@ -41,12 +45,11 @@ export default {
     return {
       messageDetail: {},
       header: "",
-      comment: true
+      comment: true,
+      personComment: ""
     };
   },
   mounted() {
-    console.log("dasdasdd");
-
     console.log(this.$route.query);
 
     this.getMyMessageDetail();
@@ -63,21 +66,39 @@ export default {
       this.axios
         .get("/api/getMyMessageDetail", {
           params: {
-            id: this.$route.query.id,
-            index: this.$route.query.index
+            // id: this.$route.query.id,
+            messageId: this.$route.query.messageId
           }
         })
         .then(res => {
           this.messageDetail = res.data.message;
-          console.log(this.message);
+          console.log(this.messageDetail);
         });
     },
-    huitui(){
-      if (this.$route.query.goindex === 'true') {
-        this.$router.push('/')
+    sureAddComment() {
+      console.log(this.personComment);
+
+      if (this.personComment.replace(/^\s+|\s+$/g, "").length <= 0) {
+        return this.$messagebox.alert("请输入评论");
       }
-      else {
-        this.$router.back(-1)
+
+      this.axios
+        .post("/api/sureAddComment", {
+          commentId: this.$route.query.messageId,
+          personComment: this.personComment,
+          create_Time: new Date().toLocaleString()
+        })
+        .then(res => {
+          if (res.data.err_code === 200) {
+            location.reload()
+          }
+        });
+    },
+    huitui() {
+      if (this.$route.query.goindex === "true") {
+        this.$router.push("/");
+      } else {
+        this.$router.back(-1);
       }
     }
   }
@@ -142,8 +163,10 @@ export default {
     background: #fff;
     padding: 0.15rem 0.2rem;
     box-sizing: border-box;
+    display: flex;
     .huifukuang {
-      width: 100%;
+      // width: 100%;
+      flex: 1;
       height: 100%;
       background: #eee;
       outline: none;
@@ -151,6 +174,15 @@ export default {
       box-sizing: border-box;
       font-size: 0.2rem;
       padding: 0 0 0 0.15rem;
+    }
+    .queding {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 0.9rem;
+      font-size: 0.25rem;
+      color: #19e889;
+      // background: #ccc;
     }
   }
 }

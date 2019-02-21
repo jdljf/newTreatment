@@ -53,8 +53,8 @@ export default {
         if (err_code == 0) {
           this.$router.push({path: '/changePhone'})
         }
-        else if (err_code == 1) {
-          alert('请填写验证码')
+        else {
+          this.$messagebox.alert(res.data.message)
         }
       })        
     },

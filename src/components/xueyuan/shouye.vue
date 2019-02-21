@@ -2,9 +2,12 @@
   <div class="shouye">
     <div class="swiper-container">
       <div class="swiper-wrapper">
-        <div class="swiper-slide">Slide 1</div>
+        <div v-for="banner in banner" class="swiper-slide">
+          <img v-bind:src=" '/api' + banner " alt>
+        </div>
+        <!-- <div class="swiper-slide">Slide 1</div>
         <div class="swiper-slide">Slide 2</div>
-        <div class="swiper-slide">Slide 3</div>
+        <div class="swiper-slide"></div>-->
       </div>
       <!-- 如果需要分页器 -->
       <div class="swiper-pagination"></div>
@@ -12,16 +15,16 @@
       <!-- <div class="swiper-button-prev"></div>
       <div class="swiper-button-next"></div>-->
     </div>
-    
+
     <div class="gongneng">
       <router-link to="/curriculum" class="gongneng-xiang">
         <img src="../../assets/kecheng_logo.png" alt>
         <div>课程</div>
       </router-link>
-      <div class="gongneng-xiang">
+      <!-- <div class="gongneng-xiang">
         <img src="../../assets/ketang_logo.png" alt>
         <div>我的课堂</div>
-      </div>
+      </div>-->
       <router-link to="/headline" class="gongneng-xiang">
         <img src="../../assets/toutiao_logo.png" alt>
         <div>头条视讯</div>
@@ -40,7 +43,16 @@
     <div class="kemufenlei">
       <div class="biaoti">科目分类</div>
       <div class="fenlei">
-        <div class="fenlei-xiang">
+        <div
+          @click="gotoSubject(index)"
+          class="fenlei-xiang"
+          v-for="(classify, index) in classify"
+          v-if="index < 3"
+        >
+          <img :src="subClassifyImgs[index]" alt>
+          <div>{{classify.name}}</div>
+        </div>
+        <!-- <div class="fenlei-xiang">
           <img src="../../assets/renwen_logo.png" alt>
           <div>医学人文</div>
         </div>
@@ -51,29 +63,32 @@
         <div class="fenlei-xiang">
           <img src="../../assets/xiyi_logo.png" alt>
           <div>西医</div>
-        </div>
+        </div>-->
       </div>
       <div class="fenlei">
-        <div class="fenlei-xiang">
-          <img src="../../assets/zhongyi_logo.png" alt>
-          <div>中医</div>
-        </div>
-        <div class="fenlei-xiang">
-          <img src="../../assets/gonggong_logo.png" alt>
-          <div>公共卫生</div>
-        </div>
-        <div class="fenlei-xiang">
-          <img src="../../assets/linchuang_logo.png" alt>
-          <div>临床实践</div>
+        <div
+          @click="gotoSubject(index)"
+          class="fenlei-xiang"
+          v-for="(classify, index) in classify"
+          v-if="index >=3&&index<=6"
+        >
+          <img :src="subClassifyImgs[index]" alt>
+          <div>{{classify.name}}</div>
         </div>
       </div>
     </div>
-
+    <div></div>
     <div class="xinxiliu">
       <div class="toubu">
-        <span v-for="flowClassify in flowClassify" class="kemu_zhonglei">{{flowClassify.title}}</span>
+        <span
+          @click="getInformationFlow(flowClassify.dataName, index)"
+          :class="{active: index==checkedindex}"
+          v-for="(flowClassify, index) in flowClassify"
+          class="kemu_zhonglei"
+        >{{flowClassify.name}}</span>
       </div>
 
+      <div v-if="noData" class="NewData">暂时没有数据</div>
       <ul class="liebiao">
         <li class="liebiao-xiang" v-for="(videos, index) in videos">
           <div @click="gotoDetail(index)" v-if="videos.isVideo">
@@ -84,12 +99,13 @@
             <div class="miaoshu">{{videos.title}}</div>
 
             <div class="caozuo">
-              <span class="left">{{videos.durationTime}}分钟前</span>
+              <!-- <span class="left">{{videos.durationTime}}分钟前</span> -->
+              <span class="left">{{timeFn(videos.createTime)}}前</span>
               <span class="right">
                 <i class="iconfont icon-guankan01"></i>
                 <span>{{videos.watched}}</span>
                 <i class="iconfont icon-buoumaotubiao48"></i>
-                <span>{{videos.common}}</span>
+                <span>{{videos.comment}}</span>
               </span>
             </div>
           </div>
@@ -99,17 +115,27 @@
               <div class="wenzi">{{videos.title}}</div>
             </div>
             <div class="caozuo">
-              <span class="left">{{videos.durationTime}}分钟前</span>
+              <span class="left">{{timeFn(videos.createTime)}}前</span>
               <span class="right">
                 <i class="iconfont icon-guankan01"></i>
                 <span>{{videos.watched}}</span>
                 <i class="iconfont icon-buoumaotubiao48"></i>
-                <span>{{videos.common}}</span>
+                <span>{{videos.comment}}</span>
               </span>
             </div>
           </div>
         </li>
       </ul>
+
+      <div
+        v-infinite-scroll="loadMore"
+        infinite-scroll-disabled="busy"
+        infinite-scroll-distance="30"
+        v-if="!noData"
+      >
+        <div class="NewData">{{loadText}}</div>
+        <!-- <div v-show="noNewData">没有更多数据了</div> -->
+      </div>
     </div>
 
     <div class="dibu">
@@ -117,67 +143,261 @@
         <div class="iconfont icon-shuben icon"></div>
         <div class="xuanze">学院</div>
       </div>
-      <div class="dibu-xiang">
+      <!-- <div class="dibu-xiang">
         <div class="baiyuan">
           <div class="cha">X</div>
         </div>
         <div class="xuanze">挑战</div>
-      </div>
+      </div> -->
       <div class="dibu-xiang" @click="gotoPersonCenter">
         <div class="iconfont icon-home icon"></div>
         <div class="xuanze">我的</div>
       </div>
     </div>
-
-    
   </div>
 </template>
 
 <script>
 import Swiper from "swiper";
+import { mapState, mapGetters, mapActions } from "vuex";
 import "swiper/dist/css/swiper.min.css";
 
 export default {
   name: "shouye",
   data() {
     return {
-      flowClassify: [],
+      // flowClassify: [],
+      subClassifyImgs: [
+        "/static/renwen_logo.png",
+        "/static/jisuanji_logo.png",
+        "/static/xiyi_logo.png",
+        "/static/zhongyi_logo.png",
+        "/static/gonggong_logo.png",
+        "/static/linchuang_logo.png"
+      ],
       subClassify: [],
-      videos: []
+      videos: [],
+      banner: [],
+      busy: false,
+      pageNum: 1,
+      pageSize: 6,
+      checkedindex: 0,
+      noData: false,
+      noNewData: false,
+      loadText: "加载中",
+      // classify: []
+      time: ""
     };
   },
+  computed: {
+    ...mapGetters({
+      classify: "subjectClassify/renderClassifyData",
+      flowClassify: "flowClassify/renderFlowClassifyData"
+    })
+  },
   mounted() {
-    var swiper = new Swiper(".swiper-container", {
-      speed: 500,
-      autoplay: 2000,
-      autoplayDisableOnInteraction: false,
-      loop: true,
-      // 如果需要分页器
-      pagination: ".swiper-pagination",
-      preventClicks: false,
-      paginationClickable: true, // 此参数设置为true时，点击分页器的指示点分页器会控制Swiper切换。
-      preventClicksPropagation: false // 阻止click冒泡
-      // 如果需要前进后退按钮
-      // nextButton: '.swiper-button-next',
-      // prevButton: '.swiper-button-prev',
-    });
-
-    // swiper.params.pagination.clickable = true;
-    console.log(swiper);
-    //此外还需要重新初始化pagination
-    // swiper.pagination.destroy();
-    // swiper.pagination.init()
-    // swiper.pagination.bullets.eq(0).addClass('swiper-pagination-bullet-active');
-
-    this.getFlowClassify();
-    this.getmessage();
+    this.getBanner();
+    // this.getClassify()
+    this.$store.dispatch("subjectClassify/getClassifyAct");
+    this.$store.dispatch("flowClassify/getFlowClassifyAct");
+    // this.getFlowClassify();
+    this.getInformationFlow();
+    console.log(this.$store.getters);
+    // this.timeFn()
   },
   methods: {
-    getmessage() {
-      this.axios.get("/api/informationFlow", {}).then(res => {
-        console.log(res.data);
-        this.videos = res.data.videos;
+    initSwiper() {
+      var swiper = new Swiper(".swiper-container", {
+        speed: 500,
+        autoplay: 2000,
+        autoplayDisableOnInteraction: false,
+        loop: true,
+        // 如果需要分页器
+        pagination: ".swiper-pagination",
+        preventClicks: false,
+        paginationClickable: true, // 此参数设置为true时，点击分页器的指示点分页器会控制Swiper切换。
+        preventClicksPropagation: false // 阻止click冒泡
+        // 如果需要前进后退按钮
+        // nextButton: '.swiper-button-next',
+        // prevButton: '.swiper-button-prev',
       });
+
+      // swiper.params.pagination.clickable = true;
+      //此外还需要重新初始化pagination
+      // swiper.pagination.destroy();
+      // swiper.pagination.init()
+      // swiper.pagination.bullets.eq(0).addClass('swiper-pagination-bullet-active');
+    },
+    getClassify() {
+      this.axios.get("/api/getClassify").then(res => {
+        // this.subject = res.data.personSubject.detail;
+        this.classify = res.data.classify;
+      });
+    },
+    getBanner() {
+      this.axios.get("/api/getBanner").then(res => {
+        this.banner = res.data.banner;
+
+        this.$nextTick(function() {
+          this.initSwiper();
+        });
+      });
+    },
+    getInformationFlow(dataName = "", index = "") {
+      // let i = this.$route.query.index;
+      let flowClassify = this.$store.getters[
+        "flowClassify/renderFlowClassifyData"
+      ];
+
+      if (index !== "") {
+        if (index == this.checkIndex) {
+          return false;
+        } else if (index !== this.checkIndex) {
+          this.videos == [];
+          this.checkedindex = index;
+          this.query = dataName;
+          this.checkIndex = index;
+          this.pageNum = 1;
+        } else if (this.pageNum > 1) {
+          this.pageNum++;
+        }
+      } else {
+        this.checkedindex = 0;
+        this.query = "recommend";
+        // this.lastIndex = i;
+      }
+
+      console.log(this.checkIndex);
+
+      this.axios
+        .get("/api/informationFlow", {
+          params: {
+            dataName: this.query,
+            pageNum: this.pageNum,
+            pageSize: this.pageSize
+          }
+        })
+        .then(res => {
+          console.log(res.data);
+          if (this.pageNum == 1 && res.data.videos.length <= 0) {
+            this.busy = true;
+            this.noData = true;
+          } else if (this.pageNum > 1 && res.data.videos.length <= 0) {
+            (this.busy = true), (this.noNewData = true);
+            this.loadText = "没有更多数据了";
+            this.pageNum = 1;
+          } else {
+            this.busy = false;
+            this.videos = res.data.videos;
+          }
+
+          // console.log(this.timeFn(this.videos[0].createTime))
+        });
+    },
+    getMoreInformationFlow(dataName, index = "") {
+      this.axios
+        .get("/api/informationFlow", {
+          params: {
+            dataName: dataName,
+            pageNum: index,
+            pageSize: this.pageSize
+          }
+        })
+        .then(res => {
+          console.log(res.data);
+          if (this.pageNum == 1 && res.data.videos.length <= 0) {
+            this.busy = true;
+            this.noData = true;
+          } else if (this.pageNum > 1 && res.data.videos.length <= 0) {
+            (this.busy = true), (this.noNewData = true);
+            this.loadText = "没有更多数据了";
+            this.pageNum = 0;
+          } else {
+            this.busy = false;
+            this.videos.push(...res.data.videos);
+          }
+        });
+    },
+    timeFn(di) {
+      //di作为一个变量传进来
+      //如果时间格式是正确的，那下面这一步转化时间格式就可以不用了
+      // var dateBegin = new Date(d1.replace(/-/g, "/")); //将-转化为/，使用new Date
+      console.log(di);
+
+      var dateBegin = di
+        .split(".")[0]
+        .replace("-/g", "/")
+        .replace("T", " ");
+
+      console.log(dateBegin);
+
+      dateBegin = new Date(dateBegin);
+      var dateEnd = new Date(); //获取当前时间
+      var dateDiff = dateEnd.getTime() - dateBegin.getTime(); //时间差的毫秒数
+      var dayDiff = Math.floor(dateDiff / (24 * 3600 * 1000)); //计算出相差天数
+      var leave1 = dateDiff % (24 * 3600 * 1000); //计算天数后剩余的毫秒数
+      var hours = Math.floor(leave1 / (3600 * 1000)); //计算出小时数
+      //计算相差分钟数
+      var leave2 = leave1 % (3600 * 1000); //计算小时数后剩余的毫秒数
+      var minutes = Math.floor(leave2 / (60 * 1000)); //计算相差分钟数
+      //计算相差秒数
+      var leave3 = leave2 % (60 * 1000); //计算分钟数后剩余的毫秒数
+      var seconds = Math.round(leave3 / 1000);
+      // console.log(
+      //   " 相差 " +
+      //     dayDiff +
+      //     "天 " +
+      //     hours +
+      //     "小时 " +
+      //     minutes +
+      //     " 分钟" +
+      //     seconds +
+      //     " 秒"
+      // );
+      if (dayDiff > 0 && hours >= 0 && minutes >= 0 && seconds >= 0) {
+        return dayDiff + "天";
+      } else if (dayDiff <= 0 && hours > 0 && minutes >= 0 && seconds >= 0) {
+        return hours + "小时";
+      } else if (dayDiff <= 0 && hours <= 0 && minutes > 0 && seconds >= 0) {
+        return minutes + "分钟";
+      } else if (dayDiff <= 0 && hours <= 0 && minutes <= 0 && seconds > 0) {
+        return seconds + "秒";
+      }
+    },
+    getDays() {
+      //构造当前日期对象
+      var date = new Date();
+      var year = date.getFullYear(); //获取年份
+      var mouth = date.getMonth() + 1; //获取当前月份
+      var days; //定义当月的天数；
+      if (mouth == 2) {
+        //当月份为二月时，根据闰年还是非闰年判断天数
+        days = year % 4 == 0 ? 29 : 28;
+      } else if (
+        mouth == 1 ||
+        mouth == 3 ||
+        mouth == 5 ||
+        mouth == 7 ||
+        mouth == 8 ||
+        mouth == 10 ||
+        mouth == 12
+      ) {
+        //月份为：1,3,5,7,8,10,12 时，为大月.则天数为31；
+        days = 31;
+      } else {
+        //其他月份，天数为：30.
+        days = 30;
+      }
+      return days;
+    },
+    loadMore: function() {
+      this.busy = true;
+      let that = this;
+      setTimeout(() => {
+        this.pageNum++;
+        this.getMoreInformationFlow(that.query, this.pageNum);
+        //  this.busy = false
+      }, 2000);
     },
     getFlowClassify(id) {
       console.log(id);
@@ -211,7 +431,8 @@ export default {
         path: "/subjectDetail",
         query: {
           // index: index,
-          id: this.videos[index]._id
+          id: this.videos[index]._id,
+          canStudy: this.videos[index].canStudy
         }
       });
     },
@@ -223,17 +444,25 @@ export default {
         }
       });
     },
-    gotoMain(){
+    gotoSubject(index) {
       this.$router.push({
-        path: '/main'
-      })
+        path: "/subject",
+        query: {
+          index: index
+        }
+      });
     },
-    gotoPersonCenter(){
-      console.log('个人');
-      
+    gotoMain() {
       this.$router.push({
-        path: '/personalCenter'
-      })
+        path: "/main"
+      });
+    },
+    gotoPersonCenter() {
+      console.log("个人");
+
+      this.$router.push({
+        path: "/personalCenter"
+      });
     }
   }
 };
@@ -249,6 +478,12 @@ export default {
   .swiper-container {
     width: 100%;
     height: 2.4rem;
+    .swiper-slide {
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
   }
   .gongneng {
     padding: 1rem 0.2rem 0.4rem;
@@ -304,16 +539,32 @@ export default {
     }
   }
   .xinxiliu {
+    margin-bottom: 1.5rem;
     .toubu {
-      height: 0.72rem;
+      height: 0.73rem;
       line-height: 0.72rem;
-      padding: 0 0.2rem 0 0.4rem;
+      padding: 0 0.2rem;
       background: #fff;
       border-bottom: 1px solid #f1f1f1;
       overflow: auto;
+      white-space: nowrap;
       font-size: 0.26rem;
+      width: 100%;
+      box-sizing: border-box;
+      .icon {
+        margin-right: 0.2rem;
+      }
       .kemu_zhonglei {
         margin-right: 0.4rem;
+        display: inline-block;
+        box-sizing: border-box;
+        height: 100%;
+        &:last-child {
+          margin: 0;
+        }
+      }
+      .active {
+        border-bottom: 4px solid #19e889;
       }
     }
     .liebiao {
@@ -383,6 +634,12 @@ export default {
       .liebiao-xiang:last-child {
         border: 0 none;
       }
+    }
+    .NewData {
+      text-align: center;
+      height: 0.6rem;
+      line-height: 0.6rem;
+      font-size: 0.26rem;
     }
   }
   .dibu {

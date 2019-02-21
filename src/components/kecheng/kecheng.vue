@@ -6,20 +6,25 @@
     </div>
 
     <ul class="liebiao" v-if="curriculum !== undefined">
-      <li class="liebiao-xiang" v-for="curriculum in curriculum">
+      <li
+        @click="gotoSubjectDetail(videos[index]._id)"
+        class="liebiao-xiang"
+        v-for="(curriculum, index) in curriculum"
+      >
         <img src="../../assets/kecheng.png" alt class="zuo">
+        <!-- <img v-bind:src="curriculum.img" alt class="zuo"> -->
         <div class="zhong">
-          <div class="kecheng-biaoti">{{curriculum.title}}</div>
-          <div class="shangci" v-if="curriculum.lastLearn !== undefined">>
+          <div class="kecheng-biaoti">{{videos[index].title}}</div>
+          <div class="shangci" v-if="curriculum.lastLearn !== undefined">
             <span>上次学习:</span>
-            <span class="riqi">{{curriculum.lastLearn.split(' ')[0]}}</span>
-            <span class="riqi"{{curriculum.lastLearn.split(' ')[1]}}</span>
+            <span class="riqi">{{curriculum.lastLearn.split('T')[0]}}</span>
+            <span class="">{{curriculum.lastLearn.split('T')[1].split('.')[0]}}</span>
           </div>
         </div>
-        <div class="you">
+        <!-- <div class="you">
           <div class="jindu">{{curriculum.progress}}%</div>
           <div class="zhuangtai">已通过</div>
-        </div>
+        </div> -->
       </li>
     </ul>
   </div>
@@ -30,11 +35,8 @@ export default {
   name: "kecheng",
   data() {
     return {
-      curriculum: [
-        {
-          learnedTime: ''
-        }
-      ]
+      curriculum: [],
+      videos: []
     };
   },
   mounted() {
@@ -42,38 +44,39 @@ export default {
   },
   methods: {
     getUserCurriculum() {
-      this.axios.get("/api/getUserCurriculum").then(res => {
-
-        if (res.data.err_code == 500) {
-          return alert(res.data.message);
-        }
-
-        this.curriculum = res.data.curriculum.curriculums
-        this.curriculum.learnedTime = res.data.curriculum.curriculums.learnedTime
-        console.log(res.data.curriculum.curriculums[0].lastLearn);
-        
-        console.log(this.curriculum)
-      });
+      this.axios
+        .get("/api/getUserCurriculum")
+        .then(res => {
+          console.log(res.data);
+          this.videos = res.data.videos
+          this.curriculum = res.data.curriculum
+        });
     },
-    huitui(){
-      if (this.$route.query.goindex === 'true') {
-        this.$router.push('/')
-      }
-      else {
-        this.$router.back(-1)
+    gotoSubjectDetail(id){
+      console.log(id);
+      
+      this.$router.push({
+        path: '/subjectDetail',
+        query: {
+          id: id
+        }
+      })
+    },
+    huitui() {
+      if (this.$route.query.goindex === "true") {
+        this.$router.push("/");
+      } else {
+        this.$router.back(-1);
       }
     }
   },
   couputed: {
-    date: function () {
-      
-    }
+    date: function() {}
   },
-  activated: function(){
-    this.$setgoindex()
-    console.log('判断');
-    
-  },
+  activated: function() {
+    this.$setgoindex();
+    console.log("判断");
+  }
 };
 </script>
 
@@ -117,7 +120,7 @@ export default {
         flex: 1;
         overflow: hidden;
         .kecheng-biaoti {
-          font-size: 0.2rem;
+          font-size: 0.25rem;
           height: 0.74rem;
           line-height: 0.37rem;
           overflow: hidden;
@@ -126,10 +129,10 @@ export default {
         .shangci {
           position: absolute;
           bottom: 0;
-          font-size: 0.04rem;
+          font-size: 0.22rem;
           color: #ccc;
           .riqi {
-            margin: 0 0.1rem;
+            // margin: 0 0.1rem;
           }
         }
       }
@@ -139,13 +142,13 @@ export default {
         height: 1.2rem;
         text-align: center;
         .jindu {
-          font-size: 8px;
+          font-size: 0.3rem;
         }
         .zhuangtai {
           position: absolute;
           bottom: 0;
           color: #76efb3;
-          font-size: 8px;
+          font-size: 0.23rem;
           width: 100%;
         }
       }

@@ -1,21 +1,13 @@
 <template>
   <div class="zixun">
     <div class="toubu">
-      <span class="iconfont icon-houtui icon"></span>
+      <span class="iconfont icon-houtui icon" @click="huitui"></span>
       <p class="biaoti">咨询详情</p>
     </div>
 
     <div class="neirong">
       <img class="tu" src="../../assets/kecheng.png" alt>
-      <p class="xiangqing" v-for="content in handout.content">{{content}}</p>
-      <!-- <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p>
-      <p class="xiangqing">只要股份有限公司是创建于1829年，是一家有近七十年历史的生产企业</p> -->
+      <p class="xiangqing" v-for="content in handout">{{content}}</p>
     </div>
 
     <div class="caozuo">
@@ -70,11 +62,12 @@
       </div>
 
     <div class="qupinlun">
-      <input class="xiedian" type="text" placeholder="写点什么吧！">
-      <i class="iconfont icon-buoumaotubiao48 icon">
-        <span class="pinglunshu">124</span>
-      </i>
-    </div>
+        <input v-model="videoComment" class="xiedian" type="text" placeholder="写点什么吧！">
+        <span @click="sureAddComment" class="queding">确定</span>
+        <!-- <i class="iconfont icon-buoumaotubiao48 icon">
+          <span class="pinglunshu">124</span>
+        </i>-->
+      </div>
   </div>
 </template>
 
@@ -85,7 +78,8 @@ export default {
     return {
       handout: {},
       detail: {},
-      comment: []
+      comment: [],
+      videoComment: "",
     };
   },
   mounted(){
@@ -98,13 +92,14 @@ export default {
       this.axios
         .get("/api/getHandout", {
           params: {
-            id: this.$route.query.id,
-            index: this.$route.query.index
+            id: this.$route.query.id
+            // index: this.$route.query.index
           }
         })
         .then(res => {
           this.handout = res.data.handout;
-          // console.log(this.handout);
+          console.log(res.data);
+          
         });
     },
     getSubjectDetail() {
@@ -130,9 +125,36 @@ export default {
           }
         })
         .then(res => {
-          this.comment = res.data.comment.comment;
+          this.comment = res.data.comment;
           console.log(this.comment);
         });
+    },
+    sureAddComment() {
+      if (this.videoComment.replace(/^\s+|\s+$/g, "").length <= 0) {
+        return this.$messagebox.alert("请输入评论");
+      }
+
+      this.axios
+        .post("/api/sureAddVideoComment", {
+          videoId: this.$route.query.id,
+          personComment: this.videoComment
+        })
+        .then(res => {
+          if (res.data.err_code !== 500) {
+            this.$messagebox.alert(res.data.message).then(() => {
+              location.reload();
+            });
+          }
+        });
+    },
+    huitui() {
+      if (this.$route.query.goindex === "true") {
+        this.$router.push("/");
+      } else {
+        this.$router.push({
+          path: '/main'
+        });
+      }
     }
   }
 };
@@ -295,16 +317,36 @@ export default {
     bottom: 0;
     left: 0;
     right: 0;
+    height: 0.88rem;
     border-top: 1px solid #ccc;
-    padding: 0.1rem 0.4rem 0.1rem 0.2rem;
+    padding: 0.1rem 0.2rem 0.1rem 0.2rem;
     background: #fff;
+    box-sizing: border-box;
+    display: flex;
     .xiedian {
-      width: 80%;
-      border: 0 none;
+      // width: 80%;
+      // border: 0 none;
+      // background: #eee;
+      // color: #aaa;
+      // padding: 0.1rem 0.2rem;
+      // outline: none;
+      flex: 1;
+      height: 100%;
       background: #eee;
-      color: #aaa;
-      padding: 0.1rem 0.2rem;
       outline: none;
+      border: none;
+      box-sizing: border-box;
+      font-size: 0.2rem;
+      padding: 0 0 0 0.15rem;
+    }
+    .queding {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 0.9rem;
+      font-size: 0.25rem;
+      color: #19e889;
+      // background: #ccc;
     }
     .icon {
       position: relative;

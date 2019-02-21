@@ -2,7 +2,7 @@
   <div class="xiaoxi">
     <div class="toubu">
       <span class="iconfont icon-houtui icon" @click="huitui"></span>
-      <p class="biaoti">修改密码</p>
+      <p class="biaoti">忘记密码</p>
     </div>
 
     <div class="tijiao">
@@ -11,29 +11,28 @@
         <div class="shuru">
           <input
             type="text"
-            v-model="changePas.phoneNumber"
+            v-model="forgetPas.phoneNumber"
             placeholder="请输入手机号"
             class="shurukuang"
           >
         </div>
       </div>
       <div class="yaoqiu">
-        <span class="xinxi">旧密码</span>
+        <span class="xinxi">短信</span>
         <div class="shuru">
-          <input
-            type="text"
-            v-model="changePas.oldPassword"
-            placeholder="请输入旧密码"
-            class="shurukuang"
-          >
+          <input type="text" v-model="verificationCode" placeholder="请输入短信验证码" class="shurukuang">
         </div>
+
+        <span class="huoqu">
+          <span class="yanzhengma">获取验证码</span>
+        </span>
       </div>
       <div class="yaoqiu">
-        <span class="xinxi">新密码</span>
+        <span class="xinxi">密码</span>
         <div class="shuru">
           <input
             type="text"
-            v-model="changePas.newPassword"
+            v-model="forgetPas.newPassword"
             placeholder="请输入新密码"
             class="shurukuang"
           >
@@ -44,17 +43,14 @@
         <div class="shuru">
           <input
             type="text"
-            v-model="changePas.repeatPassword"
+            v-model="forgetPas.repeatPassword"
             placeholder="请再次输入密码"
             class="shurukuang"
           >
         </div>
       </div>
 
-      <div @click.prevent="changePassword" class="zhuceAnniu">确认修改</div>
-      <div class="tongyi">
-        <span @click="gotoChangeForgetPas">忘记密码</span>
-      </div>
+      <div @click.prevent="changeForgetPassword" class="zhuceAnniu">确认修改</div>
     </div>
   </div>
 </template>
@@ -64,58 +60,47 @@ export default {
   name: "xiaoxi",
   data() {
     return {
-      changePas: {
+      forgetPas: {
         phoneNumber: "",
-        oldPassword: "",
         newPassword: "",
         repeatPassword: ""
-      }
+      },
+      verificationCode: ""
     };
   },
-  mounted() {
-    this.getPersonPhoneNum();
-  },
+  mounted() {},
   methods: {
-    getPersonPhoneNum() {
-      this.axios.get("/api/getPersonPhoneNum").then(res => {
-        if (res.data.err_code === 200) {
-          this.changePas.phoneNumber = res.data.phoneNumber;
-        }
-      });
-    },
-    changePassword() {
+    changeForgetPassword() {
       let reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,12}$/;
-      if (this.changePas.oldPassword.replace(/^\s+|\s+$/g, "").length <= 0) {
-        return this.$messagebox.alert("请输入旧密码");
+
+      if (this.forgetPas.phoneNumber.replace(/^\s+|\s+$/g, "").length <= 0) {
+        return this.$messagebox.alert("请输入手机号");
+      } else if (!/^1[34578]\d{9}$/.test(this.forgetPas.phoneNumber)) {
+        return this.$messagebox.alert("请输入正确手机号");
+      }
+
+      if (this.verificationCode.replace(/^\s+|\s+$/g, "").length <= 0) {
+        return this.$messagebox.alert("请输入验证码");
       }
       if (
-        !reg.test(this.changePas.newPassword) ||
-        !reg.test(this.changePas.repeatPassword)
+        !reg.test(this.forgetPas.newPassword) ||
+        !reg.test(this.forgetPas.repeatPassword)
       ) {
         return this.$messagebox.alert("密码必须由6-12位数字加字母组成");
       }
-      if (this.changePas.newPassword !== this.changePas.repeatPassword) {
+      if (this.forgetPas.newPassword !== this.forgetPas.repeatPassword) {
         return this.$messagebox.alert("密码必须相同");
       }
       this.axios
-        .post("/api/changePassword", {
-          phoneNumber: this.changePas.phoneNumber,
-          oldPassword: this.changePas.oldPassword,
-          newPassword: this.changePas.newPassword,
-          repeatPassword: this.changePas.repeatPassword
+        .post("/api/changeForgetPassword", {
+          phoneNumber: this.forgetPas.phoneNumber,
+          newPassword: this.forgetPas.newPassword,
+          repeatPassword: this.forgetPas.repeatPassword,
+          verificationCode: this.verificationCode
         })
         .then(res => {
-          this.$messagebox.alert(res.data.message).then(() => {
-            if (res.data.err_code === 200) {
-              this.$router.push({ path: "/personalCenter" });
-            }
-          });
+          this.$messagebox.alert(res.data.message);
         });
-    },
-    gotoChangeForgetPas() {
-      this.$router.push({
-        path: "/forgetPassword"
-      });
     },
     huitui() {
       if (this.$route.query.goindex === "true") {
@@ -206,12 +191,13 @@ export default {
     .yaoqiu {
       border-bottom: 1px solid #ccc;
       height: 0.8rem;
-      line-height: 0.8rem;
       font-size: 0.27rem;
       display: flex;
       margin: 0 0 0.2rem 0;
       .xinxi {
         width: 1.3rem;
+        display: flex;
+        align-items: center;
       }
       .zhong {
         position: relative;
@@ -247,11 +233,14 @@ export default {
           box-sizing: border-box;
           outline: none;
           border: 0 none;
-          vertical-align: top;
           font-size: 0.29rem;
+          line-height: 0.8rem;
         }
       }
       .huoqu {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         .yanzhengma {
           padding: 0.1rem 0.2rem;
           box-sizing: border-box;

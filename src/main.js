@@ -9,7 +9,7 @@ import store from './store/index'//引入store
 import Vuex from 'vuex'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
-import Mint from 'mint-ui'
+import MintUI from 'mint-ui'
 import 'mint-ui/lib/style.css'
 
 Vue.config.productionutTip = false
@@ -40,7 +40,6 @@ axios.interceptors.response.use(
   },
   // 默认除了2xx之外都是错误的，就会走到这
   error => {
-    console.log(error)
     if (error.response) {
       console.log(error.response)
       switch (error.response.status) {
@@ -66,8 +65,8 @@ Vue.prototype.$setgoindex = function () {
   }
 }
 
+Vue.use(MintUI)
 Vue.use(VueAxios, axios)
-Vue.use(Mint)
 
 const router = new VueRouter({
   routes
@@ -78,6 +77,9 @@ router.beforeEach((to, from, next) => {
   console.log('跳转前', to)
   let token = store.state.token;
   //判断要去的路由有没有requiresAuth
+  if (to.meta.title) {//判断是否有标题
+    document.title = to.meta.title
+  }
   if (to.meta.requiresAuth) {
 
     if (token) {
@@ -94,6 +96,8 @@ router.beforeEach((to, from, next) => {
   } else {
     next();
   }
+  
+  next()//执行进入路由，如果不写就不会进入目标页
 })
 
 router.afterEach((to, from, next) => {
@@ -122,6 +126,15 @@ Vue.use(VueRouter)
 new Vue({
   created() {
     this.checkDevice();
+    //在页面加载时读取sessionStorage里的状态信息
+    if (sessionStorage.getItem("store")) {
+      this.$store.replaceState(Object.assign({}, this.$store.state, JSON.parse(sessionStorage.getItem("store"))))
+    }
+
+    //在页面刷新时将vuex里的信息保存到sessionStorage里
+    window.addEventListener("beforeunload", () => {
+      sessionStorage.setItem("store", JSON.stringify(this.$store.state))
+    })
   },
   methods: {
     checkDevice() {
