@@ -87,7 +87,7 @@ export default {
         })
         .then(res => {
           if (res.data.err_code === 200) {
-            return this.$messagebox.alert(res.data.message);
+            this.$messagebox.alert(res.data.message);
             location.reload();
           }
           // alert(res.data.message);

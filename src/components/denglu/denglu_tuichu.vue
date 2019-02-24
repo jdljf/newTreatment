@@ -1,11 +1,11 @@
 <template>
   <div class="denglu_tuichu">
     <div class="toubu">
-      <span class="iconfont icon-houtui icon"></span>
+      <span class="iconfont icon-houtui icon" @click="huitui"></span>
       <p class="biaoti">退出登录</p>
     </div>
     <img class="tu" src="../../assets/tuichudenglu.png" alt>
-    <div class="tuichu">退出登录</div>
+    <div class="tuichu" @click="loginOut">退出登录</div>
   </div>
 </template>
 
@@ -14,6 +14,20 @@ export default {
   name: "denglu_tuichu",
   data() {
     return {};
+  },
+  methods: {
+    loginOut(){
+      this.$messagebox.alert('确定要退出登录吗');
+      // this.$store.dispatch("UserLogin", token);
+      this.$store.dispatch('UserLogout')
+    },
+    huitui() {
+      if (this.$route.query.goindex === "true") {
+        this.$router.push("/");
+      } else {
+        this.$router.back(-1);
+      }
+    }
   }
 };
 </script>

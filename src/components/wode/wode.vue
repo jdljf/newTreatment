@@ -61,7 +61,7 @@
           <router-link to="/systemSetup">系统设置</router-link>
         </div>
         <div class="neirong-xiang">
-          <router-link to="/loginOut">我的任务</router-link>
+          <router-link to="/loginOut">退出登陆</router-link>
         </div>
       </div>
     </div>
@@ -71,12 +71,12 @@
         <div class="iconfont icon-shuben icon"></div>
         <div class="xuanze">学院</div>
       </div>
-      <div class="dibu-xiang">
+      <!--<div class="dibu-xiang">
         <div class="baiyuan">
           <div class="cha">X</div>
         </div>
         <div class="xuanze">挑战</div>
-      </div>
+      </div> -->
       <div class="dibu-xiang yixuan">
         <div class="iconfont icon-home icon"></div>
         <div class="xuanze">我的</div>

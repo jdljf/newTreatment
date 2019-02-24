@@ -6,7 +6,7 @@
     </div>
 
     <div class="neirong">
-      <img class="tu" src="../../assets/kecheng.png" alt>
+      <img class="tu" src="../../assets/aboutUs.jpg" alt>
       <p class="xiangqing" v-for="content in content">{{ content }}</p>
     </div>
   </div>
@@ -78,6 +78,7 @@ export default {
       font-size: 0.27rem;
       line-height: 0.4rem;
       text-indent: 0.5rem;
+      padding-bottom: 0.1rem;
     }
   }
 }

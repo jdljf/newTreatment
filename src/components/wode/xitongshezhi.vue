@@ -12,18 +12,18 @@
           <i class="iconfont iconfont icon-qianjin qianjin"></i>
         <!-- </router-link> -->
       </li>
-      <li class="liebiao-xiang">
+      <!-- <li class="liebiao-xiang">
         <span>意见反馈</span>
         <i class="iconfont iconfont icon-qianjin qianjin"></i>
-      </li>
+      </li> -->
       <!-- <li class="liebiao-xiang">
         <span>版本信息</span>
         <i class="iconfont iconfont icon-qianjin qianjin"></i>
       </li> -->
-      <li class="liebiao-xiang" @click="loginOut">
+      <!-- <li class="liebiao-xiang" @click="loginOut">
         <span>退出登录</span>
         <i class="iconfont iconfont icon-qianjin qianjin"></i>
-      </li>
+      </li> -->
     </ul>
   </div>
 </template>
