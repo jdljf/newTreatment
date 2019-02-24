@@ -3,7 +3,7 @@
     <div class="box" ref="box" @click="changeControl">
       <div class="videoBox">
         <video
-          src="/api/videos/20.mp4"
+          src="/api/videos/30.mp4"
           class="bofang"
           ref="video"
           webkit-playsinline
@@ -16,8 +16,8 @@
         您上次观看到{{this.lastWatchTime}}，
         <span @click="gotoLastWatchTime" class="tiaozhuan">点击跳转播放</span>
       </div>
-      <!-- 暂停 -->
-      <span @click="playOrPause" v-show="!isPlay" class="iconfont icon-cha1 play"></span>
+      <!-- 暂停 -->icon-cha1
+      <span @click="playOrPause" v-show="!isPlay" class="iconfont play" :class="{'icon-bofang1': !isPlay, 'icon-zanting1': isPlay}"></span>
 
       <div class="control" :class="{showControl: showControl}">
         <!-- 时间 -->
@@ -71,7 +71,7 @@
           <img src="/static/icon/watched.png" alt>
           <div class="shuliang">{{detail.watched}}</div>
         </div>
-        <div class="caozuo-xiangqing" @click="gotoComment">
+        <div class="caozuo-xiangqing">
           <img src="/static/icon/comment.png" alt>
           <div class="shuliang">{{detail.comment}}</div>
         </div>
@@ -79,7 +79,7 @@
           <img :src="collectImg" alt>
           <div class="shuliang">{{detail.collect}}</div>
         </div>
-        <div class="caozuo-xiangqing" @click="share">
+        <div class="caozuo-xiangqing">
           <img src="/static/icon/share.png" alt>
           <div class="shuliang">{{detail.share}}</div>
         </div>
@@ -116,7 +116,7 @@
               <img src="../../assets/logo.png" alt>
               <div class="yonghu" style="flex: 1;">
                 <div class="mingzi">{{comment.commentName}}</div>
-                <div class="shijian">5小时前</div>
+                <div class="shijian">{{timeFn(comment.createTime)}}前</div>
                 <div class="pinglun">{{comment.content}}</div>
               </div>
             </div>
@@ -125,7 +125,7 @@
               <img src="../../assets/logo.png" alt>
               <div class="yonghu" style="flex: 1;">
                 <div class="mingzi">{{comment.commentName}}</div>
-                <div class="shijian">5小时前</div>
+                <div class="shijian">{{timeFn(comment.createTime)}}前</div>
                 <div class="pinglun">{{comment.content}}</div>
               </div>
             </div>
@@ -135,7 +135,7 @@
                 <img src="../../assets/logo.png" alt>
                 <div class="yonghu">
                   <div class="mingzi">{{replyPerson.replyName}}</div>
-                  <div class="shijian">5小时前</div>
+                  <div class="shijian">{{timeFn(replyPerson.createTime)}}前</div>
                   <div class="pinglun">{{replyPerson.content}}</div>
                 </div>
               </div>
@@ -375,6 +375,7 @@ export default {
       event.stopPropagation();
       console.log("点击了按钮");
       this.showControl = false;
+      this.canJumpPlay = false;
       if (this.$refs.video.paused) {
         this.$refs.video.play();
         this.isPlay = true;
@@ -576,6 +577,7 @@ export default {
         this.$refs.box.style["margin-left"] = "0";
         this.isFullScreen = false;
       }
+      this.showControl = false
     },
     gotoHandout() {
       this.$router.push({
@@ -846,7 +848,6 @@ export default {
           }
         });
     },
-    gotoComment() {},
     collect() {
       if (!this.checkCollect) {
         this.checkCollect = true;
@@ -867,8 +868,8 @@ export default {
           this.detail.collect = res.data.collect;
         });
     },
-    share() {},
     gotoLastWatchTime() {
+      event.stopPropagation()
       let timeArr = this.lastWatchTime.split(":");
       // console.log(parseInt('05')*60);
       let sumTime = 0;
@@ -882,12 +883,59 @@ export default {
       this.canJumpPlay = false;
       this.$refs.video.play();
       this.isPlay = true;
+      this.showControl = false;
     },
     huitui() {
       if (this.$route.query.goindex === "true") {
         this.$router.push("/");
       } else {
         this.$router.back(-1);
+      }
+    },
+    timeFn(di) {
+      //di作为一个变量传进来
+      //如果时间格式是正确的，那下面这一步转化时间格式就可以不用了
+      // var dateBegin = new Date(d1.replace(/-/g, "/")); //将-转化为/，使用new Date
+      console.log(di);
+
+      var dateBegin = di
+        .split(".")[0]
+        .replace("-/g", "/")
+        .replace("T", " ");
+
+      console.log(dateBegin);
+
+      dateBegin = new Date(dateBegin);
+      var dateEnd = new Date(); //获取当前时间
+      var dateDiff = dateEnd.getTime() - dateBegin.getTime(); //时间差的毫秒数
+      var dayDiff = Math.floor(dateDiff / (24 * 3600 * 1000)); //计算出相差天数
+      var leave1 = dateDiff % (24 * 3600 * 1000); //计算天数后剩余的毫秒数
+      var hours = Math.floor(leave1 / (3600 * 1000)); //计算出小时数
+      //计算相差分钟数
+      var leave2 = leave1 % (3600 * 1000); //计算小时数后剩余的毫秒数
+      var minutes = Math.floor(leave2 / (60 * 1000)); //计算相差分钟数
+      //计算相差秒数
+      var leave3 = leave2 % (60 * 1000); //计算分钟数后剩余的毫秒数
+      var seconds = Math.round(leave3 / 1000);
+      // console.log(
+      //   " 相差 " +
+      //     dayDiff +
+      //     "天 " +
+      //     hours +
+      //     "小时 " +
+      //     minutes +
+      //     " 分钟" +
+      //     seconds +
+      //     " 秒"
+      // );
+      if (dayDiff > 0 && hours >= 0 && minutes >= 0 && seconds >= 0) {
+        return dayDiff + "天";
+      } else if (dayDiff <= 0 && hours > 0 && minutes >= 0 && seconds >= 0) {
+        return hours + "小时";
+      } else if (dayDiff <= 0 && hours <= 0 && minutes > 0 && seconds >= 0) {
+        return minutes + "分钟";
+      } else if (dayDiff <= 0 && hours <= 0 && minutes <= 0 && seconds > 0) {
+        return seconds + "秒";
       }
     }
   },

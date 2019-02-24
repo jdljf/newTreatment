@@ -35,10 +35,12 @@
       </router-link>
     </div>
 
-    <div class="tonggao">
+    <!-- <div class="tonggao">
       <span class="tonggao-xiang">迅捷斥候5s前获得15医豆</span>
       <span class="tonggao-xiang">迅捷斥候5s前获得15医豆</span>
-    </div>
+      <span class="tonggao-xiang">迅捷斥候5s前获得15医豆</span>
+      <span class="tonggao-xiang">迅捷斥候5s前获得15医豆</span>
+    </div> -->
 
     <div class="kemufenlei">
       <div class="biaoti">科目分类</div>
@@ -477,7 +479,7 @@ export default {
   }
   .swiper-container {
     width: 100%;
-    height: 2.4rem;
+    height: 3rem;
     .swiper-slide {
       img {
         width: 100%;
@@ -486,7 +488,7 @@ export default {
     }
   }
   .gongneng {
-    padding: 1rem 0.2rem 0.4rem;
+    padding: 0.3rem 0.2rem 0.4rem;
     display: flex;
     .gongneng-xiang {
       flex: 1;
