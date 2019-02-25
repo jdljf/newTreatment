@@ -17,7 +17,7 @@
           <span>{{ subject.watched }}</span>
           <i class="iconfont icon-buoumaotubiao48"></i>
           <span>{{ subject.comment }}</span>
-          <i class="iconfont icon-wenjianjia"></i>
+          <!--<i class="iconfont icon-wenjianjia"></i>-->
         </div>
       </li>
       <!-- <li class="liebiao-xiang" >

@@ -97,6 +97,9 @@ export default {
       
     },
     handleClick(index) {
+      if (index == this.lastIndex) {
+        return false
+      }
       this.axios
         .get("/api/changeDefault", {
           params: {
@@ -105,19 +108,18 @@ export default {
         })
         .then(res => {
           if (res.data.err_code === 200) {
-            return this.$messagebox.alert(res.data.message);
-            for (let i = 0; i < this.addresses.length; i++) {
-              this.addresses[i].isDefault = false;
-            }
-            console.log(this.addresses[index]);
+            this.$messagebox.alert(res.data.message).then(action=>{
+              for (let i = 0; i < this.addresses.length; i++) {
+                this.addresses[i].isDefault = false;
+              }
+              console.log(this.addresses[index]);
 
-            this.addresses[index].isDefault = true;
-            this.checked = !this.checked;
-            this.lastIndex = index;
-            console.log(this.lastIndex);
+              this.addresses[index].isDefault = true;
+              this.checked = !this.checked;
+              this.lastIndex = index;
+              console.log(this.lastIndex);
+            });            
           }
-          // alert(res.data.message);
-          // window.location.reload();
         });
     },
     huitui() {

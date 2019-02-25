@@ -69,7 +69,7 @@ var routes = [
 	{ path: '/subjectDetail', component: kemu_xiangqing, meta: { title: '科目详情' } },
 	{ path: '/testResult', component: ceyan_jieguo, meta: { title: '测验结果' } },
 	{ path: '/headline', component: toutiao, meta: { title: '头条视讯' } },
-	{ path: '/relevant', component: xiangguan, meta: { title: '相关' } },
+	{ path: '/relevant', component: xiangguan, meta: { title: '相关视频' } },
 	{ path: '/apply', component: shenling, meta: { title: '申领' } },
 	{ path: '/activity', component: huodong, meta: { title: '活动' } },
 	{ path: '/message', component: xiaoxi, meta: { title: '我的消息' } },

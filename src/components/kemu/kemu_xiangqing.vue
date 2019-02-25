@@ -1220,9 +1220,9 @@ export default {
       }
     }
     .xiangguan-shipin {
-      display: flex;
       .xiangguan-xiang {
-        flex: 0 0 33.33%;
+            width: 32%;
+    display: inline-block;
         img {
           width: 100%;
         }
@@ -1244,7 +1244,7 @@ export default {
         }
       }
       .xiangguan-xiang:nth-child(2) {
-        margin: 0 0.1rem;
+        margin: 0 2%;
       }
     }
   }

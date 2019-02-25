@@ -323,15 +323,13 @@ export default {
     timeFn(di) {
       //di作为一个变量传进来
       //如果时间格式是正确的，那下面这一步转化时间格式就可以不用了
-      // var dateBegin = new Date(d1.replace(/-/g, "/")); //将-转化为/，使用new Date
-      console.log(di);
+      // var dateBegin = new Date(d1.replace(/-/g, "/")); //将-转化为/，使用new Date   
 
       var dateBegin = di
         .split(".")[0]
         .replace("-/g", "/")
         .replace("T", " ");
 
-      console.log(dateBegin);
 
       dateBegin = new Date(dateBegin);
       var dateEnd = new Date(); //获取当前时间

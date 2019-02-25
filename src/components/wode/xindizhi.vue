@@ -29,7 +29,7 @@
       </div>
       <div class="yaoqiu">
         <span class="xinxi">所在地区</span>
-        <div class="zhong" @click="changeAddress" v-show="!showAdd">
+        <!-- <div class="zhong" @click="changeAddress" v-show="!showAdd">
           <div class="xiangxi">选择省市区</div>
         </div>
         <div class="you" v-show="!showAdd">
@@ -37,6 +37,15 @@
         </div>
         <div class="zhong" v-show="showAdd" @click="changeAdd = true">
           <input type="text" v-bind:value="area">
+        </div> -->
+        <div class="zhong" @click="changeAddress" v-show="!showAdd">
+          <div class="xiangxi">选择省市区</div>
+        </div>
+        <div class="you" v-show="!showAdd">
+          <i class="iconfont icon-qianjin qianjin"></i>
+        </div>
+        <div class="zhong" v-show="showAdd" @click="changeAdd = true" :class="{left: showAdd}">
+          <div class="xiangxi">{{area}}</div>
         </div>
       </div>
       <div class="yaoqiu meibian">
@@ -81,10 +90,10 @@ export default {
   name: "xindizhi",
   data() {
     return {
-      title: '',
-      save: '',
+      title: "",
+      save: "",
       address: {
-        addressId: '',
+        addressId: "",
         receiveName: "",
         province: "",
         city: "",
@@ -142,32 +151,32 @@ export default {
   },
   methods: {
     getReceiveAddress() {
-      this.address.addressId = this.$route.query.id
+      this.address.addressId = this.$route.query.id;
       console.log(this.$route.query);
-      if (!this.address.addressId || this.address.addressId.length<=0) {
-        this.title = '新建收货地址'
-        this.save = '保存并使用'
-        this.showAdd = false
+      if (!this.address.addressId || this.address.addressId.length <= 0) {
+        this.title = "新建收货地址";
+        this.save = "保存并使用";
+        this.showAdd = false;
+      } else {
+        this.title = "收货地址管理";
+        this.save = "保存";
+        this.axios
+          .get("/api/getReceiveAddress", {
+            params: {
+              addressId: this.address.addressId
+            }
+          })
+          .then(res => {
+            console.log(res.data);
+            let address = res.data.address;
+            this.address = address;
+            this.showAdd = true;
+            this.myAddressProvince = address.province;
+            this.myAddresscounty = address.area;
+            this.myAddressCity = address.city;
+            // console.log(this.address.receiveName);
+          });
       }
-      else {
-        this.title = '收货地址管理'
-        this.save = '保存'
-        this.axios.get("/api/getReceiveAddress", {
-          params: {
-            addressId: this.address.addressId
-          }
-        }).then(res => {
-          console.log(res.data);
-          let address = res.data.address
-          this.address = address;
-          this.showAdd = true
-          this.myAddressProvince = address.province
-          this.myAddresscounty = address.area
-          this.myAddressCity = address.city
-          // console.log(this.address.receiveName);
-        });  
-      }
-      
     },
     onMyAddressChange(picker, values) {
       if (myaddress[values[0]]) {
@@ -180,7 +189,7 @@ export default {
       }
     },
     createNewAddress() {
-      this.address.addressId = this.$route.query.id
+      this.address.addressId = this.$route.query.id;
 
       if (this.showAdd) {
         this.address.province = this.myAddressProvince;
@@ -201,9 +210,9 @@ export default {
         })
         .then(res => {
           if (res.data.err_code !== 500) {
-            this.$messagebox.alert(res.data.message).then(()=>{
-              this.$router.push({path: '/adminAddress'})
-            })
+            this.$messagebox.alert(res.data.message).then(() => {
+              this.$router.push({ path: "/adminAddress" });
+            });
           }
         });
     },
@@ -270,15 +279,19 @@ export default {
         flex: 1;
         overflow: hidden;
         color: #8b8b8b;
-        input {
-          width: 100%;
-          height: 100%;
-          outline: none;
-          border: 0 none;
-        }
+        display: flex;
+        align-items: center;
+        flex-flow: row-reverse;
+        font-size: 0.29rem;
         .xiangxi {
-          text-align: right;
+          font-size: 0.26rem;
+          color: #000;
+          overflow: hidden;
+          white-space: nowrap;
         }
+      }
+      .left {
+        flex-flow: row;
       }
       .you {
         display: flex;
@@ -288,7 +301,7 @@ export default {
         .qianjin {
           padding-left: 0.1rem;
           text-align: right;
-          color: #ccc;
+          color: #8b8b8b;
         }
       }
       .shuru {
@@ -299,8 +312,8 @@ export default {
           box-sizing: border-box;
           outline: none;
           border: 0 none;
-          vertical-align: top;
           font-size: 0.29rem;
+          line-height: 0.8rem;
         }
       }
       .huoqu {
