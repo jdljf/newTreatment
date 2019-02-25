@@ -1,7 +1,7 @@
 <template>
   <div class="xiangguan">
     <div class="toubu">
-      <span class="iconfont icon-houtui icon"></span>
+      <span class="iconfont icon-houtui icon" @click="huitui"></span>
       <p class="biaoti">相关视频</p>
     </div>
 
@@ -107,7 +107,14 @@ export default {
         .then(res => {
           console.log(res.data);
         });
-    }
+    },
+    huitui() {
+      if (this.$route.query.goindex === "true") {
+        this.$router.push("/");
+      } else {
+        this.$router.back(-1);
+      }
+    },
   }
 };
 </script>

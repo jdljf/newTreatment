@@ -32,7 +32,7 @@
             <span>{{ subject.watched }}</span>
             <i class="iconfont icon-buoumaotubiao48"></i>
             <span>{{ subject.comment }}</span>
-            <i class="iconfont icon-wenjianjia"></i>
+            <!--<i class="iconfont icon-wenjianjia"></i>-->
           </div>
         </li>
       </ul>
@@ -44,7 +44,6 @@
       v-if="!noData"
     >
       <div class="NewData">{{loadText}}</div>
-      <!-- <div v-show="noNewData">没有更多数据了</div> -->
     </div>
   </div>
 </template>
